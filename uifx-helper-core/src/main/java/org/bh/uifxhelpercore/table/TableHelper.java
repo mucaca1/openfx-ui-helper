@@ -9,10 +9,22 @@ import java.util.*;
  */
 public class TableHelper {
 
+    /**
+     * Check if object contain TableObject annotation and can be used as table object.
+     *
+     * @param obj Object to check
+     * @return true if object contain TableObject annotation
+     */
     private static boolean isTableObject(Class<?> obj) {
         return obj.isAnnotationPresent(TableObject.class);
     }
 
+    /**
+     * Check if field contain TableColumn annotation and can be used as table column.
+     *
+     * @param obj Field to check
+     * @return true if object contain TableColumn annotation
+     */
     private static boolean isTableColumn(Field obj) {
         return obj.isAnnotationPresent(TableColumn.class);
     }

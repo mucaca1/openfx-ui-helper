@@ -5,9 +5,9 @@ public class ColumnData {
     private String id;
 
     /**
-     * Key witch need to be defined in resource bundle to translate column header
+     * Column name. If this name is defined in resource bundle, name will be translated
      */
-    private String keyToTranslate;
+    private String columnName;
 
     /**
      * Type of column (Long, String, ...)
@@ -16,9 +16,9 @@ public class ColumnData {
 
     public ColumnData() {}
 
-    public ColumnData(String id, String keyToTranslate, Class<?> columnType) {
+    public ColumnData(String id, String columnName, Class<?> columnType) {
         this.id = id;
-        this.keyToTranslate = keyToTranslate;
+        this.columnName = columnName;
         this.columnType = columnType;
     }
 
@@ -30,12 +30,12 @@ public class ColumnData {
         this.id = id;
     }
 
-    public String getKeyToTranslate() {
-        return keyToTranslate;
+    public String getColumnName() {
+        return columnName;
     }
 
-    public void setKeyToTranslate(String keyToTranslate) {
-        this.keyToTranslate = keyToTranslate;
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
     }
 
     public Class getColumnType() {

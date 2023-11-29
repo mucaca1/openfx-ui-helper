@@ -20,8 +20,17 @@ public @interface TableColumn {
     ViewType[] viewType() default {ViewType.Default};
 
     /**
-     *
-     * @return
+     * {@link TableViewComponent} can be initialized with specifis descriptor.
+     * If field contains descriptor matched with used initialized descriptor, field will be used as column.
+     * This descriptor is way, as user can deffined self specified viewType.
+     * Empty value is always evaluated as true (as column) if {@link TableColumn#viewType()} match as well.
+     * @return descriptor value
      */
     String[] descriptor() default "";
+
+    /**
+     * Index of current column. Default value is -1. This means column does not have specific order.
+     * @return
+     */
+    short index() default -1;
 }
