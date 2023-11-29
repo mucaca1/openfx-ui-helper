@@ -28,9 +28,4 @@ public @interface TableColumn {
      */
     String[] descriptor() default "";
 
-    /**
-     * Index of current column. Default value is -1. This means column does not have specific order.
-     * @return
-     */
-    short index() default -1;
 }
