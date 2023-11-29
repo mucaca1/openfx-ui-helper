@@ -19,6 +19,10 @@ public class TableViewComponent<V> extends TableView<V> {
 
     private final ResourceBundleService resourceBundleService;
 
+    public TableViewComponent() {
+        resourceBundleService = null;
+    }
+
     public TableViewComponent(ResourceBundleService resourceBundleService) {
         this.resourceBundleService = resourceBundleService;
     }

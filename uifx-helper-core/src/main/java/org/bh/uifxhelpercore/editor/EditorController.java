@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public abstract class EditorController<B, T> {
 
-    protected BasicEditorForm form;
+    protected BasicEditorUi form;
 
     private T selectedEntity;
     private B selectedObject;
@@ -24,8 +24,8 @@ public abstract class EditorController<B, T> {
 
     private boolean enableSearch = false;
 
-    public EditorController(ResourceBundleService resourceBundleService) throws IOException {
-        form = new BasicEditorForm(resourceBundleService);
+    public EditorController() throws IOException {
+        form = new BasicEditorUi();
         businessToEntityMap = new HashMap<>();
 
         initialiseTableListeners();

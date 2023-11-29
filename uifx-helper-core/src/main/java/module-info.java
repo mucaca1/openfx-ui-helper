@@ -7,4 +7,6 @@ module org.bh.uifxhelpercore {
 
     opens org.bh.uifxhelpercore to javafx.fxml;
     exports org.bh.uifxhelpercore;
+    exports org.bh.uifxhelpercore.table;
+    exports org.bh.uifxhelpercore.editor;
 }
