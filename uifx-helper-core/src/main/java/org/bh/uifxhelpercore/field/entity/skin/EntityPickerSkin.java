@@ -1,7 +1,7 @@
-package org.bh.uifxhelpercore.field.skin;
+package org.bh.uifxhelpercore.field.entity.skin;
 
 import javafx.scene.control.SkinBase;
-import org.bh.uifxhelpercore.field.EntityPicker;
+import org.bh.uifxhelpercore.field.entity.EntityPicker;
 
 public class EntityPickerSkin extends SkinBase<EntityPicker> {
 

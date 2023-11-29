@@ -1,15 +1,20 @@
 package org.bh.uifxhelpercore;
 
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.scene.Node;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import org.bh.uifxhelpercore.field.SimpleEntityChooserField;
 
+/**
+ * Simple helper witch apply some features on form fx.
+ */
 public class FormsFxHelper {
 
+    /**
+     * Function find all labels in form and set for each label specific size.
+     * @param pane Form panel
+     * @param labelSize Size which will be applied on label component.
+     */
     public static void searchAndSetControlsLabelWidth(Pane pane, double labelSize) {
         if (pane instanceof GridPane) {
             if (pane.getStyleClass().stream().anyMatch(s -> s.contains("simple-"))) {
@@ -41,9 +46,5 @@ public class FormsFxHelper {
                 }
             }
         }
-    }
-
-    public static <T> SimpleEntityChooserField<T> ofEntityChooser(ListProperty<T> items, boolean singleSelection) {
-        return new SimpleEntityChooserField<T>(new SimpleListProperty<>(items.getValue()), singleSelection).bind(items);
     }
 }

@@ -1,4 +1,4 @@
-package org.bh.uifxhelpercore.field;
+package org.bh.uifxhelpercore.field.entity;
 
 import com.dlsc.formsfx.view.controls.SimpleControl;
 import javafx.collections.ObservableList;

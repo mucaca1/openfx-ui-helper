@@ -1,4 +1,4 @@
-package org.bh.uifxhelpercore.field;
+package org.bh.uifxhelpercore.field.entity;
 
 import com.dlsc.formsfx.model.event.FieldEvent;
 import com.dlsc.formsfx.model.structure.Field;

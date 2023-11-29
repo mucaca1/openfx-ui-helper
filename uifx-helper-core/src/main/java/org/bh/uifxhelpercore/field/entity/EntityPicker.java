@@ -1,8 +1,8 @@
-package org.bh.uifxhelpercore.field;
+package org.bh.uifxhelpercore.field.entity;
 
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
-import org.bh.uifxhelpercore.field.skin.EntityPickerSkin;
+import org.bh.uifxhelpercore.field.entity.skin.EntityPickerSkin;
 
 
 public class EntityPicker<V> extends Control {

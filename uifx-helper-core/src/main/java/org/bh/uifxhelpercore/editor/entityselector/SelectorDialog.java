@@ -6,14 +6,13 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import org.bh.uifxhelpercore.field.EntityPopupPicker;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class SelectorDialog<T, I> extends Dialog<T> implements EntityPopupPicker<T, I> {
+public abstract class SelectorDialog<T, I> extends Dialog<T> {
     protected TableViewComponent<T> table;
     protected TextField searchTextField;
 
