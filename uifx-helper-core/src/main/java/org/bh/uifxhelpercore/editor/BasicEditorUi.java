@@ -1,5 +1,7 @@
 package org.bh.uifxhelpercore.editor;
 
+import com.dlsc.formsfx.model.util.ResourceBundleService;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ScrollPane;
@@ -11,7 +13,7 @@ import javafx.scene.layout.VBox;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
 
-import javax.swing.text.View;
+import java.util.ResourceBundle;
 
 public class BasicEditorUi<TABLE_OBJECT> {
 
@@ -22,7 +24,9 @@ public class BasicEditorUi<TABLE_OBJECT> {
     private ButtonBar tableButtonBar;
     private ScrollPane leftScrollPane;
 
-    public BasicEditorUi(Class tableObjectClass, ViewType viewType, String tableDescriptor) {
+    private ResourceBundleService resourceBundle;
+
+    public BasicEditorUi(Class tableObjectClass, ViewType viewType, String tableDescriptor, ResourceBundleService resourceBundle) {
         {
             rootPane = new VBox();
             rootPane.setAlignment(Pos.CENTER);
@@ -35,6 +39,8 @@ public class BasicEditorUi<TABLE_OBJECT> {
             anchorPane.prefWidth(-1d);
             VBox.setVgrow(anchorPane, Priority.ALWAYS);
         }
+
+        this.resourceBundle = resourceBundle;
 
 
         SplitPane splitPane = new SplitPane();
@@ -62,7 +68,7 @@ public class BasicEditorUi<TABLE_OBJECT> {
 
         leftScrollPane = new ScrollPane();
         tableButtonBar = new ButtonBar();
-        table = new TableViewComponent();
+        table = new TableViewComponent(this.resourceBundle);
         leftScrollPane.setContent(table);
         leftBorderPane.setCenter(leftScrollPane);
         leftBorderPane.setBottom(tableButtonBar);
@@ -76,5 +82,9 @@ public class BasicEditorUi<TABLE_OBJECT> {
 
     public TableViewComponent getTable() {
         return table;
+    }
+
+    public void setTableData(ObservableList<TABLE_OBJECT> tebleObservableList) {
+        table.setItems(tebleObservableList);
     }
 }

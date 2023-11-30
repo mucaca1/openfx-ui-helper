@@ -40,7 +40,7 @@ public class TableViewComponent<V> extends TableView<V> {
         getColumns().clear();
         List<ColumnData> columnData = TableHelper.getColumnIdAndTranslateKey(tableObject, viewType, descriptor);
         for (ColumnData data : columnData) {
-            String columnName = data.getColumnName();
+            String columnName = data.getId();
             if (resourceBundleService != null) {
                 columnName = resourceBundleService.translate(data.getColumnName());
             }
