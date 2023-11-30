@@ -18,15 +18,12 @@ import java.util.ResourceBundle;
 public class BasicEditorUi<TABLE_OBJECT> {
 
     private VBox rootPane;
-    private BorderPane leftBorderPane;
     private AnchorPane anchorPane;
     private TableViewComponent<TABLE_OBJECT> table;
     private ButtonBar tableButtonBar;
-    private ScrollPane leftScrollPane;
-
     private ResourceBundleService resourceBundle;
 
-    public BasicEditorUi(Class tableObjectClass,
+    public BasicEditorUi(Class<TABLE_OBJECT> tableObjectClass,
                          ViewType viewType,
                          String tableDescriptor,
                          ResourceBundleService resourceBundle,
@@ -46,16 +43,12 @@ public class BasicEditorUi<TABLE_OBJECT> {
 
         this.resourceBundle = resourceBundle;
 
-
-        SplitPane splitPane = new SplitPane();
-        splitPane.setDividerPositions(0.55d);
-
         // Init main component table.
         AnchorPane anchorPaneLeft = new AnchorPane();
         anchorPaneLeft.setMinHeight(0.0);
         anchorPaneLeft.setMinWidth(0.0);
 
-        leftBorderPane = new BorderPane();
+        BorderPane leftBorderPane = new BorderPane();
         AnchorPane.setBottomAnchor(leftBorderPane, 0.0d);
         AnchorPane.setLeftAnchor(leftBorderPane, 0.0d);
         AnchorPane.setRightAnchor(leftBorderPane, 0.0d);
@@ -69,8 +62,7 @@ public class BasicEditorUi<TABLE_OBJECT> {
 
         rootPane.getChildren().add(anchorPane);
 
-
-        leftScrollPane = new ScrollPane();
+        ScrollPane leftScrollPane = new ScrollPane();
         tableButtonBar = new ButtonBar();
         table = new TableViewComponent(this.resourceBundle);
         leftScrollPane.setContent(table);
