@@ -17,61 +17,12 @@ public class BasicEditorUi<TABLE_OBJECT> {
 
     private VBox rootPane;
     private BorderPane leftBorderPane;
-    private BorderPane rightBorderPane;
     private AnchorPane anchorPane;
     private TableViewComponent<TABLE_OBJECT> table;
     private ButtonBar tableButtonBar;
-    private ButtonBar formButtonBar;
     private ScrollPane leftScrollPane;
-    private ScrollPane rightScrollPane;
 
-    // Initialise settings
-    private ViewType viewType;
-    private String tableDescriptor;
-
-    /**
-     * Builder class for BasicEditorUi
-     * @param <TABLE_OBJECT>
-     */
-    public static class BasicEditorUIBuilder<TABLE_OBJECT> {
-        private Class<TABLE_OBJECT> tableObjectClass;
-        private ViewType viewType;
-        private String tableDescriptor;
-        private boolean initForm;
-
-        public BasicEditorUIBuilder(Class<TABLE_OBJECT> tableObjectClass) {
-            this.tableObjectClass = tableObjectClass;
-            viewType = ViewType.Default;
-            tableDescriptor = "";
-            initForm = false;
-        }
-
-        public BasicEditorUIBuilder<TABLE_OBJECT> setViewType(ViewType viewType) {
-            this.viewType = viewType;
-            return this;
-        }
-
-        public BasicEditorUIBuilder<TABLE_OBJECT> setTableDescriptor(String tableDescriptor) {
-            this.tableDescriptor = tableDescriptor;
-            return this;
-        }
-
-        public BasicEditorUIBuilder<TABLE_OBJECT> setInitForm(boolean initForm) {
-            this.initForm = initForm;
-            return this;
-        }
-
-        public BasicEditorUi<TABLE_OBJECT> build() {
-            BasicEditorUi<TABLE_OBJECT> basicEditor = new BasicEditorUi<TABLE_OBJECT>();
-            basicEditor.init(this, tableObjectClass);
-            return basicEditor;
-        }
-
-    }
-
-    public BasicEditorUi() {}
-
-    public void init(BasicEditorUIBuilder<TABLE_OBJECT> builder, Class<TABLE_OBJECT> tableObjectClass) {
+    public BasicEditorUi(Class tableObjectClass, ViewType viewType, String tableDescriptor) {
         {
             rootPane = new VBox();
             rootPane.setAlignment(Pos.CENTER);
@@ -102,32 +53,9 @@ public class BasicEditorUi<TABLE_OBJECT> {
 
         anchorPaneLeft.getChildren().add(leftBorderPane);
 
-        if (builder.initForm) {
-            AnchorPane anchorPaneRight = new AnchorPane();
-            anchorPaneRight.setMinHeight(0.0);
-            anchorPaneRight.setMinWidth(0.0);
 
-            rightBorderPane = new BorderPane();
-            AnchorPane.setBottomAnchor(rightBorderPane, 0.0d);
-            AnchorPane.setLeftAnchor(rightBorderPane, 0.0d);
-            AnchorPane.setRightAnchor(rightBorderPane, 0.0d);
-            AnchorPane.setTopAnchor(rightBorderPane, 0.0d);
+        anchorPane.getChildren().add(anchorPaneLeft);
 
-
-
-            anchorPaneRight.getChildren().add(rightBorderPane);
-            splitPane.getItems().addAll(anchorPaneLeft, anchorPaneRight);
-            anchorPane.getChildren().add(splitPane);
-
-            rightScrollPane = new ScrollPane();
-
-            formButtonBar = new ButtonBar();
-
-            rightBorderPane.setCenter(rightScrollPane);
-            rightBorderPane.setBottom(formButtonBar);
-        } else {
-            anchorPane.getChildren().add(anchorPaneLeft);
-        }
 
         rootPane.getChildren().add(anchorPane);
 
@@ -139,7 +67,7 @@ public class BasicEditorUi<TABLE_OBJECT> {
         leftBorderPane.setCenter(leftScrollPane);
         leftBorderPane.setBottom(tableButtonBar);
 
-        table.initialize(tableObjectClass, builder.viewType, builder.tableDescriptor);
+        table.initialize(tableObjectClass, viewType, tableDescriptor);
     }
 
     public VBox getRootPane() {

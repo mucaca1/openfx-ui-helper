@@ -25,7 +25,7 @@ public abstract class EditorController<B, T> {
     private boolean enableSearch = false;
 
     public EditorController() throws IOException {
-        form = new BasicEditorUi();
+//        form = new BasicEditorUi();
         businessToEntityMap = new HashMap<>();
 
         initialiseTableListeners();
