@@ -9,24 +9,69 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.bh.uifxhelpercore.table.TableViewComponent;
+import org.bh.uifxhelpercore.table.ViewType;
 
-public class BasicEditorUi {
+import javax.swing.text.View;
+
+public class BasicEditorUi<TABLE_OBJECT> {
 
     private VBox rootPane;
     private BorderPane leftBorderPane;
     private BorderPane rightBorderPane;
     private AnchorPane anchorPane;
-    private TableViewComponent table;
+    private TableViewComponent<TABLE_OBJECT> table;
     private ButtonBar tableButtonBar;
     private ButtonBar formButtonBar;
     private ScrollPane leftScrollPane;
     private ScrollPane rightScrollPane;
 
-    public BasicEditorUi() {
-        this(false);
+    // Initialise settings
+    private ViewType viewType;
+    private String tableDescriptor;
+
+    /**
+     * Builder class for BasicEditorUi
+     * @param <TABLE_OBJECT>
+     */
+    public static class BasicEditorUIBuilder<TABLE_OBJECT> {
+        private Class<TABLE_OBJECT> tableObjectClass;
+        private ViewType viewType;
+        private String tableDescriptor;
+        private boolean initForm;
+
+        public BasicEditorUIBuilder(Class<TABLE_OBJECT> tableObjectClass) {
+            this.tableObjectClass = tableObjectClass;
+            viewType = ViewType.Default;
+            tableDescriptor = "";
+            initForm = false;
+        }
+
+        public BasicEditorUIBuilder<TABLE_OBJECT> setViewType(ViewType viewType) {
+            this.viewType = viewType;
+            return this;
+        }
+
+        public BasicEditorUIBuilder<TABLE_OBJECT> setTableDescriptor(String tableDescriptor) {
+            this.tableDescriptor = tableDescriptor;
+            return this;
+        }
+
+        public BasicEditorUIBuilder<TABLE_OBJECT> setInitForm(boolean initForm) {
+            this.initForm = initForm;
+            return this;
+        }
+
+        public BasicEditorUi<TABLE_OBJECT> build() {
+            BasicEditorUi<TABLE_OBJECT> basicEditor = new BasicEditorUi<TABLE_OBJECT>();
+            basicEditor.init(this, tableObjectClass);
+            return basicEditor;
+        }
+
     }
 
-    public BasicEditorUi(boolean initForm) {
+    public BasicEditorUi() {}
+
+    public void init(BasicEditorUIBuilder<TABLE_OBJECT> builder, Class<TABLE_OBJECT> tableObjectClass) {
         {
             rootPane = new VBox();
             rootPane.setAlignment(Pos.CENTER);
@@ -57,7 +102,7 @@ public class BasicEditorUi {
 
         anchorPaneLeft.getChildren().add(leftBorderPane);
 
-        if (initForm) {
+        if (builder.initForm) {
             AnchorPane anchorPaneRight = new AnchorPane();
             anchorPaneRight.setMinHeight(0.0);
             anchorPaneRight.setMinWidth(0.0);
@@ -94,14 +139,7 @@ public class BasicEditorUi {
         leftBorderPane.setCenter(leftScrollPane);
         leftBorderPane.setBottom(tableButtonBar);
 
-    }
-
-    public BorderPane getLeftBorderPane() {
-        return leftBorderPane;
-    }
-
-    public BorderPane getRightBorderPane() {
-        return rightBorderPane;
+        table.initialize(tableObjectClass, builder.viewType, builder.tableDescriptor);
     }
 
     public VBox getRootPane() {
@@ -110,25 +148,5 @@ public class BasicEditorUi {
 
     public TableViewComponent getTable() {
         return table;
-    }
-
-    public ButtonBar getTableButtonBar() {
-        return tableButtonBar;
-    }
-
-    public ButtonBar getFormButtonBar() {
-        return formButtonBar;
-    }
-
-    public ScrollPane getLeftScrollPane() {
-        return leftScrollPane;
-    }
-
-    public AnchorPane getAnchorPane() {
-        return anchorPane;
-    }
-
-    public ScrollPane getRightScrollPane() {
-        return rightScrollPane;
     }
 }

@@ -16,7 +16,10 @@ public class DemoController {
     public void init() {
         ScrollPane scrollPane = new ScrollPane();
 
-        BasicEditorUi basicEditor = new BasicEditorUi(true);
+        BasicEditorUi<Person> basicEditor = new BasicEditorUi
+                .BasicEditorUIBuilder<Person>(Person.class)
+                .setInitForm(true)
+                .build();
         scrollPane.setContent(basicEditor.getRootPane());
         basicFormWithSplitPane.setContent(scrollPane);
     }
