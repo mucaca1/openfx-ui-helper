@@ -14,12 +14,14 @@ public class BasicEditorUIBuilder<TABLE_OBJECT> {
     private ViewType viewType;
     private String tableDescriptor;
     private ResourceBundleService resourceBundle;
+    private boolean multiSelection;
 
     public BasicEditorUIBuilder(Class<TABLE_OBJECT> tableObjectClass) {
         this.tableObjectClass = tableObjectClass;
         viewType = ViewType.Default;
         tableDescriptor = "";
         resourceBundle = null;
+        multiSelection = false;
     }
 
     public BasicEditorUIBuilder<TABLE_OBJECT> setViewType(ViewType viewType) {
@@ -37,8 +39,17 @@ public class BasicEditorUIBuilder<TABLE_OBJECT> {
         return this;
     }
 
+    public BasicEditorUIBuilder<TABLE_OBJECT> setMultiSelection(boolean multiSelection) {
+        this.multiSelection = multiSelection;
+        return this;
+    }
+
     public BasicEditorUi<TABLE_OBJECT> build() {
-        return new BasicEditorUi<TABLE_OBJECT>(tableObjectClass, viewType, tableDescriptor, resourceBundle);
+        return new BasicEditorUi<TABLE_OBJECT>(tableObjectClass,
+                viewType,
+                tableDescriptor,
+                resourceBundle,
+                multiSelection);
     }
 
 

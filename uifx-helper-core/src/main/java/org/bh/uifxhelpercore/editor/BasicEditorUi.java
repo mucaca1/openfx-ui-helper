@@ -26,7 +26,11 @@ public class BasicEditorUi<TABLE_OBJECT> {
 
     private ResourceBundleService resourceBundle;
 
-    public BasicEditorUi(Class tableObjectClass, ViewType viewType, String tableDescriptor, ResourceBundleService resourceBundle) {
+    public BasicEditorUi(Class tableObjectClass,
+                         ViewType viewType,
+                         String tableDescriptor,
+                         ResourceBundleService resourceBundle,
+                         boolean multiSelection) {
         {
             rootPane = new VBox();
             rootPane.setAlignment(Pos.CENTER);
@@ -73,6 +77,7 @@ public class BasicEditorUi<TABLE_OBJECT> {
         leftBorderPane.setCenter(leftScrollPane);
         leftBorderPane.setBottom(tableButtonBar);
 
+        table.enableMultiSelection(multiSelection);
         table.initialize(tableObjectClass, viewType, tableDescriptor);
     }
 

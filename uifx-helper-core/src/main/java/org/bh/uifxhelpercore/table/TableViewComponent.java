@@ -6,6 +6,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -62,6 +63,14 @@ public class TableViewComponent<V> extends TableView<V> {
             column.setCellValueFactory(new PropertyValueFactory<>(data.getId()));
 
             getColumns().add(column);
+        }
+    }
+
+    public void enableMultiSelection(boolean multiSelection) {
+        if (multiSelection) {
+            getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        } else {
+            getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         }
     }
 
