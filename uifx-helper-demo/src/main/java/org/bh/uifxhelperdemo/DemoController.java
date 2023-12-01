@@ -8,6 +8,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import org.bh.uifxhelpercore.editor.BasicEditorUIBuilder;
 import org.bh.uifxhelpercore.editor.BasicEditorUi;
+import org.bh.uifxhelpercore.form.FormWrapper;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -20,6 +21,7 @@ public class DemoController {
     private Tab basicEditorWithFormPane;
 
     private ResourceBundleService resourceBundleTables = new ResourceBundleService(ResourceBundle.getBundle("Tables", new Locale("en")));
+    private ResourceBundleService resourceBundleForm = new ResourceBundleService(ResourceBundle.getBundle("Form", new Locale("en")));
 
     @FXML
     public void init() {
@@ -30,16 +32,22 @@ public class DemoController {
         BasicEditorUi<Person> basicEditor = new BasicEditorUIBuilder<Person>(Person.class)
                 .setResourceBundle(resourceBundleTables)
                 .build();
-        basicEditor.setTableData(FXCollections.observableList(DemoData.getRandomPerson(5)));
-        scrollPane.setContent(basicEditor.getRootPane());
-        basicFormWithSplitPane.setContent(scrollPane);
+//        basicEditor.setTableData(FXCollections.observableList(DemoData.getRandomPerson(5)));
+//        scrollPane.setContent(basicEditor.getRootPane());
+//        basicFormWithSplitPane.setContent(scrollPane);
+
+        FormWrapper formWrapper = new FormWrapper(resourceBundleForm);
+        formWrapper.buildDynamicForm(Person.class);
+        basicFormWithSplitPane.setContent(formWrapper.getFormRenderer());
     }
 
     public void setEnLanguage(ActionEvent actionEvent) {
         resourceBundleTables.changeLocale(ResourceBundle.getBundle("Tables", new Locale("en")));
+        resourceBundleForm.changeLocale(ResourceBundle.getBundle("Form", new Locale("en")));
     }
 
     public void setSkLanguage(ActionEvent actionEvent) {
         resourceBundleTables.changeLocale(ResourceBundle.getBundle("Tables", new Locale("sk")));
+        resourceBundleForm.changeLocale(ResourceBundle.getBundle("Form", new Locale("sk")));
     }
 }

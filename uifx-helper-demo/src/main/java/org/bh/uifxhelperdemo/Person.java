@@ -1,5 +1,7 @@
 package org.bh.uifxhelperdemo;
 
+import org.bh.uifxhelpercore.form.FieldType;
+import org.bh.uifxhelpercore.form.FormField;
 import org.bh.uifxhelpercore.table.TableColumn;
 import org.bh.uifxhelpercore.table.TableObject;
 
@@ -8,9 +10,11 @@ public class Person {
 
 
     @TableColumn
+    @FormField(type = FieldType.STRING)
     private String name;
 
     @TableColumn
+    @FormField(type = FieldType.INTEGER)
     private Integer age;
 
     private boolean deleted;

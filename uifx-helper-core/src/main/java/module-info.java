@@ -9,4 +9,6 @@ module org.bh.uifxhelpercore {
     exports org.bh.uifxhelpercore;
     exports org.bh.uifxhelpercore.table;
     exports org.bh.uifxhelpercore.editor;
+    exports org.bh.uifxhelpercore.form;
+    opens org.bh.uifxhelpercore.form to javafx.fxml;
 }
