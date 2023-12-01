@@ -16,8 +16,11 @@ import java.util.ResourceBundle;
 
 public class DemoController {
     @FXML
+    public Tab dynamicTablePane;
+    @FXML
+    public Tab dynamicFormTablePane;
+    @FXML
     private Tab basicFormWithSplitPane;
-
     @FXML
     private Tab basicEditorWithFormPane;
 
@@ -30,18 +33,22 @@ public class DemoController {
     @FXML
     public void init() {
 
-        ScrollPane scrollPane = new ScrollPane();
+        // Init dynamic table
+        {
+            BasicEditorUi<Person> basicEditor = new BasicEditorUIBuilder<Person>(Person.class)
+                    .setResourceBundle(resourceBundleTables)
+                    .build();
+            ScrollPane scrollPane = new ScrollPane();
+            basicEditor.setTableData(FXCollections.observableList(DemoData.getRandomPerson(5)));
+            scrollPane.setContent(basicEditor.getRootPane());
+            dynamicTablePane.setContent(scrollPane);
+        }
 
-
-        BasicEditorUi<Person> basicEditor = new BasicEditorUIBuilder<Person>(Person.class)
-                .setResourceBundle(resourceBundleTables)
-                .build();
-//        basicEditor.setTableData(FXCollections.observableList(DemoData.getRandomPerson(5)));
-//        scrollPane.setContent(basicEditor.getRootPane());
-//        basicFormWithSplitPane.setContent(scrollPane);
-
-        formWrapper = new DynamicFormWrapper<Person>(resourceBundleForm, Person.class);
-        basicFormWithSplitPane.setContent(formWrapper.getFormRenderer());
+        // Init dynamic form
+        {
+            formWrapper = new DynamicFormWrapper<Person>(resourceBundleForm, Person.class);
+            dynamicFormTablePane.setContent(formWrapper.getFormRenderer());
+        }
     }
 
     public void setEnLanguage(ActionEvent actionEvent) {

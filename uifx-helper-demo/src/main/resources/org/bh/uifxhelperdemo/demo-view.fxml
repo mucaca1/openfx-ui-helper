@@ -13,6 +13,8 @@
          <center>
             <TabPane prefHeight="499.0" prefWidth="619.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
+                <Tab fx:id="dynamicTablePane" text="Dynamic table " />
+                <Tab fx:id="dynamicFormTablePane" text="Dynamic form " />
                 <Tab fx:id="basicFormWithSplitPane" text="Basic Splitted " />
                 <Tab fx:id="basicEditorWithFormPane" text="Basic Table / Editor view" />
               </tabs>
