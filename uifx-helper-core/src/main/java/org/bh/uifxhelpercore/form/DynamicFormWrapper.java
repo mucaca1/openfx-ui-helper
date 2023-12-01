@@ -27,7 +27,7 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
             formTitle = formData.formTitle();
         }
         form = Form.of(
-                formDynamicData.getGroupOfDynamicData()
+                formDynamicData.getGroupOfDynamicData(formObject.getDeclaredFields())
         ).title(formTitle).i18n(resourceBundleService);
 
         buildForm();

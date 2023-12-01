@@ -57,16 +57,21 @@ public class FormDynamicData {
         }
     }
 
-    public Group getGroupOfDynamicData() {
+    public Group getGroupOfDynamicData(java.lang.reflect.Field[] fields) {
         List<Element<?>> elements = new ArrayList<>();
-
-        data.forEach((fieldName, property) -> {
+        for (java.lang.reflect.Field field : fields) {
+            if (!data.containsKey(field.getName())) {
+                continue;
+            }
+            ObservableValue<?> property = data.get(field.getName());
+            FormField formField = field.getAnnotation(FormField.class);
+            String fieldName = formField.fieldName().isBlank() ? field.getName() : formField.fieldName();
             if (property instanceof SimpleStringProperty) {
                 elements.add(Field.ofStringType((StringProperty) property).label(fieldName));
             } else if (property instanceof SimpleIntegerProperty) {
                 elements.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldName));
             }
-        });
+        }
 
         return Group.of(
                 elements.toArray(new Element[0])
