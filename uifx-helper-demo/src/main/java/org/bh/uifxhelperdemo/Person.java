@@ -29,6 +29,11 @@ public class Person {
         deleted = false;
     }
 
+    @Override
+    public String toString() {
+        return "Person: [name=" + name + ", age=" + age + ", deleted=" + deleted + "]";
+    }
+
     public String getName() {
         return name;
     }

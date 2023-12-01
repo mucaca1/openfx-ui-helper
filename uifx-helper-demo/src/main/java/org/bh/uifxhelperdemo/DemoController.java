@@ -8,6 +8,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import org.bh.uifxhelpercore.editor.BasicEditorUIBuilder;
 import org.bh.uifxhelpercore.editor.BasicEditorUi;
+import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.form.FormWrapper;
 
 import java.util.Locale;
@@ -20,8 +21,11 @@ public class DemoController {
     @FXML
     private Tab basicEditorWithFormPane;
 
+    // Data
     private ResourceBundleService resourceBundleTables = new ResourceBundleService(ResourceBundle.getBundle("Tables", new Locale("en")));
     private ResourceBundleService resourceBundleForm = new ResourceBundleService(ResourceBundle.getBundle("Form", new Locale("en")));
+
+    DynamicFormWrapper<Person> formWrapper;
 
     @FXML
     public void init() {
@@ -36,8 +40,7 @@ public class DemoController {
 //        scrollPane.setContent(basicEditor.getRootPane());
 //        basicFormWithSplitPane.setContent(scrollPane);
 
-        FormWrapper formWrapper = new FormWrapper(resourceBundleForm);
-        formWrapper.buildDynamicForm(Person.class);
+        formWrapper = new DynamicFormWrapper<Person>(resourceBundleForm, Person.class);
         basicFormWithSplitPane.setContent(formWrapper.getFormRenderer());
     }
 
@@ -49,5 +52,9 @@ public class DemoController {
     public void setSkLanguage(ActionEvent actionEvent) {
         resourceBundleTables.changeLocale(ResourceBundle.getBundle("Tables", new Locale("sk")));
         resourceBundleForm.changeLocale(ResourceBundle.getBundle("Form", new Locale("sk")));
+    }
+
+    public void okActon(ActionEvent actionEvent) {
+        System.out.println(formWrapper.getObjectFromForm());
     }
 }

@@ -3,13 +3,12 @@ package org.bh.uifxhelpercore.form;
 import com.dlsc.formsfx.model.structure.Element;
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Group;
-import com.dlsc.formsfx.model.structure.Section;
-import javafx.beans.property.*;
-import javafx.beans.value.ObservableObjectValue;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
-import org.bh.uifxhelpercore.table.TableColumn;
 
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,20 +31,11 @@ public class FormDynamicData {
             if (data.containsKey(field.getName())) {
                 continue;
             }
-            ObservableValue<?> property = null;
+            ObservableValue<?> property = switch (formField.type()) {
+                case STRING -> new SimpleStringProperty("");
+                case INTEGER -> new SimpleIntegerProperty(0);
+            };
 
-            switch (formField.type()) {
-                case STRING:
-                    property = new SimpleStringProperty("");
-                    break;
-                case INTEGER:
-                    property = new SimpleIntegerProperty(0);
-                    break;
-            }
-
-            if (property == null) {
-                continue;
-            }
             data.put(field.getName(), property);
         }
     }
