@@ -54,4 +54,22 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void setFormDataFromObject(T object) {
+        for (Field declaredField : formClass.getDeclaredFields()) {
+            FormField formField = declaredField.getAnnotation(FormField.class);
+            if (formField == null) {
+                continue;
+            }
+            Method getter = null;
+            try {
+                getter = formClass.getMethod("get" + declaredField.getName().substring(0, 1).toUpperCase() + declaredField.getName().substring(1));
+                Object value = getter.invoke(object);
+                formDynamicData.setValueOfField(declaredField.getName(), value);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

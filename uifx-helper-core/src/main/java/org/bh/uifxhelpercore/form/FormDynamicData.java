@@ -63,6 +63,15 @@ public class FormDynamicData {
         );
     }
 
+    public void setValueOfField(String fieldName, Object value) {
+        ObservableValue<?> observableValue = data.get(fieldName);
+        if (observableValue instanceof SimpleStringProperty) {
+            ((SimpleStringProperty) observableValue).set((String) value);
+        } else if (observableValue instanceof SimpleIntegerProperty) {
+            ((SimpleIntegerProperty) observableValue).set((Integer) value);
+        }
+    }
+
     public Object getValueOfField(String fieldName) {
         ObservableValue<?> observableValue = data.get(fieldName);
         if (observableValue instanceof SimpleStringProperty) {

@@ -1,13 +1,12 @@
 package org.bh.uifxhelpercore.editor;
 
 import com.dlsc.formsfx.model.util.ResourceBundleService;
-import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
@@ -16,8 +15,6 @@ import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.form.FormWrapper;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
-
-import java.util.ResourceBundle;
 
 public class BasicEditorUi<TABLE_OBJECT> {
 
@@ -83,12 +80,44 @@ public class BasicEditorUi<TABLE_OBJECT> {
 
         // Initialize buttons
         {
+            // todo make this button dynamic.
+            // todo add resource for buttons
             Button createBtn = new Button("Create");
             Button updateBtn = new Button("Update");
             Button deleteBtn = new Button("Delete");
             tableButtonBar.getButtons().addAll(createBtn, updateBtn, deleteBtn);
 
+            createBtn.addEventHandler(ActionEvent.ACTION, event -> {
+                BaseDialog baseDialog = new BaseDialog();
+                baseDialog.setContent(formWrapper.getFormRenderer());
+                baseDialog.showAndWait();
 
+                if (baseDialog.isOkFlag()) {
+                    TABLE_OBJECT newObject = formWrapper.getObjectFromForm();
+                    table.getItems().add(newObject);
+                    table.refresh();
+                }
+            });
+
+            updateBtn.addEventHandler(ActionEvent.ACTION, event -> {
+                BaseDialog baseDialog = new BaseDialog();
+                TABLE_OBJECT selectedObject = table.getSelectionModel().getSelectedItem();
+                formWrapper.setFormDataFromObject(selectedObject);
+                baseDialog.setContent(formWrapper.getFormRenderer());
+                baseDialog.showAndWait();
+
+                if (baseDialog.isOkFlag()) {
+                    int index = table.getSelectionModel().getSelectedIndex();
+                    table.getItems().remove(table.getSelectionModel().getSelectedItem());
+                    TABLE_OBJECT newObject = formWrapper.getObjectFromForm();
+                    table.getItems().add(index, newObject);
+                    table.refresh();
+                }
+            });
+
+            deleteBtn.addEventHandler(ActionEvent.ACTION, event -> {
+                table.getItems().remove(table.getSelectionModel().getSelectedItem());
+            });
         }
     }
 

@@ -31,5 +31,6 @@ public abstract class FormWrapper<T> {
     }
 
     public abstract T getObjectFromForm();
+    public abstract void setFormDataFromObject(T object);
 
 }
