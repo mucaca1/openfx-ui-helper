@@ -24,9 +24,15 @@ public class FormWrapper {
 
     public void buildDynamicForm(Class<?> formObject) {
         formDynamicData.parseFormObjectAsFields(formObject);
+
+        FormObject formData = formObject.getAnnotation(FormObject.class);
+        String formTitle = "form_label";
+        if (formData != null) {
+            formTitle = formData.formTitle();
+        }
         form = Form.of(
                 formDynamicData.getGroupOfDynamicData()
-        ).title("form_label").i18n(resourceBundleService);
+        ).title(formTitle).i18n(resourceBundleService);
 
         buildForm();
     }

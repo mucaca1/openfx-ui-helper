@@ -2,10 +2,12 @@ package org.bh.uifxhelperdemo;
 
 import org.bh.uifxhelpercore.form.FieldType;
 import org.bh.uifxhelpercore.form.FormField;
+import org.bh.uifxhelpercore.form.FormObject;
 import org.bh.uifxhelpercore.table.TableColumn;
 import org.bh.uifxhelpercore.table.TableObject;
 
 @TableObject
+@FormObject(formTitle = "form_title")
 public class Person {
 
 
