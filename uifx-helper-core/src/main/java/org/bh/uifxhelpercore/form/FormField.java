@@ -11,4 +11,8 @@ public @interface FormField {
 
     FieldType type();
 
+    String getter() default "";
+
+    String setter() default "";
+
 }

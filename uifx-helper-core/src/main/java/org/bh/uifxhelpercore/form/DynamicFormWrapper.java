@@ -45,7 +45,11 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
                     continue;
                 }
                 Object value = formDynamicData.getValueOfField(declaredField.getName());
-                Method setter = formClass.getMethod("set" + declaredField.getName().substring(0, 1).toUpperCase() + declaredField.getName().substring(1), declaredField.getType());
+                Method setter =
+                        formClass.getMethod(
+                                formField.setter().isBlank() ?
+                                "set" + declaredField.getName().substring(0, 1).toUpperCase() + declaredField.getName().substring(1)
+                                : formField.setter(), declaredField.getType());
                 setter.invoke(result, value);
             }
 
@@ -64,7 +68,10 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
             }
             Method getter = null;
             try {
-                getter = formClass.getMethod("get" + declaredField.getName().substring(0, 1).toUpperCase() + declaredField.getName().substring(1));
+                getter = formClass.getMethod(
+                        formField.getter().isBlank() ?
+                        "get" + declaredField.getName().substring(0, 1).toUpperCase() + declaredField.getName().substring(1)
+                        : formField.getter());
                 Object value = getter.invoke(object);
                 formDynamicData.setValueOfField(declaredField.getName(), value);
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
