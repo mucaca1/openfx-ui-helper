@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bh.uifxhelperdemo.DemoController">
+<VBox alignment="CENTER" prefHeight="430.0" prefWidth="619.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.bh.uifxhelperdemo.DemoController">
    <children>
-      <TabPane tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab fx:id="basicFormWithSplitPane" text="Basic Splitted " />
-          <Tab fx:id="basicEditorWithFormPane" text="Basic Table / Editor view" />
-        </tabs>
-      </TabPane>
+      <BorderPane>
+         <center>
+            <TabPane prefHeight="499.0" prefWidth="619.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab fx:id="basicFormWithSplitPane" text="Basic Splitted " />
+                <Tab fx:id="basicEditorWithFormPane" text="Basic Table / Editor view" />
+              </tabs>
+            </TabPane>
+         </center>
+         <top>
+            <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+              <buttons>
+                <Button mnemonicParsing="false" onAction="#setEnLanguage" text="EN" />
+                  <Button mnemonicParsing="false" onAction="#setSkLanguage" text="SK" />
+              </buttons>
+            </ButtonBar>
+         </top>
+      </BorderPane>
    </children>
 </VBox>

@@ -38,8 +38,17 @@ public class TableViewComponent<V> extends TableView<V> {
     }
 
     public void initialize(Class<V> tableObject, ViewType viewType, String descriptor) {
-        getColumns().clear();
         List<ColumnData> columnData = TableHelper.getColumnIdAndTranslateKey(tableObject, viewType, descriptor);
+        recreateColumns(columnData);
+        if (resourceBundleService != null) {
+            resourceBundleService.addListener(() -> {
+                recreateColumns(TableHelper.getColumnIdAndTranslateKey(tableObject, viewType, descriptor));
+            });
+        }
+    }
+
+    private void recreateColumns(List<ColumnData> columnData) {
+        getColumns().clear();
         for (ColumnData data : columnData) {
             String columnName = data.getId();
             if (resourceBundleService != null) {
