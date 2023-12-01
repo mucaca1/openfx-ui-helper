@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class DynamicFormWrapper<T> extends FormWrapper {
+public class DynamicFormWrapper<T> extends FormWrapper<T> {
 
     private Class<T> formClass;
 
@@ -22,7 +22,7 @@ public class DynamicFormWrapper<T> extends FormWrapper {
         formDynamicData.parseFormObjectAsFields(formObject);
 
         FormObject formData = formObject.getAnnotation(FormObject.class);
-        String formTitle = "form_label";
+        String formTitle = "form_title";
         if (formData != null) {
             formTitle = formData.formTitle();
         }
@@ -33,6 +33,7 @@ public class DynamicFormWrapper<T> extends FormWrapper {
         buildForm();
     }
 
+    @Override
     public T getObjectFromForm() {
         try {
             form.persist();
@@ -49,13 +50,7 @@ public class DynamicFormWrapper<T> extends FormWrapper {
             }
 
             return result;
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }

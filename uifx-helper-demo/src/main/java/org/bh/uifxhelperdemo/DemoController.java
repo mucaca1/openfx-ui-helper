@@ -6,10 +6,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
-import org.bh.uifxhelpercore.editor.BasicEditorUIBuilder;
 import org.bh.uifxhelpercore.editor.BasicEditorUi;
+import org.bh.uifxhelpercore.editor.builder.BasicEditorUIBuilder;
 import org.bh.uifxhelpercore.form.DynamicFormWrapper;
-import org.bh.uifxhelpercore.form.FormWrapper;
+import org.bh.uifxhelpercore.table.TableViewComponent;
+import org.bh.uifxhelpercore.table.ViewType;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -35,19 +36,35 @@ public class DemoController {
 
         // Init dynamic table
         {
-            BasicEditorUi<Person> basicEditor = new BasicEditorUIBuilder<Person>(Person.class)
-                    .setResourceBundle(resourceBundleTables)
-                    .build();
-            ScrollPane scrollPane = new ScrollPane();
-            basicEditor.setTableData(FXCollections.observableList(DemoData.getRandomPerson(5)));
-            scrollPane.setContent(basicEditor.getRootPane());
-            dynamicTablePane.setContent(scrollPane);
+            TableViewComponent<Person> tableViewComponent = new TableViewComponent<>(resourceBundleTables);
+            tableViewComponent.initialize(Person.class, ViewType.Default);
+            tableViewComponent.setItems(FXCollections.observableList(DemoData.getRandomPerson(5)));
+
+            dynamicTablePane.setContent(tableViewComponent);
         }
 
         // Init dynamic form
         {
             formWrapper = new DynamicFormWrapper<Person>(resourceBundleForm, Person.class);
             dynamicFormTablePane.setContent(formWrapper.getFormRenderer());
+        }
+
+        // Init table and form
+        {
+            // todo create table with form
+        }
+
+        // Init table and pop-up form
+        {
+            BasicEditorUi<Person> basicEditor = new BasicEditorUIBuilder<Person>(Person.class)
+                    .setTableResourceBundle(resourceBundleTables)
+                    .setFormResourceBundle(resourceBundleForm)
+                    .setInitFormDynamic(true)
+                    .build();
+            ScrollPane scrollPane = new ScrollPane();
+            basicEditor.setTableData(FXCollections.observableList(DemoData.getRandomPerson(5)));
+            scrollPane.setContent(basicEditor.getRootPane());
+            basicEditorWithFormPane.setContent(scrollPane);
         }
     }
 

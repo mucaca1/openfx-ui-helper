@@ -5,7 +5,7 @@ import com.dlsc.formsfx.model.util.ResourceBundleService;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
 import org.bh.uifxhelpercore.FormsFxHelper;
 
-public class FormWrapper {
+public abstract class FormWrapper<T> {
 
     protected Form form;
     private FormRenderer formRenderer;
@@ -29,5 +29,7 @@ public class FormWrapper {
     public FormRenderer getFormRenderer() {
         return formRenderer;
     }
+
+    public abstract T getObjectFromForm();
 
 }

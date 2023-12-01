@@ -1,9 +1,8 @@
-package org.bh.uifxhelpercore.editor;
+package org.bh.uifxhelpercore.editor.builder;
 
 import com.dlsc.formsfx.model.util.ResourceBundleService;
+import org.bh.uifxhelpercore.editor.BasicEditorUi;
 import org.bh.uifxhelpercore.table.ViewType;
-
-import java.util.ResourceBundle;
 
 /**
  * Builder class for BasicEditorUi
@@ -13,15 +12,25 @@ public class BasicEditorUIBuilder<TABLE_OBJECT> {
     private Class<TABLE_OBJECT> tableObjectClass;
     private ViewType viewType;
     private String tableDescriptor;
-    private ResourceBundleService resourceBundle;
+    private ResourceBundleService tableResourceBundle;
+    private ResourceBundleService formResourceBundle;
     private boolean multiSelection;
+
+    private boolean initFormDynamic;
 
     public BasicEditorUIBuilder(Class<TABLE_OBJECT> tableObjectClass) {
         this.tableObjectClass = tableObjectClass;
         viewType = ViewType.Default;
         tableDescriptor = "";
-        resourceBundle = null;
+        tableResourceBundle = null;
+        formResourceBundle = null;
         multiSelection = false;
+        initFormDynamic = false;
+    }
+
+    public BasicEditorUIBuilder<TABLE_OBJECT> setInitFormDynamic(boolean initFormDynamic) {
+        this.initFormDynamic = initFormDynamic;
+        return this;
     }
 
     public BasicEditorUIBuilder<TABLE_OBJECT> setViewType(ViewType viewType) {
@@ -34,8 +43,12 @@ public class BasicEditorUIBuilder<TABLE_OBJECT> {
         return this;
     }
 
-    public BasicEditorUIBuilder<TABLE_OBJECT> setResourceBundle(ResourceBundleService resourceBundle) {
-        this.resourceBundle = resourceBundle;
+    public BasicEditorUIBuilder<TABLE_OBJECT> setTableResourceBundle(ResourceBundleService resourceBundle) {
+        this.tableResourceBundle = resourceBundle;
+        return this;
+    }
+    public BasicEditorUIBuilder<TABLE_OBJECT> setFormResourceBundle(ResourceBundleService resourceBundle) {
+        this.formResourceBundle = resourceBundle;
         return this;
     }
 
@@ -48,8 +61,10 @@ public class BasicEditorUIBuilder<TABLE_OBJECT> {
         return new BasicEditorUi<TABLE_OBJECT>(tableObjectClass,
                 viewType,
                 tableDescriptor,
-                resourceBundle,
-                multiSelection);
+                tableResourceBundle,
+                formResourceBundle,
+                multiSelection,
+                initFormDynamic);
     }
 
 

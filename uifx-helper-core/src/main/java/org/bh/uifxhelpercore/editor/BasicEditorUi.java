@@ -1,8 +1,10 @@
 package org.bh.uifxhelpercore.editor;
 
 import com.dlsc.formsfx.model.util.ResourceBundleService;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
@@ -10,6 +12,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.bh.uifxhelpercore.form.DynamicFormWrapper;
+import org.bh.uifxhelpercore.form.FormWrapper;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
 
@@ -21,13 +25,16 @@ public class BasicEditorUi<TABLE_OBJECT> {
     private AnchorPane anchorPane;
     private TableViewComponent<TABLE_OBJECT> table;
     private ButtonBar tableButtonBar;
-    private ResourceBundleService resourceBundle;
+
+    private FormWrapper<TABLE_OBJECT> formWrapper;
 
     public BasicEditorUi(Class<TABLE_OBJECT> tableObjectClass,
                          ViewType viewType,
                          String tableDescriptor,
-                         ResourceBundleService resourceBundle,
-                         boolean multiSelection) {
+                         ResourceBundleService tableResourceBundle,
+                         ResourceBundleService formResourceBundle,
+                         boolean multiSelection,
+                         boolean initFormDynamic) {
         {
             rootPane = new VBox();
             rootPane.setAlignment(Pos.CENTER);
@@ -40,8 +47,6 @@ public class BasicEditorUi<TABLE_OBJECT> {
             anchorPane.prefWidth(-1d);
             VBox.setVgrow(anchorPane, Priority.ALWAYS);
         }
-
-        this.resourceBundle = resourceBundle;
 
         // Init main component table.
         AnchorPane anchorPaneLeft = new AnchorPane();
@@ -64,13 +69,27 @@ public class BasicEditorUi<TABLE_OBJECT> {
 
         ScrollPane leftScrollPane = new ScrollPane();
         tableButtonBar = new ButtonBar();
-        table = new TableViewComponent(this.resourceBundle);
+        table = new TableViewComponent(tableResourceBundle);
         leftScrollPane.setContent(table);
         leftBorderPane.setCenter(leftScrollPane);
         leftBorderPane.setBottom(tableButtonBar);
 
         table.enableMultiSelection(multiSelection);
         table.initialize(tableObjectClass, viewType, tableDescriptor);
+
+        if (initFormDynamic) {
+            formWrapper = new DynamicFormWrapper<>(formResourceBundle, tableObjectClass);
+        }
+
+        // Initialize buttons
+        {
+            Button createBtn = new Button("Create");
+            Button updateBtn = new Button("Update");
+            Button deleteBtn = new Button("Delete");
+            tableButtonBar.getButtons().addAll(createBtn, updateBtn, deleteBtn);
+
+
+        }
     }
 
     public VBox getRootPane() {
