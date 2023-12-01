@@ -3,6 +3,7 @@ package org.bh.uifxhelpercore.form;
 import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.formsfx.model.util.ResourceBundleService;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
+import javafx.beans.value.ObservableValue;
 import org.bh.uifxhelpercore.FormsFxHelper;
 
 public abstract class FormWrapper<T> {
@@ -30,7 +31,14 @@ public abstract class FormWrapper<T> {
         return formRenderer;
     }
 
+    public Form getForm() {
+        return form;
+    }
+
     public abstract T getObjectFromForm();
     public abstract void setFormDataFromObject(T object);
 
+    public void clearForm() {
+        formDynamicData.clearData();
+    }
 }

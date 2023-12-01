@@ -51,7 +51,16 @@ public class DemoController {
 
         // Init table and form
         {
-            // todo create table with form
+            BasicEditorUi<Person> basicEditor = new BasicEditorUIBuilder<Person>(Person.class)
+                    .setTableResourceBundle(resourceBundleTables)
+                    .setFormResourceBundle(resourceBundleForm)
+                    .setShowForm(true)
+                    .setInitFormDynamic(true)
+                    .build();
+            ScrollPane scrollPane = new ScrollPane();
+            basicEditor.setTableData(FXCollections.observableList(DemoData.getRandomPerson(5)));
+            scrollPane.setContent(basicEditor.getRootPane());
+            basicFormWithSplitPane.setContent(scrollPane);
         }
 
         // Init table and pop-up form

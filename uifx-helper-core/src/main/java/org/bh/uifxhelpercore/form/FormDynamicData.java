@@ -18,10 +18,13 @@ public class FormDynamicData {
 
     private Map<String, ObservableValue<?>> data;
 
+    private Map<String, Object> initFormData;
+
     private Map<String,FieldTypeValueMapper> valueMappers = new HashMap<>();
 
     public FormDynamicData() {
         data = new HashMap<>();
+        initFormData = new HashMap<>();
     }
 
     public void registerMapper(java.lang.reflect.Field field, FieldTypeValueMapper mapper) {
@@ -44,6 +47,13 @@ public class FormDynamicData {
             };
 
             data.put(field.getName(), property);
+            initFormData.put(field.getName(), property.getValue());
+        }
+    }
+
+    public void clearData() {
+        for (String s : data.keySet()) {
+            setValueOfField(s, initFormData.get(s));
         }
     }
 

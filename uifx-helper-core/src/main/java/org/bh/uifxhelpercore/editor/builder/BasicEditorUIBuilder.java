@@ -18,6 +18,8 @@ public class BasicEditorUIBuilder<TABLE_OBJECT> {
 
     private boolean initFormDynamic;
 
+    private boolean showForm;
+
     public BasicEditorUIBuilder(Class<TABLE_OBJECT> tableObjectClass) {
         this.tableObjectClass = tableObjectClass;
         viewType = ViewType.Default;
@@ -26,6 +28,12 @@ public class BasicEditorUIBuilder<TABLE_OBJECT> {
         formResourceBundle = null;
         multiSelection = false;
         initFormDynamic = false;
+        showForm = false;
+    }
+
+    public BasicEditorUIBuilder<TABLE_OBJECT> setShowForm(boolean showForm) {
+        this.showForm = showForm;
+        return this;
     }
 
     public BasicEditorUIBuilder<TABLE_OBJECT> setInitFormDynamic(boolean initFormDynamic) {
@@ -64,7 +72,8 @@ public class BasicEditorUIBuilder<TABLE_OBJECT> {
                 tableResourceBundle,
                 formResourceBundle,
                 multiSelection,
-                initFormDynamic);
+                initFormDynamic,
+                showForm);
     }
 
 

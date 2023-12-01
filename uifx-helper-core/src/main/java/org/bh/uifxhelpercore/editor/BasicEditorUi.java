@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
@@ -31,7 +32,8 @@ public class BasicEditorUi<TABLE_OBJECT> {
                          ResourceBundleService tableResourceBundle,
                          ResourceBundleService formResourceBundle,
                          boolean multiSelection,
-                         boolean initFormDynamic) {
+                         boolean initFormDynamic,
+                         boolean showForm) {
         {
             rootPane = new VBox();
             rootPane.setAlignment(Pos.CENTER);
@@ -46,30 +48,24 @@ public class BasicEditorUi<TABLE_OBJECT> {
         }
 
         // Init main component table.
-        AnchorPane anchorPaneLeft = new AnchorPane();
-        anchorPaneLeft.setMinHeight(0.0);
-        anchorPaneLeft.setMinWidth(0.0);
+        AnchorPane anchorPaneTable = new AnchorPane();
+        anchorPaneTable.setMinHeight(0.0);
+        anchorPaneTable.setMinWidth(0.0);
 
-        BorderPane leftBorderPane = new BorderPane();
-        AnchorPane.setBottomAnchor(leftBorderPane, 0.0d);
-        AnchorPane.setLeftAnchor(leftBorderPane, 0.0d);
-        AnchorPane.setRightAnchor(leftBorderPane, 0.0d);
-        AnchorPane.setTopAnchor(leftBorderPane, 0.0d);
+        BorderPane tableBorderPane = new BorderPane();
+        AnchorPane.setBottomAnchor(tableBorderPane, 0.0d);
+        AnchorPane.setLeftAnchor(tableBorderPane, 0.0d);
+        AnchorPane.setRightAnchor(tableBorderPane, 0.0d);
+        AnchorPane.setTopAnchor(tableBorderPane, 0.0d);
 
-        anchorPaneLeft.getChildren().add(leftBorderPane);
+        anchorPaneTable.getChildren().add(tableBorderPane);
 
-
-        anchorPane.getChildren().add(anchorPaneLeft);
-
-
-        rootPane.getChildren().add(anchorPane);
-
-        ScrollPane leftScrollPane = new ScrollPane();
+        ScrollPane tableScrollPane = new ScrollPane();
         tableButtonBar = new ButtonBar();
-        table = new TableViewComponent(tableResourceBundle);
-        leftScrollPane.setContent(table);
-        leftBorderPane.setCenter(leftScrollPane);
-        leftBorderPane.setBottom(tableButtonBar);
+        table = new TableViewComponent<>(tableResourceBundle);
+        tableScrollPane.setContent(table);
+        tableBorderPane.setCenter(tableScrollPane);
+        tableBorderPane.setBottom(tableButtonBar);
 
         table.enableMultiSelection(multiSelection);
         table.initialize(tableObjectClass, viewType, tableDescriptor);
@@ -78,6 +74,57 @@ public class BasicEditorUi<TABLE_OBJECT> {
             formWrapper = new DynamicFormWrapper<>(formResourceBundle, tableObjectClass);
         }
 
+        {
+            if (showForm) {
+                SplitPane splitPane = new SplitPane();
+                splitPane.setDividerPositions(0.55d);
+
+                AnchorPane anchorPaneForm = new AnchorPane();
+                anchorPaneForm.setMinHeight(0.0);
+                anchorPaneForm.setMinWidth(0.0);
+
+                BorderPane formBorderPane = new BorderPane();
+                AnchorPane.setBottomAnchor(formBorderPane, 0.0d);
+                AnchorPane.setLeftAnchor(formBorderPane, 0.0d);
+                AnchorPane.setRightAnchor(formBorderPane, 0.0d);
+                AnchorPane.setTopAnchor(formBorderPane, 0.0d);
+
+                anchorPaneForm.getChildren().add(formBorderPane);
+                splitPane.getItems().addAll(anchorPaneTable, anchorPaneForm);
+
+                ScrollPane formScrollPane = new ScrollPane();
+                anchorPane.getChildren().add(splitPane);
+
+                ButtonBar formButtonBar = new ButtonBar();
+                formScrollPane.setContent(formWrapper.getFormRenderer());
+
+                formBorderPane.setCenter(formScrollPane);
+                formBorderPane.setBottom(formButtonBar);
+
+                Button formOkBtn = new Button("Ok");
+                Button formCancelBtn = new Button("Cancel");
+                formButtonBar.getButtons().addAll(formOkBtn, formCancelBtn);
+
+                formOkBtn.addEventHandler(ActionEvent.ACTION, event -> {
+                    TABLE_OBJECT newObject = formWrapper.getObjectFromForm();
+                    table.getItems().add(newObject);
+                    table.refresh();
+                });
+                formCancelBtn.addEventHandler(ActionEvent.ACTION, event -> {
+                    formWrapper.getForm().reset();
+                });
+
+                table.setOnMouseClicked(mouseEvent -> {
+                    TABLE_OBJECT selectedItem = table.getSelectionModel().getSelectedItem();
+                    formWrapper.setFormDataFromObject(selectedItem);
+                });
+            } else {
+                anchorPane.getChildren().add(anchorPaneTable);
+            }
+        }
+
+        rootPane.getChildren().add(anchorPane);
+
         // Initialize buttons
         {
             // todo make this button dynamic.
@@ -85,17 +132,26 @@ public class BasicEditorUi<TABLE_OBJECT> {
             Button createBtn = new Button("Create");
             Button updateBtn = new Button("Update");
             Button deleteBtn = new Button("Delete");
-            tableButtonBar.getButtons().addAll(createBtn, updateBtn, deleteBtn);
+
+            if (showForm) {
+                tableButtonBar.getButtons().addAll(createBtn, deleteBtn);
+            } else {
+                tableButtonBar.getButtons().addAll(createBtn, updateBtn, deleteBtn);
+            }
 
             createBtn.addEventHandler(ActionEvent.ACTION, event -> {
-                BaseDialog baseDialog = new BaseDialog();
-                baseDialog.setContent(formWrapper.getFormRenderer());
-                baseDialog.showAndWait();
+                if (showForm) {
+                    formWrapper.clearForm();
+                } else {
+                    BaseDialog baseDialog = new BaseDialog();
+                    baseDialog.setContent(formWrapper.getFormRenderer());
+                    baseDialog.showAndWait();
 
-                if (baseDialog.isOkFlag()) {
-                    TABLE_OBJECT newObject = formWrapper.getObjectFromForm();
-                    table.getItems().add(newObject);
-                    table.refresh();
+                    if (baseDialog.isOkFlag()) {
+                        TABLE_OBJECT newObject = formWrapper.getObjectFromForm();
+                        table.getItems().add(newObject);
+                        table.refresh();
+                    }
                 }
             });
 
