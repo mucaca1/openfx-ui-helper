@@ -13,4 +13,7 @@ module org.bh.uifxhelpercore {
     opens org.bh.uifxhelpercore.form to javafx.fxml;
     exports org.bh.uifxhelpercore.editor.builder;
     opens org.bh.uifxhelpercore.editor to javafx.fxml;
+    exports org.bh.uifxhelpercore.button;
+    opens org.bh.uifxhelpercore.button to javafx.fxml;
+    exports org.bh.uifxhelpercore.locale;
 }

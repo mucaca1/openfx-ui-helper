@@ -1,6 +1,5 @@
 package org.bh.uifxhelperdemo;
 
-import com.dlsc.formsfx.model.util.ResourceBundleService;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,6 +8,7 @@ import javafx.scene.control.Tab;
 import org.bh.uifxhelpercore.editor.BasicEditorUi;
 import org.bh.uifxhelpercore.editor.builder.BasicEditorUIBuilder;
 import org.bh.uifxhelpercore.form.DynamicFormWrapper;
+import org.bh.uifxhelpercore.locale.LocalizationHelper;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
 
@@ -26,17 +26,24 @@ public class DemoController {
     private Tab basicEditorWithFormPane;
 
     // Data
-    private ResourceBundleService resourceBundleTables = new ResourceBundleService(ResourceBundle.getBundle("Tables", new Locale("en")));
-    private ResourceBundleService resourceBundleForm = new ResourceBundleService(ResourceBundle.getBundle("Form", new Locale("en")));
-
     DynamicFormWrapper<Person> formWrapper;
 
     @FXML
     public void init() {
 
+        // Init localization
+        {
+            LocalizationHelper.get().registerResourceBundleService("Tables", "en", ResourceBundle.getBundle("Tables", new Locale("en")));
+            LocalizationHelper.get().registerResourceBundleService("Tables", "sk", ResourceBundle.getBundle("Tables", new Locale("sk")));
+
+            LocalizationHelper.get().registerResourceBundleService("Form", "en", ResourceBundle.getBundle("Form", new Locale("en")));
+            LocalizationHelper.get().registerResourceBundleService("Form", "sk", ResourceBundle.getBundle("Form", new Locale("sk")));
+
+        }
+
         // Init dynamic table
         {
-            TableViewComponent<Person> tableViewComponent = new TableViewComponent<>(resourceBundleTables);
+            TableViewComponent<Person> tableViewComponent = new TableViewComponent<>(LocalizationHelper.get().getResourceBundleService("Tables"));
             tableViewComponent.initialize(Person.class, ViewType.Default);
             tableViewComponent.setItems(FXCollections.observableList(DemoData.getRandomPerson(5)));
 
@@ -45,15 +52,15 @@ public class DemoController {
 
         // Init dynamic form
         {
-            formWrapper = new DynamicFormWrapper<Person>(resourceBundleForm, Person.class);
+            formWrapper = new DynamicFormWrapper<Person>(LocalizationHelper.get().getResourceBundleService("Form"), Person.class);
             dynamicFormTablePane.setContent(formWrapper.getFormRenderer());
         }
 
         // Init table and form
         {
             BasicEditorUi<Person> basicEditor = new BasicEditorUIBuilder<Person>(Person.class)
-                    .setTableResourceBundle(resourceBundleTables)
-                    .setFormResourceBundle(resourceBundleForm)
+                    .setTableResourceBundle(LocalizationHelper.get().getResourceBundleService("Tables"))
+                    .setFormResourceBundle(LocalizationHelper.get().getResourceBundleService("Form"))
                     .setShowForm(true)
                     .setInitFormDynamic(true)
                     .build();
@@ -66,8 +73,8 @@ public class DemoController {
         // Init table and pop-up form
         {
             BasicEditorUi<Person> basicEditor = new BasicEditorUIBuilder<Person>(Person.class)
-                    .setTableResourceBundle(resourceBundleTables)
-                    .setFormResourceBundle(resourceBundleForm)
+                    .setTableResourceBundle(LocalizationHelper.get().getResourceBundleService("Tables"))
+                    .setFormResourceBundle(LocalizationHelper.get().getResourceBundleService("Form"))
                     .setInitFormDynamic(true)
                     .build();
             ScrollPane scrollPane = new ScrollPane();
@@ -78,13 +85,11 @@ public class DemoController {
     }
 
     public void setEnLanguage(ActionEvent actionEvent) {
-        resourceBundleTables.changeLocale(ResourceBundle.getBundle("Tables", new Locale("en")));
-        resourceBundleForm.changeLocale(ResourceBundle.getBundle("Form", new Locale("en")));
+        LocalizationHelper.get().setLocale("en");
     }
 
     public void setSkLanguage(ActionEvent actionEvent) {
-        resourceBundleTables.changeLocale(ResourceBundle.getBundle("Tables", new Locale("sk")));
-        resourceBundleForm.changeLocale(ResourceBundle.getBundle("Form", new Locale("sk")));
+        LocalizationHelper.get().setLocale("sk");
     }
 
     public void okActon(ActionEvent actionEvent) {
