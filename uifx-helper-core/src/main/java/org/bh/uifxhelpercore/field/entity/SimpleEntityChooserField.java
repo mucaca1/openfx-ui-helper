@@ -86,7 +86,9 @@ public class SimpleEntityChooserField<V> extends Field<SimpleEntityChooserField<
     }
 
     public void openSelectionPopup() {
-        selectEntityAction.actionPerformed(null);
+        if (selectEntityAction != null) {
+            selectEntityAction.actionPerformed(null);
+        }
     }
 
 }

@@ -41,4 +41,8 @@ public abstract class FormWrapper<T> {
     public void clearForm() {
         formDynamicData.clearData();
     }
+
+    public FormDynamicData getFormDynamicData() {
+        return formDynamicData;
+    }
 }

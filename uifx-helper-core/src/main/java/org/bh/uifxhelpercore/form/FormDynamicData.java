@@ -17,15 +17,16 @@ public class FormDynamicData {
 
     private Map<String, Object> initFormData;
 
-    private Map<String,FieldTypeValueMapper> valueMappers = new HashMap<>();
+    private Map<String, FieldTypeValueMapper> valueMappers = new HashMap<>();
 
     public FormDynamicData() {
         data = new HashMap<>();
         initFormData = new HashMap<>();
+        valueMappers = new HashMap<>();
     }
 
-    public void registerMapper(java.lang.reflect.Field field, FieldTypeValueMapper mapper) {
-        valueMappers.put(field.getName(), mapper);
+    public void registerMapper(String fieldName, FieldTypeValueMapper mapper) {
+        valueMappers.put(fieldName, mapper);
     }
 
     public void parseFormObjectAsFields(Class<?> formObject) {
@@ -71,7 +72,7 @@ public class FormDynamicData {
             } else if (property instanceof SimpleBooleanProperty) {
                 elements.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldName));
             } else if (valueMappers.containsKey(field.getName())) {
-                elements.add(valueMappers.get(field.getName()).getElement());
+                elements.add(valueMappers.get(field.getName()).getElement(formField, property));
             } else {
                 throw new RuntimeException("Property for field [" + fieldName + "] does not implemented! Property can not be added to elements. Implement code for " + property.getClass().getName() + " class");
             }
@@ -91,7 +92,7 @@ public class FormDynamicData {
         } else if (observableValue instanceof SimpleBooleanProperty) {
             ((SimpleBooleanProperty) observableValue).set((Boolean) value);
         } else if (valueMappers.containsKey(fieldName)) {
-            valueMappers.get(fieldName).setValue(value);
+            valueMappers.get(fieldName).setValue(observableValue, value);
         } else {
             throw new RuntimeException("Field [" + fieldName + "] does not implemented setter. Implement setter for " + observableValue.getClass().getName() + " class.");
         }
@@ -106,7 +107,7 @@ public class FormDynamicData {
         } else if (observableValue instanceof SimpleBooleanProperty) {
             return ((SimpleBooleanProperty) observableValue).get();
         } else if (valueMappers.containsKey(fieldName)) {
-            return valueMappers.get(fieldName).getValue();
+            return valueMappers.get(fieldName).getValue(observableValue);
         } else {
             throw new RuntimeException("Field [" + fieldName + "] does not implemented getter. Implement getter for " + observableValue.getClass().getName() + " class.");
         }

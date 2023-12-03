@@ -5,13 +5,14 @@ import org.bh.uifxhelpercore.form.FormField;
 import org.bh.uifxhelpercore.form.FormObject;
 import org.bh.uifxhelpercore.table.TableColumn;
 import org.bh.uifxhelpercore.table.TableObject;
+import org.bh.uifxhelpercore.table.ViewType;
 
 @TableObject
 @FormObject(formTitle = "form_title")
 public class Person {
 
 
-    @TableColumn
+    @TableColumn(viewType = {ViewType.Default, ViewType.Chooser})
     @FormField(type = FieldType.STRING)
     private String name;
 
@@ -21,6 +22,9 @@ public class Person {
 
     @FormField(type = FieldType.BOOLEAN, getter = "isDeleted")
     private boolean deleted;
+
+    @FormField(type = FieldType.USER_DEFINED, fieldName = "parent")
+    private Person parent;
 
     public Person() {}
 
@@ -57,5 +61,13 @@ public class Person {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Person getParent() {
+        return parent;
+    }
+
+    public void setParent(Person parent) {
+        this.parent = parent;
     }
 }

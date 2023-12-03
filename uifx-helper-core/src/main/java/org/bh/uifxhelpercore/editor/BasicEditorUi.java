@@ -14,9 +14,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.bh.uifxhelpercore.button.ButtonAdvancedBar;
 import org.bh.uifxhelpercore.form.DynamicFormWrapper;
+import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
 import org.bh.uifxhelpercore.form.FormWrapper;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
+
+import java.util.Map;
 
 public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
@@ -38,7 +41,8 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                          ResourceBundleService formResourceBundle,
                          boolean multiSelection,
                          boolean initFormDynamic,
-                         boolean showForm) {
+                         boolean showForm,
+                         Map<String, FieldTypeValueMapper> formFieldMappers) {
         this.translator = objectTranslator;
         {
             rootPane = new VBox();
@@ -78,6 +82,10 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
         if (initFormDynamic) {
             formWrapper = new DynamicFormWrapper<>(formResourceBundle, formObjectClass);
+            formFieldMappers.forEach((s, fieldTypeValueMapper) -> {
+                formWrapper.getFormDynamicData().registerMapper(s, fieldTypeValueMapper);
+            });
+            ((DynamicFormWrapper<?>) formWrapper).initForm();
         }
 
         {

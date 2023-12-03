@@ -7,9 +7,9 @@ public interface FieldTypeValueMapper {
 
     ObservableValue<?> getValueFromField(java.lang.reflect.Field field);
 
-    Element<?> getElement();
+    Element<?> getElement(FormField formField, ObservableValue<?> property);
 
-    void setValue(Object value);
+    void setValue(ObservableValue<?> observableValue, Object value);
 
-    Object getValue();
+    Object getValue(ObservableValue<?> observableValue);
 }

@@ -15,10 +15,13 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
         super(resourceBundleService);
 
         this.formClass = formClass;
+    }
+
+    public void initForm() {
         buildDynamicForm(formClass);
     }
 
-    public void buildDynamicForm(Class<?> formObject) {
+    private void buildDynamicForm(Class<?> formObject) {
         formDynamicData.parseFormObjectAsFields(formObject);
 
         FormObject formData = formObject.getAnnotation(FormObject.class);

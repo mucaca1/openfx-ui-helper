@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class SelectorDialog<T, I> extends Dialog<T> {
+public abstract class SelectorDialog<T> extends Dialog<T> {
     protected TableViewComponent<T> table;
     protected TextField searchTextField;
 
@@ -26,10 +26,7 @@ public abstract class SelectorDialog<T, I> extends Dialog<T> {
      */
     private boolean okFlag;
 
-    protected Map<T, I> tableObjectToData;
-
     private List<T> selectedTableObjects;
-    private List<I> selectedDataObjects;
 
     public SelectorDialog() {
         this(false);
@@ -43,7 +40,6 @@ public abstract class SelectorDialog<T, I> extends Dialog<T> {
         searchTextField = new TextField();
 
         selectedTableObjects = new ArrayList<>();
-        selectedDataObjects = new ArrayList<>();
 
         searchTextField.setPromptText("Type for filtering...");
 
@@ -77,10 +73,8 @@ public abstract class SelectorDialog<T, I> extends Dialog<T> {
             if (mouseEvent.getSource() == table) { // handle on table click.
                 ObservableList<T> selectedItems = table.getSelectionModel().getSelectedItems();
                 selectedTableObjects.clear();
-                selectedDataObjects.clear();
                 for (T selectedItem : selectedItems) {
                     selectedTableObjects.add(selectedItem);
-                    selectedDataObjects.add(tableObjectToData.get(selectedItem));
                 }
             }
         });
@@ -100,9 +94,5 @@ public abstract class SelectorDialog<T, I> extends Dialog<T> {
 
     public List<T> getSelectedTableObjects() {
         return selectedTableObjects;
-    }
-
-    public List<I> getSelectedDataObjects() {
-        return selectedDataObjects;
     }
 }
