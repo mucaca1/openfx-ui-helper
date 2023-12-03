@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import org.bh.uifxhelpercore.editor.BasicEditorUi;
+import org.bh.uifxhelpercore.editor.SimpleObjectTranslator;
 import org.bh.uifxhelpercore.editor.builder.BasicEditorUIBuilder;
 import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.locale.LocalizationHelper;
@@ -58,7 +59,7 @@ public class DemoController {
 
         // Init table and form
         {
-            BasicEditorUi<Person> basicEditor = new BasicEditorUIBuilder<Person>(Person.class)
+            BasicEditorUi<Person, Person> basicEditor = new BasicEditorUIBuilder<>(Person.class, Person.class, new SimpleObjectTranslator<>())
                     .setTableResourceBundle(LocalizationHelper.get().getResourceBundleService("Tables"))
                     .setFormResourceBundle(LocalizationHelper.get().getResourceBundleService("Form"))
                     .setShowForm(true)
@@ -72,7 +73,7 @@ public class DemoController {
 
         // Init table and pop-up form
         {
-            BasicEditorUi<Person> basicEditor = new BasicEditorUIBuilder<Person>(Person.class)
+            BasicEditorUi<Person, Person> basicEditor = new BasicEditorUIBuilder<>(Person.class, Person.class, new SimpleObjectTranslator<>())
                     .setTableResourceBundle(LocalizationHelper.get().getResourceBundleService("Tables"))
                     .setFormResourceBundle(LocalizationHelper.get().getResourceBundleService("Form"))
                     .setInitFormDynamic(true)

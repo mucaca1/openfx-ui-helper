@@ -18,16 +18,20 @@ import org.bh.uifxhelpercore.form.FormWrapper;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
 
-public class BasicEditorUi<TABLE_OBJECT> {
+public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
     private VBox rootPane;
     private AnchorPane anchorPane;
     private TableViewComponent<TABLE_OBJECT> table;
     private ButtonAdvancedBar tableButtonBar;
 
-    private FormWrapper<TABLE_OBJECT> formWrapper;
+    private FormWrapper<FORM_OBJECT> formWrapper;
+
+    private final ObjectTranslator<TABLE_OBJECT, FORM_OBJECT> translator;
 
     public BasicEditorUi(Class<TABLE_OBJECT> tableObjectClass,
+                         Class<FORM_OBJECT> formObjectClass,
+                         ObjectTranslator<TABLE_OBJECT, FORM_OBJECT> objectTranslator,
                          ViewType viewType,
                          String tableDescriptor,
                          ResourceBundleService tableResourceBundle,
@@ -35,6 +39,7 @@ public class BasicEditorUi<TABLE_OBJECT> {
                          boolean multiSelection,
                          boolean initFormDynamic,
                          boolean showForm) {
+        this.translator = objectTranslator;
         {
             rootPane = new VBox();
             rootPane.setAlignment(Pos.CENTER);
@@ -72,7 +77,7 @@ public class BasicEditorUi<TABLE_OBJECT> {
         table.initialize(tableObjectClass, viewType, tableDescriptor);
 
         if (initFormDynamic) {
-            formWrapper = new DynamicFormWrapper<>(formResourceBundle, tableObjectClass);
+            formWrapper = new DynamicFormWrapper<>(formResourceBundle, formObjectClass);
         }
 
         {
@@ -107,8 +112,8 @@ public class BasicEditorUi<TABLE_OBJECT> {
                 formButtonBar.getButtons().addAll(formOkBtn, formCancelBtn);
 
                 formOkBtn.addEventHandler(ActionEvent.ACTION, event -> {
-                    TABLE_OBJECT newObject = formWrapper.getObjectFromForm();
-                    table.getItems().add(newObject);
+                    FORM_OBJECT newObject = formWrapper.getObjectFromForm();
+                    table.getItems().add(translator.getFirstObject(newObject));
                     table.refresh();
                 });
                 formCancelBtn.addEventHandler(ActionEvent.ACTION, event -> {
@@ -117,7 +122,7 @@ public class BasicEditorUi<TABLE_OBJECT> {
 
                 table.setOnMouseClicked(mouseEvent -> {
                     TABLE_OBJECT selectedItem = table.getSelectionModel().getSelectedItem();
-                    formWrapper.setFormDataFromObject(selectedItem);
+                    formWrapper.setFormDataFromObject(translator.getSecondObject(selectedItem));
                 });
             } else {
                 anchorPane.getChildren().add(anchorPaneTable);
@@ -149,8 +154,8 @@ public class BasicEditorUi<TABLE_OBJECT> {
                     baseDialog.showAndWait();
 
                     if (baseDialog.isOkFlag()) {
-                        TABLE_OBJECT newObject = formWrapper.getObjectFromForm();
-                        table.getItems().add(newObject);
+                        FORM_OBJECT newObject = formWrapper.getObjectFromForm();
+                        table.getItems().add(translator.getFirstObject(newObject));
                         table.refresh();
                     }
                 }
@@ -159,15 +164,15 @@ public class BasicEditorUi<TABLE_OBJECT> {
             updateBtn.addEventHandler(ActionEvent.ACTION, event -> {
                 BaseDialog baseDialog = new BaseDialog();
                 TABLE_OBJECT selectedObject = table.getSelectionModel().getSelectedItem();
-                formWrapper.setFormDataFromObject(selectedObject);
+                formWrapper.setFormDataFromObject(translator.getSecondObject(selectedObject));
                 baseDialog.setContent(formWrapper.getFormRenderer());
                 baseDialog.showAndWait();
 
                 if (baseDialog.isOkFlag()) {
                     int index = table.getSelectionModel().getSelectedIndex();
                     table.getItems().remove(table.getSelectionModel().getSelectedItem());
-                    TABLE_OBJECT newObject = formWrapper.getObjectFromForm();
-                    table.getItems().add(index, newObject);
+                    FORM_OBJECT newObject = formWrapper.getObjectFromForm();
+                    table.getItems().add(index, translator.getFirstObject(newObject));
                     table.refresh();
                 }
             });
