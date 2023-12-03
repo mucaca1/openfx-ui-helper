@@ -10,6 +10,7 @@ public class DemoData {
 
         for (int i = 0; i < count; i++) {
             Person p = new Person("name" + i, (int) (Math.random() * 45));
+            p.setDeleted((int) (Math.random() * 45) % 3 == 0);
             result.add(p);
         }
 

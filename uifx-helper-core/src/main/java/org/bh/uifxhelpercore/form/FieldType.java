@@ -4,5 +4,7 @@ public enum FieldType {
     STRING,
     INTEGER,
     USER_DEFINED,
+    BOOLEAN,
+
     ;
 }

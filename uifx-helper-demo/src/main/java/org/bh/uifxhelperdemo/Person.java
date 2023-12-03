@@ -19,6 +19,7 @@ public class Person {
     @FormField(type = FieldType.INTEGER)
     private Integer age;
 
+    @FormField(type = FieldType.BOOLEAN, getter = "isDeleted")
     private boolean deleted;
 
     public Person() {}

@@ -3,10 +3,7 @@ package org.bh.uifxhelpercore.form;
 import com.dlsc.formsfx.model.structure.Element;
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Group;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 
 import java.util.ArrayList;
@@ -44,6 +41,7 @@ public class FormDynamicData {
                 case STRING -> new SimpleStringProperty("");
                 case INTEGER -> new SimpleIntegerProperty(0);
                 case USER_DEFINED -> valueMappers.get(field.getName()).getValueFromField(field);
+                case BOOLEAN -> new SimpleBooleanProperty();
             };
 
             data.put(field.getName(), property);
@@ -70,6 +68,8 @@ public class FormDynamicData {
                 elements.add(Field.ofStringType((StringProperty) property).label(fieldName));
             } else if (property instanceof SimpleIntegerProperty) {
                 elements.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldName));
+            } else if (property instanceof SimpleBooleanProperty) {
+                elements.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldName));
             }
         }
 
@@ -84,6 +84,8 @@ public class FormDynamicData {
             ((SimpleStringProperty) observableValue).set((String) value);
         } else if (observableValue instanceof SimpleIntegerProperty) {
             ((SimpleIntegerProperty) observableValue).set((Integer) value);
+        } else if (observableValue instanceof SimpleBooleanProperty) {
+            ((SimpleBooleanProperty) observableValue).set((Boolean) value);
         }
     }
 
@@ -93,6 +95,8 @@ public class FormDynamicData {
             return ((SimpleStringProperty) observableValue).get();
         } else if (observableValue instanceof SimpleIntegerProperty) {
             return ((SimpleIntegerProperty) observableValue).get();
+        } else if (observableValue instanceof SimpleBooleanProperty) {
+            return ((SimpleBooleanProperty) observableValue).get();
         } else {
             return null;
         }
