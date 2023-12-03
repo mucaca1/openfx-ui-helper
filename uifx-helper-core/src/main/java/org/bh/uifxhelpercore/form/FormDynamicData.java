@@ -40,8 +40,8 @@ public class FormDynamicData {
             ObservableValue<?> property = switch (formField.type()) {
                 case STRING -> new SimpleStringProperty("");
                 case INTEGER -> new SimpleIntegerProperty(0);
-                case USER_DEFINED -> valueMappers.get(field.getName()).getValueFromField(field);
                 case BOOLEAN -> new SimpleBooleanProperty();
+                case USER_DEFINED -> valueMappers.get(field.getName()).getValueFromField(field);
             };
 
             data.put(field.getName(), property);
@@ -70,6 +70,8 @@ public class FormDynamicData {
                 elements.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldName));
             } else if (property instanceof SimpleBooleanProperty) {
                 elements.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldName));
+            } else if (valueMappers.containsKey(field.getName())) {
+                elements.add(valueMappers.get(field.getName()).getElement());
             } else {
                 throw new RuntimeException("Property for field [" + fieldName + "] does not implemented! Property can not be added to elements. Implement code for " + property.getClass().getName() + " class");
             }
@@ -88,6 +90,8 @@ public class FormDynamicData {
             ((SimpleIntegerProperty) observableValue).set((Integer) value);
         } else if (observableValue instanceof SimpleBooleanProperty) {
             ((SimpleBooleanProperty) observableValue).set((Boolean) value);
+        } else if (valueMappers.containsKey(fieldName)) {
+            valueMappers.get(fieldName).setValue(value);
         } else {
             throw new RuntimeException("Field [" + fieldName + "] does not implemented setter. Implement setter for " + observableValue.getClass().getName() + " class.");
         }
@@ -101,6 +105,8 @@ public class FormDynamicData {
             return ((SimpleIntegerProperty) observableValue).get();
         } else if (observableValue instanceof SimpleBooleanProperty) {
             return ((SimpleBooleanProperty) observableValue).get();
+        } else if (valueMappers.containsKey(fieldName)) {
+            return valueMappers.get(fieldName).getValue();
         } else {
             throw new RuntimeException("Field [" + fieldName + "] does not implemented getter. Implement getter for " + observableValue.getClass().getName() + " class.");
         }
