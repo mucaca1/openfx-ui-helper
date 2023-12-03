@@ -5,11 +5,10 @@ public enum ButtonType {
     CANCEL("cancelBtn"),
     DELETE("deleteBtn"),
     CREATE("createBtn"),
-    UPDATE("updateBtn")
-
+    UPDATE("updateBtn"),
     ;
 
-    private String identifier;
+    private final String identifier;
 
 
     ButtonType(String identifier) {

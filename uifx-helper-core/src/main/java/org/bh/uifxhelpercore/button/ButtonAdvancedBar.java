@@ -3,11 +3,12 @@ package org.bh.uifxhelpercore.button;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ButtonHelper {
+public class ButtonAdvancedBar extends ButtonBar {
 
     /**
      * Holder for all buttons. Key is custom user defined identifier and value is button.
@@ -15,8 +16,7 @@ public class ButtonHelper {
     Map<String, Button> buttons;
 
 
-
-    public ButtonHelper() {
+    public ButtonAdvancedBar() {
         buttons = new HashMap<>();
     }
 
@@ -28,12 +28,18 @@ public class ButtonHelper {
 
     public void addButtons(String... buttonIdentifiers) {
         for (String identifier : buttonIdentifiers) {
-            buttons.put(identifier, new Button());
+            Button btn = new Button();
+            buttons.put(identifier, btn);
+            getButtons().add(btn);
         }
     }
 
+    public Button getButton(String buttonIdentifier) {
+        return buttons.get(buttonIdentifier);
+    }
+
     public void addActionListener(ButtonType buttonType, EventHandler eventHandler) {
-        buttons.get(buttonType.getIdentifier()).addEventHandler(ActionEvent.ACTION, eventHandler);
+        addActionListener(buttonType.getIdentifier(), eventHandler);
     }
 
     public void addActionListener(String buttonId, EventHandler eventHandler) {

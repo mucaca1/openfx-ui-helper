@@ -1,13 +1,12 @@
 package org.bh.uifxhelpercore.editor;
 
-import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.bh.uifxhelpercore.button.ButtonAdvancedBar;
+import org.bh.uifxhelpercore.button.ButtonType;
 
 public class BaseDialog extends Stage {
 
@@ -28,19 +27,16 @@ public class BaseDialog extends Stage {
 
     public void setContent(Parent content) {
         VBox vBox = new VBox();
-        ButtonBar buttonBar = new ButtonBar();
-
-        Button okBtn = new Button("Ok");
-        Button cancelBtn = new Button("Cancel");
-        buttonBar.getButtons().addAll(okBtn, cancelBtn);
+        ButtonAdvancedBar buttonBar = new ButtonAdvancedBar();
+        buttonBar.addButtons(ButtonType.OK, ButtonType.CANCEL);
 
         vBox.getChildren().addAll(content, buttonBar);
 
-        okBtn.addEventHandler(ActionEvent.ACTION, event -> {
+        buttonBar.addActionListener(ButtonType.OK, event -> {
             okFlag = true;
             close();
         });
-        cancelBtn.addEventHandler(ActionEvent.ACTION, event -> {
+        buttonBar.addActionListener(ButtonType.CANCEL, event -> {
             closeFlag = true;
             close();
         });

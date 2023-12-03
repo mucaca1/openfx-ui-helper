@@ -12,6 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.bh.uifxhelpercore.button.ButtonAdvancedBar;
 import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.form.FormWrapper;
 import org.bh.uifxhelpercore.table.TableViewComponent;
@@ -22,7 +23,7 @@ public class BasicEditorUi<TABLE_OBJECT> {
     private VBox rootPane;
     private AnchorPane anchorPane;
     private TableViewComponent<TABLE_OBJECT> table;
-    private ButtonBar tableButtonBar;
+    private ButtonAdvancedBar tableButtonBar;
 
     private FormWrapper<TABLE_OBJECT> formWrapper;
 
@@ -61,7 +62,7 @@ public class BasicEditorUi<TABLE_OBJECT> {
         anchorPaneTable.getChildren().add(tableBorderPane);
 
         ScrollPane tableScrollPane = new ScrollPane();
-        tableButtonBar = new ButtonBar();
+        tableButtonBar = new ButtonAdvancedBar();
         table = new TableViewComponent<>(tableResourceBundle);
         tableScrollPane.setContent(table);
         tableBorderPane.setCenter(tableScrollPane);
@@ -175,6 +176,10 @@ public class BasicEditorUi<TABLE_OBJECT> {
                 table.getItems().remove(table.getSelectionModel().getSelectedItem());
             });
         }
+    }
+
+    public ButtonAdvancedBar getTableButtonBar() {
+        return tableButtonBar;
     }
 
     public VBox getRootPane() {
