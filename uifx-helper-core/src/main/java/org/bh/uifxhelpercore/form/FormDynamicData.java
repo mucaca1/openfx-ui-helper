@@ -70,6 +70,8 @@ public class FormDynamicData {
                 elements.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldName));
             } else if (property instanceof SimpleBooleanProperty) {
                 elements.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldName));
+            } else {
+                throw new RuntimeException("Property for field [" + fieldName + "] does not implemented! Property can not be added to elements. Implement code for " + property.getClass().getName() + " class");
             }
         }
 
@@ -86,6 +88,8 @@ public class FormDynamicData {
             ((SimpleIntegerProperty) observableValue).set((Integer) value);
         } else if (observableValue instanceof SimpleBooleanProperty) {
             ((SimpleBooleanProperty) observableValue).set((Boolean) value);
+        } else {
+            throw new RuntimeException("Field [" + fieldName + "] does not implemented setter. Implement setter for " + observableValue.getClass().getName() + " class.");
         }
     }
 
@@ -98,7 +102,7 @@ public class FormDynamicData {
         } else if (observableValue instanceof SimpleBooleanProperty) {
             return ((SimpleBooleanProperty) observableValue).get();
         } else {
-            return null;
+            throw new RuntimeException("Field [" + fieldName + "] does not implemented getter. Implement getter for " + observableValue.getClass().getName() + " class.");
         }
     }
 
