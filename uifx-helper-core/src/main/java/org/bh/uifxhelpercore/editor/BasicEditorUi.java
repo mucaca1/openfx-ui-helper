@@ -86,6 +86,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                 formWrapper.getFormDynamicData().registerMapper(s, fieldTypeValueMapper);
             });
             ((DynamicFormWrapper<?>) formWrapper).initForm();
+            formWrapper.buildForm();
         }
 
         {

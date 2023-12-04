@@ -1,6 +1,9 @@
 package org.bh.uifxhelperdemo;
 
 import com.dlsc.formsfx.model.structure.Element;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.structure.IntegerField;
+import com.dlsc.formsfx.model.validators.*;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -122,6 +125,9 @@ public class DemoController {
 
             formWrapper.getFormDynamicData().registerMapper("parent", mapper);
             formWrapper.initForm();
+            formWrapper.getFieldByFieldId().get("name").editable(false);
+            ((IntegerField)formWrapper.getFieldByFieldId().get("age")).validate(IntegerRangeValidator.atLeast(10, "low_number_msg"));
+            formWrapper.buildForm();
             dynamicFormTablePane.setContent(formWrapper.getFormRenderer());
         }
 

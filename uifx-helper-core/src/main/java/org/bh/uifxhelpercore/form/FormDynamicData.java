@@ -66,13 +66,13 @@ public class FormDynamicData {
             FormField formField = field.getAnnotation(FormField.class);
             String fieldName = formField.fieldName().isBlank() ? field.getName() : formField.fieldName();
             if (property instanceof SimpleStringProperty) {
-                elements.add(Field.ofStringType((StringProperty) property).label(fieldName));
+                elements.add(Field.ofStringType((StringProperty) property).label(fieldName).id(fieldName));
             } else if (property instanceof SimpleIntegerProperty) {
-                elements.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldName));
+                elements.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldName).id(fieldName));
             } else if (property instanceof SimpleBooleanProperty) {
-                elements.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldName));
+                elements.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldName).id(fieldName));
             } else if (valueMappers.containsKey(field.getName())) {
-                elements.add(valueMappers.get(field.getName()).getElement(formField, property));
+                elements.add(valueMappers.get(field.getName()).getElement(formField, property).id(fieldName));
             } else {
                 throw new RuntimeException("Property for field [" + fieldName + "] does not implemented! Property can not be added to elements. Implement code for " + property.getClass().getName() + " class");
             }

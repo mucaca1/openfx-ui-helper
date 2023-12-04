@@ -1,27 +1,34 @@
 package org.bh.uifxhelpercore.form;
 
+import com.dlsc.formsfx.model.structure.Element;
 import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.util.ResourceBundleService;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DynamicFormWrapper<T> extends FormWrapper<T> {
 
     private Class<T> formClass;
 
+    private Map<String, com.dlsc.formsfx.model.structure.Field<?>> fieldByFieldId;
+
     public DynamicFormWrapper(ResourceBundleService resourceBundleService, Class<T> formClass) {
         super(resourceBundleService);
 
+        this.fieldByFieldId = new HashMap<>();
         this.formClass = formClass;
     }
 
     public void initForm() {
-        buildDynamicForm(formClass);
+        buildDynamicFormForClass(formClass);
     }
 
-    private void buildDynamicForm(Class<?> formObject) {
+    private void buildDynamicFormForClass(Class<?> formObject) {
         formDynamicData.parseFormObjectAsFields(formObject);
 
         FormObject formData = formObject.getAnnotation(FormObject.class);
@@ -29,11 +36,13 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
         if (formData != null) {
             formTitle = formData.formTitle();
         }
+        Group group = formDynamicData.getGroupOfDynamicData(formObject.getDeclaredFields());
+        for (Element<?> element : group.getElements()) {
+            fieldByFieldId.put(element.getID(), (com.dlsc.formsfx.model.structure.Field<?>) element);
+        }
         form = Form.of(
-                formDynamicData.getGroupOfDynamicData(formObject.getDeclaredFields())
+                group
         ).title(formTitle).i18n(resourceBundleService);
-
-        buildForm();
     }
 
     @Override
@@ -81,5 +90,9 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public Map<String, com.dlsc.formsfx.model.structure.Field<?>> getFieldByFieldId() {
+        return fieldByFieldId;
     }
 }
