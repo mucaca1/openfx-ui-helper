@@ -122,7 +122,9 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
                 formOkBtn.addEventHandler(ActionEvent.ACTION, event -> {
                     FORM_OBJECT newObject = formWrapper.getObjectFromForm();
-                    table.getItems().add(translator.getFirstObject(newObject));
+                    int selectedTableObjectIndex = table.getSelectionModel().getSelectedIndex();
+                    table.getItems().remove(selectedTableObjectIndex);
+                    table.getItems().add(selectedTableObjectIndex, translator.getFirstObject(newObject));
                     table.refresh();
                 });
                 formCancelBtn.addEventHandler(ActionEvent.ACTION, event -> {

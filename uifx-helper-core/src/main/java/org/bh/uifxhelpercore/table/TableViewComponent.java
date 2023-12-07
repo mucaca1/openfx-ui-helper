@@ -95,6 +95,10 @@ public class TableViewComponent<V> extends TableView<V> {
         masterData.setAll(tableItems);
     }
 
+    public ObservableList<V> getMasterData() {
+        return masterData;
+    }
+
     private ObservableList<V> masterData = FXCollections.observableArrayList();
     private FilteredList<V> filteredData;
     public void registerSimpleTextFilter(StringProperty stringProperty) {
