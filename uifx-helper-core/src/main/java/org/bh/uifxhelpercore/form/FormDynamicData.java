@@ -3,6 +3,7 @@ package org.bh.uifxhelpercore.form;
 import com.dlsc.formsfx.model.structure.Element;
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.structure.Section;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 
@@ -56,31 +57,45 @@ public class FormDynamicData {
         }
     }
 
-    public Group getGroupOfDynamicData(java.lang.reflect.Field[] fields) {
+    public List<Group> getGroupOfDynamicData(java.lang.reflect.Field[] fields) {
         List<Element<?>> elements = new ArrayList<>();
+        Map<String, List<Element<?>>> sections = new HashMap<>();
         for (java.lang.reflect.Field field : fields) {
             if (!data.containsKey(field.getName())) {
                 continue;
             }
             ObservableValue<?> property = data.get(field.getName());
             FormField formField = field.getAnnotation(FormField.class);
+            List<Element<?>> list = elements;
+            if (!formField.section().isEmpty()) {
+                if (!sections.containsKey(formField.section())) {
+                    sections.put(formField.section(), new ArrayList<>());
+                }
+                list = sections.get(formField.section());
+            }
             String fieldName = formField.fieldName().isBlank() ? field.getName() : formField.fieldName();
             if (property instanceof SimpleStringProperty) {
-                elements.add(Field.ofStringType((StringProperty) property).label(fieldName).id(fieldName));
+                list.add(Field.ofStringType((StringProperty) property).label(fieldName).id(fieldName));
             } else if (property instanceof SimpleIntegerProperty) {
-                elements.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldName).id(fieldName));
+                list.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldName).id(fieldName));
             } else if (property instanceof SimpleBooleanProperty) {
-                elements.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldName).id(fieldName));
+                list.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldName).id(fieldName));
             } else if (valueMappers.containsKey(field.getName())) {
-                elements.add(valueMappers.get(field.getName()).getElement(formField, property).id(fieldName));
+                list.add(valueMappers.get(field.getName()).getElement(formField, property).id(fieldName));
             } else {
                 throw new RuntimeException("Property for field [" + fieldName + "] does not implemented! Property can not be added to elements. Implement code for " + property.getClass().getName() + " class");
             }
         }
 
-        return Group.of(
+        List<Group> result = new ArrayList<>();
+        result.add(Group.of(
                 elements.toArray(new Element[0])
-        );
+        ));
+        sections.forEach((sectionName, sectionElements) -> {
+            result.add(Section.of(sectionElements.toArray(new Element[0])).title(sectionName));
+        });
+
+        return result;
     }
 
     public void setValueOfField(String fieldName, Object value) {

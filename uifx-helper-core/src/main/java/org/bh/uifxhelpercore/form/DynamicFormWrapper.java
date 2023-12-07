@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DynamicFormWrapper<T> extends FormWrapper<T> {
@@ -36,12 +37,14 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
         if (formData != null) {
             formTitle = formData.formTitle();
         }
-        Group group = formDynamicData.getGroupOfDynamicData(formObject.getDeclaredFields());
-        for (Element<?> element : group.getElements()) {
-            fieldByFieldId.put(element.getID(), (com.dlsc.formsfx.model.structure.Field<?>) element);
+        List<Group> groups = formDynamicData.getGroupOfDynamicData(formObject.getDeclaredFields());
+        for (Group group : groups) {
+            for (Element<?> element : group.getElements()) {
+                fieldByFieldId.put(element.getID(), (com.dlsc.formsfx.model.structure.Field<?>) element);
+            }
         }
         form = Form.of(
-                group
+                groups.toArray(new Group[0])
         ).title(formTitle).i18n(resourceBundleService);
     }
 

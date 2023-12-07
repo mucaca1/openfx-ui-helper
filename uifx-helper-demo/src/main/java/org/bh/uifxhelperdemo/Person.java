@@ -13,11 +13,11 @@ public class Person {
 
 
     @TableColumn(viewType = {ViewType.Default, ViewType.Chooser})
-    @FormField(type = FieldType.STRING)
+    @FormField(type = FieldType.STRING, section = "personal_data")
     private String name;
 
     @TableColumn
-    @FormField(type = FieldType.INTEGER)
+    @FormField(type = FieldType.INTEGER, section = "personal_data")
     private Integer age;
 
     @FormField(type = FieldType.BOOLEAN, getter = "isDeleted")

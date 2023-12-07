@@ -17,4 +17,8 @@ public @interface FormField {
 
     String setter() default "";
 
+    String section() default "";
+
+    int order() default -1;
+
 }

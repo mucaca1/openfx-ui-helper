@@ -31,6 +31,10 @@ public abstract class FormWrapper<T> {
         return formRenderer;
     }
 
+    public void setForm(Form form) {
+        this.form = form;
+    }
+
     public Form getForm() {
         return form;
     }
