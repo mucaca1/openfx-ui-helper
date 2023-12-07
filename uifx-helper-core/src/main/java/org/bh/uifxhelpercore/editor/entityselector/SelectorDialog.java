@@ -28,10 +28,10 @@ public abstract class SelectorDialog<T> extends Dialog<T> {
     private List<T> selectedTableObjects;
 
     public SelectorDialog() {
-        this(false);
+        this(false, true);
     }
 
-    public SelectorDialog(boolean multiSelection) {
+    public SelectorDialog(boolean multiSelection, boolean canSelectNone) {
         super();
         closeFlag = false;
         okFlag = false;
@@ -51,6 +51,7 @@ public abstract class SelectorDialog<T> extends Dialog<T> {
         box.getChildren().addAll(searchTextField, paddingDivider, table);
         getDialogPane().setContent(box);
         getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+
         getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
 
         Button button = (Button) getDialogPane().lookupButton(ButtonType.OK);
@@ -58,6 +59,17 @@ public abstract class SelectorDialog<T> extends Dialog<T> {
             closeFlag = false;
             okFlag = true;
         });
+
+        if (canSelectNone) {
+            ButtonType noneBtnType = new ButtonType("None");
+            getDialogPane().getButtonTypes().addAll(noneBtnType);
+            Button button1 = (Button) getDialogPane().lookupButton(noneBtnType);
+            button1.addEventFilter(ActionEvent.ACTION, event -> {
+                selectedTableObjects.clear();
+                closeFlag = false;
+                okFlag = true;
+            });
+        }
 
         Button button2 = (Button) getDialogPane().lookupButton(ButtonType.CANCEL);
         button2.addEventFilter(ActionEvent.ACTION, event -> {
@@ -72,11 +84,10 @@ public abstract class SelectorDialog<T> extends Dialog<T> {
             if (mouseEvent.getSource() == table) { // handle on table click.
                 ObservableList<T> selectedItems = table.getSelectionModel().getSelectedItems();
                 selectedTableObjects.clear();
-                for (T selectedItem : selectedItems) {
-                    selectedTableObjects.add(selectedItem);
-                }
+                selectedTableObjects.addAll(selectedItems);
             }
         });
+        table.registerSimpleTextFilter(searchTextField.textProperty());
     }
 
     public boolean isCloseFlag() {
@@ -85,10 +96,6 @@ public abstract class SelectorDialog<T> extends Dialog<T> {
 
     public boolean isOkFlag() {
         return okFlag;
-    }
-
-    public void initData() {
-        table.registerSimpleTextFilter(searchTextField.textProperty());
     }
 
     public List<T> getSelectedTableObjects() {

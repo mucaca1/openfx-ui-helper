@@ -1,5 +1,6 @@
 package org.bh.uifxhelpercore.editor;
 
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.bh.uifxhelpercore.editor.searcher.SimpleTextSearcher;
 import org.bh.uifxhelpercore.table.TableViewComponent;
@@ -13,15 +14,15 @@ public class DataBrowser<T> extends VBox {
     public DataBrowser(Class<T> tableObject, ViewType viewType) {
         tableComponent.initialize(tableObject, viewType);
 
-        getChildren().addAll(simpleTextSearcher, tableComponent);
+        Pane paddingDivider = new Pane();
+        paddingDivider.setMinHeight(5);
+        paddingDivider.setMaxHeight(5);
+
+        getChildren().addAll(simpleTextSearcher, paddingDivider, tableComponent);
     }
 
     public void initSimpleTextFilter() {
         tableComponent.registerSimpleTextFilter(simpleTextSearcher.getSearchTextProperty());
-    }
-
-    public SimpleTextSearcher getSimpleTextSearcher() {
-        return simpleTextSearcher;
     }
 
     public TableViewComponent<T> getTableComponent() {

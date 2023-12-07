@@ -73,23 +73,19 @@ public class DemoController {
 
             @Override
             public Element<?> getElement(FormField formField, ObservableValue<?> property) {
-                SimpleEntityChooserField entityChooserField = FieldHelper.ofEntityChooser((SimpleListProperty) property, true);
+                SimpleEntityChooserField<?> entityChooserField = FieldHelper.ofEntityChooser((SimpleListProperty<?>) property, true);
                 entityChooserField.label(formField.fieldName());
                 entityChooserField.registerSelectionAction(new ActionListener() {
 
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent e) {
                         PersonSelectorDialog entityPopupPicker = new PersonSelectorDialog(FXCollections.observableList(DemoData.getRandomPerson(5)));
-                        if (entityPopupPicker instanceof Dialog) {
-                            Dialog dialog = (Dialog) entityPopupPicker;
-                            entityPopupPicker.initData();
-                            dialog.showAndWait();
-                            System.out.println("Close:" + entityPopupPicker.isCloseFlag() + ", Accept:" + entityPopupPicker.isOkFlag());
-                            if (entityPopupPicker.isOkFlag()) {
-                                List<Person> selectedObject = entityPopupPicker.getSelectedTableObjects();
-                                if (selectedObject != null) {
-                                    setValue(property, selectedObject);
-                                }
+                        ((Dialog<?>) entityPopupPicker).showAndWait();
+                        System.out.println("Close:" + entityPopupPicker.isCloseFlag() + ", Accept:" + entityPopupPicker.isOkFlag());
+                        if (entityPopupPicker.isOkFlag()) {
+                            List<Person> selectedObject = entityPopupPicker.getSelectedTableObjects();
+                            if (selectedObject != null) {
+                                setValue(property, selectedObject);
                             }
                         }
                     }

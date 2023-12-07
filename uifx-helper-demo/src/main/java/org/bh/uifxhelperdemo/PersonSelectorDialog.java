@@ -7,7 +7,8 @@ import org.bh.uifxhelpercore.table.ViewType;
 public class PersonSelectorDialog extends SelectorDialog<Person> {
 
     PersonSelectorDialog(ObservableList<Person> content) {
+        super();
         table.initialize(Person.class, ViewType.Chooser);
-        table.setItems(content);
+        table.setTableItems(content);
     }
 }
