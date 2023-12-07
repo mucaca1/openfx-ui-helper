@@ -39,6 +39,10 @@ public abstract class FormWrapper<T> {
         return form;
     }
 
+    public void setLabelPercentageSize(int labelPercentageSize) {
+        this.labelPercentageSize = labelPercentageSize;
+    }
+
     public abstract T getObjectFromForm();
     public abstract void setFormDataFromObject(T object);
 
