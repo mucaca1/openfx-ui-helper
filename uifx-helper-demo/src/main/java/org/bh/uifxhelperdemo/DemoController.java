@@ -14,6 +14,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import org.bh.uifxhelpercore.FormsFxHelper;
 import org.bh.uifxhelpercore.editor.BasicEditorUi;
+import org.bh.uifxhelpercore.editor.DataBrowser;
 import org.bh.uifxhelpercore.editor.SimpleObjectTranslator;
 import org.bh.uifxhelpercore.editor.builder.BasicEditorUIBuilder;
 import org.bh.uifxhelpercore.field.FieldHelper;
@@ -57,11 +58,11 @@ public class DemoController {
 
         // Init dynamic table
         {
-            TableViewComponent<Person> tableViewComponent = new TableViewComponent<>(LocalizationHelper.get().getResourceBundleService("Tables"));
-            tableViewComponent.initialize(Person.class, ViewType.Default);
-            tableViewComponent.setItems(FXCollections.observableList(DemoData.getRandomPerson(5)));
+            DataBrowser<Person> simpleDataBrowser = new DataBrowser<>(Person.class, ViewType.Default);
+            simpleDataBrowser.initSimpleTextFilter();
+            simpleDataBrowser.getTableComponent().setTableItems(FXCollections.observableList(DemoData.getRandomPerson(5)));
 
-            dynamicTablePane.setContent(tableViewComponent);
+            dynamicTablePane.setContent(simpleDataBrowser);
         }
 
         FieldTypeValueMapper mapper = new FieldTypeValueMapper() {

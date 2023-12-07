@@ -4,6 +4,10 @@ import com.dlsc.formsfx.model.util.ResourceBundleService;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.collections.WeakListChangeListener;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.SelectionMode;
@@ -83,8 +87,18 @@ public class TableViewComponent<V> extends TableView<V> {
         }
     }
 
-    public void registerFilter(StringProperty stringProperty) {
-        FilteredList<V> filteredData = new FilteredList<>(getItems());
+
+    // todo fix this! All should use setTableItems method for settings table content.
+    // maybe registerSimpleTextFilter should be moved out of tablecomponent. Or sould i create Filter table component?
+    public void setTableItems(ObservableList<V> tableItems) {
+        masterData.clear();
+        masterData.setAll(tableItems);
+    }
+
+    private ObservableList<V> masterData = FXCollections.observableArrayList();
+    private FilteredList<V> filteredData;
+    public void registerSimpleTextFilter(StringProperty stringProperty) {
+        filteredData = new FilteredList<>(masterData, v -> true);
         filteredData.predicateProperty().bind(Bindings.createObjectBinding(() -> {
             String text = stringProperty.getValue();
 

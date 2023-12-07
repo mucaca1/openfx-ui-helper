@@ -10,7 +10,6 @@ import org.bh.uifxhelpercore.table.TableViewComponent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public abstract class SelectorDialog<T> extends Dialog<T> {
     protected TableViewComponent<T> table;
@@ -89,7 +88,7 @@ public abstract class SelectorDialog<T> extends Dialog<T> {
     }
 
     public void initData() {
-        table.registerFilter(searchTextField.textProperty());
+        table.registerSimpleTextFilter(searchTextField.textProperty());
     }
 
     public List<T> getSelectedTableObjects() {
