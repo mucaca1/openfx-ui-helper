@@ -20,10 +20,14 @@ public class FormDynamicData {
 
     private Map<String, FieldTypeValueMapper> valueMappers = new HashMap<>();
 
+    private Map<String, Element<?>> fields = new HashMap<>();
+
+
     public FormDynamicData() {
         data = new HashMap<>();
         initFormData = new HashMap<>();
         valueMappers = new HashMap<>();
+        fields = new HashMap<>();
     }
 
     public void registerMapper(String fieldName, FieldTypeValueMapper mapper) {
@@ -85,6 +89,7 @@ public class FormDynamicData {
             } else {
                 throw new RuntimeException("Property for field [" + fieldName + "] does not implemented! Property can not be added to elements. Implement code for " + property.getClass().getName() + " class");
             }
+            this.fields.put(fieldName, list.get(list.size() - 1));
         }
 
         List<Group> result = new ArrayList<>();
@@ -128,4 +133,11 @@ public class FormDynamicData {
         }
     }
 
+    public Map<String, ObservableValue<?>> getData() {
+        return data;
+    }
+
+    public Map<String, Element<?>> getFields() {
+        return fields;
+    }
 }

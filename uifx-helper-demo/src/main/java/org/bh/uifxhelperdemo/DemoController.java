@@ -1,9 +1,11 @@
 package org.bh.uifxhelperdemo;
 
+import com.dlsc.formsfx.model.event.FieldEvent;
+import com.dlsc.formsfx.model.structure.DataField;
 import com.dlsc.formsfx.model.structure.Element;
-import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.structure.IntegerField;
-import com.dlsc.formsfx.model.validators.*;
+import com.dlsc.formsfx.model.util.BindingMode;
+import com.dlsc.formsfx.model.validators.IntegerRangeValidator;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -12,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
-import org.bh.uifxhelpercore.FormsFxHelper;
 import org.bh.uifxhelpercore.editor.BasicEditorUi;
 import org.bh.uifxhelpercore.editor.DataBrowser;
 import org.bh.uifxhelpercore.editor.SimpleObjectTranslator;
@@ -23,12 +24,14 @@ import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
 import org.bh.uifxhelpercore.form.FormField;
 import org.bh.uifxhelpercore.locale.LocalizationHelper;
-import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
 
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class DemoController {
     @FXML
@@ -122,8 +125,13 @@ public class DemoController {
 
             formWrapper.getFormDynamicData().registerMapper("parent", mapper);
             formWrapper.initForm();
+            formWrapper.getFormDynamicData().setValueOfField("name", "Random name");
+            ((DataField<?, ?, ?>) formWrapper.getFormDynamicData().getFields().get("age")).setBindingMode(BindingMode.CONTINUOUS);
+            ((IntegerField) formWrapper.getFormDynamicData().getFields().get("age")).addEventHandler(FieldEvent.EVENT_FIELD_PERSISTED, (a) -> {
+                formWrapper.getFormDynamicData().setValueOfField("name", "Random name " + ((IntegerField)a.getField()).getValue());
+            });
             formWrapper.getFieldByFieldId().get("name").editable(false);
-            ((IntegerField)formWrapper.getFieldByFieldId().get("age")).validate(IntegerRangeValidator.atLeast(10, "low_number_msg"));
+            ((IntegerField) formWrapper.getFieldByFieldId().get("age")).validate(IntegerRangeValidator.atLeast(10, "low_number_msg"));
             formWrapper.buildForm();
             dynamicFormTablePane.setContent(formWrapper.getFormRenderer());
         }
