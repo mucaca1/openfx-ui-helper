@@ -43,8 +43,8 @@ public class ButtonAdvancedBar extends ButtonBar {
         }
     }
 
-    public void addButtons(ButtonType... buttonTypes) {
-        for (ButtonType buttonType : buttonTypes) {
+    public void addButtons(IButtonType... buttonTypes) {
+        for (IButtonType buttonType : buttonTypes) {
             addButtons(buttonType.getIdentifier());
         }
     }
@@ -68,7 +68,7 @@ public class ButtonAdvancedBar extends ButtonBar {
         return buttons.get(buttonIdentifier);
     }
 
-    public void addActionListener(ButtonType buttonType, EventHandler eventHandler) {
+    public void addActionListener(IButtonType buttonType, EventHandler eventHandler) {
         addActionListener(buttonType.getIdentifier(), eventHandler);
     }
 

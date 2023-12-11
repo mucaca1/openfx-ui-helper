@@ -1,6 +1,6 @@
 package org.bh.uifxhelpercore.button;
 
-public enum ButtonType {
+public enum ButtonType implements IButtonType {
     OK("okBtn"),
     CANCEL("cancelBtn"),
     DELETE("deleteBtn"),
@@ -15,6 +15,7 @@ public enum ButtonType {
         this.identifier = identifier;
     }
 
+    @Override
     public String getIdentifier() {
         return identifier;
     }
