@@ -22,6 +22,7 @@ public class BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> {
     private String tableDescriptor;
     private ResourceBundleService tableResourceBundle;
     private ResourceBundleService formResourceBundle;
+    private ResourceBundleService buttonResourceBundle;
     private boolean multiSelection;
 
     private boolean initFormDynamic;
@@ -78,6 +79,11 @@ public class BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> {
         return this;
     }
 
+    public BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> setButtonResourceBundle(ResourceBundleService buttonResourceBundle) {
+        this.buttonResourceBundle = buttonResourceBundle;
+        return this;
+    }
+
     public BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> setMultiSelection(boolean multiSelection) {
         this.multiSelection = multiSelection;
         return this;
@@ -91,6 +97,7 @@ public class BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> {
                 tableDescriptor,
                 tableResourceBundle,
                 formResourceBundle,
+                buttonResourceBundle,
                 multiSelection,
                 initFormDynamic,
                 showForm,

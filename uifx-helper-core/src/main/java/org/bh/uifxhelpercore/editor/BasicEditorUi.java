@@ -13,6 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.bh.uifxhelpercore.button.ButtonAdvancedBar;
+import org.bh.uifxhelpercore.button.ButtonType;
 import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
 import org.bh.uifxhelpercore.form.FormWrapper;
@@ -39,6 +40,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                          String tableDescriptor,
                          ResourceBundleService tableResourceBundle,
                          ResourceBundleService formResourceBundle,
+                         ResourceBundleService buttonResourceBundle,
                          boolean multiSelection,
                          boolean initFormDynamic,
                          boolean showForm,
@@ -110,26 +112,25 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                 ScrollPane formScrollPane = new ScrollPane();
                 anchorPane.getChildren().add(splitPane);
 
-                ButtonBar formButtonBar = new ButtonBar();
+                ButtonAdvancedBar formButtonBar = new ButtonAdvancedBar();
                 formScrollPane.setContent(formWrapper.getFormRenderer());
 
                 formBorderPane.setCenter(formScrollPane);
                 formBorderPane.setBottom(formButtonBar);
+                
+                formButtonBar.addButtons(ButtonType.OK, ButtonType.CANCEL);
 
-                Button formOkBtn = new Button("Ok");
-                Button formCancelBtn = new Button("Cancel");
-                formButtonBar.getButtons().addAll(formOkBtn, formCancelBtn);
-
-                formOkBtn.addEventHandler(ActionEvent.ACTION, event -> {
+                formButtonBar.addActionListener(ButtonType.OK, event -> {
                     FORM_OBJECT newObject = formWrapper.getObjectFromForm();
                     int selectedTableObjectIndex = table.getSelectionModel().getSelectedIndex();
                     table.getItems().remove(selectedTableObjectIndex);
                     table.getItems().add(selectedTableObjectIndex, translator.getFirstObject(newObject));
                     table.refresh();
                 });
-                formCancelBtn.addEventHandler(ActionEvent.ACTION, event -> {
+                formButtonBar.addActionListener(ButtonType.CANCEL, event -> {
                     formWrapper.getForm().reset();
                 });
+                formButtonBar.setResourceBundleService(buttonResourceBundle);
 
                 table.setOnMouseClicked(mouseEvent -> {
                     TABLE_OBJECT selectedItem = table.getSelectionModel().getSelectedItem();
@@ -146,17 +147,13 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
         {
             // todo make this button dynamic.
             // todo add resource for buttons
-            Button createBtn = new Button("Create");
-            Button updateBtn = new Button("Update");
-            Button deleteBtn = new Button("Delete");
-
             if (showForm) {
-                tableButtonBar.getButtons().addAll(createBtn, deleteBtn);
+                tableButtonBar.addButtons(ButtonType.CREATE, ButtonType.DELETE);
             } else {
-                tableButtonBar.getButtons().addAll(createBtn, updateBtn, deleteBtn);
+                tableButtonBar.addButtons(ButtonType.CREATE, ButtonType.UPDATE, ButtonType.DELETE);
             }
 
-            createBtn.addEventHandler(ActionEvent.ACTION, event -> {
+            tableButtonBar.addActionListener(ButtonType.CREATE, event -> {
                 if (showForm) {
                     formWrapper.clearForm();
                 } else {
@@ -172,25 +169,30 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                 }
             });
 
-            updateBtn.addEventHandler(ActionEvent.ACTION, event -> {
-                BaseDialog baseDialog = new BaseDialog();
-                TABLE_OBJECT selectedObject = table.getSelectionModel().getSelectedItem();
-                formWrapper.setFormDataFromObject(translator.getSecondObject(selectedObject));
-                baseDialog.setContent(formWrapper.getFormRenderer());
-                baseDialog.showAndWait();
+            if (!showForm) {
+                tableButtonBar.addActionListener(ButtonType.UPDATE, event -> {
+                    BaseDialog baseDialog = new BaseDialog();
+                    TABLE_OBJECT selectedObject = table.getSelectionModel().getSelectedItem();
+                    formWrapper.setFormDataFromObject(translator.getSecondObject(selectedObject));
+                    baseDialog.setContent(formWrapper.getFormRenderer());
+                    baseDialog.showAndWait();
 
-                if (baseDialog.isOkFlag()) {
-                    int index = table.getSelectionModel().getSelectedIndex();
-                    table.getItems().remove(table.getSelectionModel().getSelectedItem());
-                    FORM_OBJECT newObject = formWrapper.getObjectFromForm();
-                    table.getItems().add(index, translator.getFirstObject(newObject));
-                    table.refresh();
-                }
-            });
+                    if (baseDialog.isOkFlag()) {
+                        int index = table.getSelectionModel().getSelectedIndex();
+                        table.getItems().remove(table.getSelectionModel().getSelectedItem());
+                        FORM_OBJECT newObject = formWrapper.getObjectFromForm();
+                        table.getItems().add(index, translator.getFirstObject(newObject));
+                        table.refresh();
+                    }
+                });
+            }
 
-            deleteBtn.addEventHandler(ActionEvent.ACTION, event -> {
+
+            tableButtonBar.addActionListener(ButtonType.DELETE, event -> {
                 table.getItems().remove(table.getSelectionModel().getSelectedItem());
             });
+
+            tableButtonBar.setResourceBundleService(buttonResourceBundle);
         }
     }
 

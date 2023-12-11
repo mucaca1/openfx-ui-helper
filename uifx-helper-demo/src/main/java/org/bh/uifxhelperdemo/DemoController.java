@@ -57,6 +57,9 @@ public class DemoController {
             LocalizationHelper.get().registerResourceBundleService("Form", "en", ResourceBundle.getBundle("Form", new Locale("en")));
             LocalizationHelper.get().registerResourceBundleService("Form", "sk", ResourceBundle.getBundle("Form", new Locale("sk")));
 
+            LocalizationHelper.get().registerResourceBundleService("Buttons", "en", ResourceBundle.getBundle("Buttons", new Locale("en")));
+            LocalizationHelper.get().registerResourceBundleService("Buttons", "sk", ResourceBundle.getBundle("Buttons", new Locale("sk")));
+
         }
 
         // Init dynamic table
@@ -142,6 +145,7 @@ public class DemoController {
             BasicEditorUi<Person, Person> basicEditor = new BasicEditorUIBuilder<>(Person.class, Person.class, new SimpleObjectTranslator<>())
                     .setTableResourceBundle(LocalizationHelper.get().getResourceBundleService("Tables"))
                     .setFormResourceBundle(LocalizationHelper.get().getResourceBundleService("Form"))
+                    .setButtonResourceBundle(LocalizationHelper.get().getResourceBundleService("Buttons"))
                     .addFormFieldMapper("parent", mapper)
                     .setShowForm(true)
                     .setInitFormDynamic(true)
@@ -157,6 +161,7 @@ public class DemoController {
             BasicEditorUi<Person, Person> basicEditor = new BasicEditorUIBuilder<>(Person.class, Person.class, new SimpleObjectTranslator<>())
                     .setTableResourceBundle(LocalizationHelper.get().getResourceBundleService("Tables"))
                     .setFormResourceBundle(LocalizationHelper.get().getResourceBundleService("Form"))
+                    .setButtonResourceBundle(LocalizationHelper.get().getResourceBundleService("Buttons"))
                     .addFormFieldMapper("parent", mapper)
                     .setInitFormDynamic(true)
                     .build();
