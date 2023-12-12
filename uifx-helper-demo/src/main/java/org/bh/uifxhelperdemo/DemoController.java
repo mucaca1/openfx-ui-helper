@@ -24,6 +24,7 @@ import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
 import org.bh.uifxhelpercore.form.FormField;
 import org.bh.uifxhelpercore.locale.LocalizationHelper;
+import org.bh.uifxhelpercore.table.PagingTable;
 import org.bh.uifxhelpercore.table.ViewType;
 
 import java.awt.event.ActionListener;
@@ -36,6 +37,8 @@ import java.util.ResourceBundle;
 public class DemoController {
     @FXML
     public Tab dynamicTablePane;
+    @FXML
+    public Tab dynamicPagingTablePane;
     @FXML
     public Tab dynamicFormTablePane;
     @FXML
@@ -69,6 +72,14 @@ public class DemoController {
             simpleDataBrowser.getTableComponent().setTableItems(FXCollections.observableList(DemoData.getRandomPerson(5)));
 
             dynamicTablePane.setContent(simpleDataBrowser);
+        }
+
+        // Init dynamic paging table
+        {
+            PagingTable<Person> simpleDataBrowser = new PagingTable<>(Person.class, ViewType.Default);
+            simpleDataBrowser.getTableComponent().setTableItems(FXCollections.observableList(DemoData.getRandomPerson(5)));
+
+            dynamicPagingTablePane.setContent(simpleDataBrowser);
         }
 
         FieldTypeValueMapper mapper = new FieldTypeValueMapper() {

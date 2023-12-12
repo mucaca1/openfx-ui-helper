@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class DynamicFormWrapper<T> extends FormWrapper<T> {
 
-    private Class<T> formClass;
+    private final Class<T> formClass;
 
     private Map<String, com.dlsc.formsfx.model.structure.Field<?>> fieldByFieldId;
 
