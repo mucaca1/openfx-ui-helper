@@ -12,14 +12,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class help create and hold form data.
+ */
 public class FormDynamicData {
 
+    /**
+     * Data mapped on form fields.
+     */
     private Map<String, ObservableValue<?>> data;
 
+    /**
+     * Init data values. Data are kept for clear option.
+     */
     private Map<String, Object> initFormData;
 
+    /**
+     * Hold customized field data for custom object.
+     */
     private Map<String, FieldTypeValueMapper> valueMappers = new HashMap<>();
 
+    /**
+     * Hold all created form elements (real rendered fields)
+     */
     private Map<String, Element<?>> fields = new HashMap<>();
 
 
@@ -34,6 +49,12 @@ public class FormDynamicData {
         valueMappers.put(fieldName, mapper);
     }
 
+    /**
+     * Scan for {@link FormField} annotation on {@param formObject}.
+     * Take all data from {@link FormField} and create {@link ObservableValue} values and store them.
+     * Also create initialization values for form.
+     * @param formObject object to parse.
+     */
     public void parseFormObjectAsFields(Class<?> formObject) {
         for (java.lang.reflect.Field field : formObject.getDeclaredFields()) {
             FormField formField = field.getAnnotation(FormField.class);
@@ -61,6 +82,11 @@ public class FormDynamicData {
         }
     }
 
+    /**
+     * Return all groups that can be used for creating form.
+     * @param fields
+     * @return
+     */
     public List<Group> getGroupOfDynamicData(java.lang.reflect.Field[] fields) {
         List<Element<?>> elements = new ArrayList<>();
         Map<String, List<Element<?>>> sections = new HashMap<>();
@@ -103,6 +129,9 @@ public class FormDynamicData {
         return result;
     }
 
+    /**
+     * Set value to field.
+     */
     public void setValueOfField(String fieldName, Object value) {
         ObservableValue<?> observableValue = data.get(fieldName);
         if (observableValue instanceof SimpleStringProperty) {
@@ -118,6 +147,9 @@ public class FormDynamicData {
         }
     }
 
+    /**
+     * Return value from field
+     */
     public Object getValueOfField(String fieldName) {
         ObservableValue<?> observableValue = data.get(fieldName);
         if (observableValue instanceof SimpleStringProperty) {

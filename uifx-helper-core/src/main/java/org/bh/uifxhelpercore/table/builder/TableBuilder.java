@@ -10,9 +10,15 @@ public class TableBuilder<T> {
 
     private ResourceBundleService resourceBundleService;
 
+    private boolean enableSearchBar;
+
+    private boolean enablePaging;
+
     public TableBuilder() {
         tableObject = null;
         resourceBundleService = null;
+        enableSearchBar = false;
+        enablePaging = false;
     }
 
     public TableBuilder<T> setResourceBundleService(ResourceBundleService resourceBundleService) {
@@ -22,6 +28,16 @@ public class TableBuilder<T> {
 
     public TableBuilder<T> createDynamicFormFromObject(Class<T> tableObject) {
         this.tableObject = tableObject;
+        return this;
+    }
+
+    public TableBuilder<T> enableSearchBar(boolean enableSearchBar) {
+        this.enableSearchBar = enableSearchBar;
+        return this;
+    }
+
+    public TableBuilder<T> enablePaging(boolean enablePaging) {
+        this.enablePaging = enablePaging;
         return this;
     }
 

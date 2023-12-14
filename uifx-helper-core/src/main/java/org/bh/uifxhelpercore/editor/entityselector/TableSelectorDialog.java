@@ -11,7 +11,13 @@ import org.bh.uifxhelpercore.table.TableViewComponent;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SelectorDialog<T> extends Dialog<T> {
+/**
+ * This is dialog for showing data in table view.
+ * Dialog contain simple text search for finding data in table.
+ * @param <T> object type witch will be showed in table
+ */
+public abstract class TableSelectorDialog<T> extends Dialog<T> {
+
     protected TableViewComponent<T> table;
     protected TextField searchTextField;
 
@@ -25,20 +31,20 @@ public abstract class SelectorDialog<T> extends Dialog<T> {
      */
     private boolean okFlag;
 
-    private List<T> selectedTableObjects;
+    private List<T> selectedObjectsFromTable;
 
-    public SelectorDialog() {
+    public TableSelectorDialog() {
         this(false, true);
     }
 
-    public SelectorDialog(boolean multiSelection, boolean canSelectNone) {
+    public TableSelectorDialog(boolean multiSelection, boolean canSelectNone) {
         super();
         closeFlag = false;
         okFlag = false;
         table = new TableViewComponent<T>(null);
         searchTextField = new TextField();
 
-        selectedTableObjects = new ArrayList<>();
+        selectedObjectsFromTable = new ArrayList<>();
 
         searchTextField.setPromptText("Type for filtering...");
 
@@ -65,7 +71,7 @@ public abstract class SelectorDialog<T> extends Dialog<T> {
             getDialogPane().getButtonTypes().addAll(noneBtnType);
             Button button1 = (Button) getDialogPane().lookupButton(noneBtnType);
             button1.addEventFilter(ActionEvent.ACTION, event -> {
-                selectedTableObjects.clear();
+                selectedObjectsFromTable.clear();
                 closeFlag = false;
                 okFlag = true;
             });
@@ -83,8 +89,8 @@ public abstract class SelectorDialog<T> extends Dialog<T> {
         table.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getSource() == table) { // handle on table click.
                 ObservableList<T> selectedItems = table.getSelectionModel().getSelectedItems();
-                selectedTableObjects.clear();
-                selectedTableObjects.addAll(selectedItems);
+                selectedObjectsFromTable.clear();
+                selectedObjectsFromTable.addAll(selectedItems);
             }
         });
         table.registerSimpleTextFilter(searchTextField.textProperty());
@@ -98,7 +104,7 @@ public abstract class SelectorDialog<T> extends Dialog<T> {
         return okFlag;
     }
 
-    public List<T> getSelectedTableObjects() {
-        return selectedTableObjects;
+    public List<T> getSelectedObjectsFromTable() {
+        return selectedObjectsFromTable;
     }
 }

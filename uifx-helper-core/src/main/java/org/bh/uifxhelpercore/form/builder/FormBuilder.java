@@ -24,9 +24,6 @@ public class FormBuilder<T> {
     }
 
     public FormWrapper<T> build() {
-        if (formObject != null) {
-            return new DynamicFormWrapper<>(resourceBundleService, formObject);
-        }
-        return null;
+        return new DynamicFormWrapper<>(resourceBundleService, formObject);
     }
 }

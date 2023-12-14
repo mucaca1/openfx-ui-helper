@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * Helper for holding resources in singleton instance.
+ */
 public class LocalizationHelper {
 
     private static LocalizationHelper singleton;
@@ -21,6 +24,9 @@ public class LocalizationHelper {
         resourceBundleMap = new HashMap<>();
     }
 
+    /**
+     * Return singleton of localization helper.
+     */
     public static LocalizationHelper get() {
         if (singleton == null) {
             singleton = new LocalizationHelper();
@@ -32,6 +38,10 @@ public class LocalizationHelper {
         return resourceBundleServiceMap.containsKey(key);
     }
 
+    /**
+     * Set locale for all registered resources. All listeners on resource bundle get notification.
+     * @param locale locale (like: 'en', 'de', ...)
+     */
     public void setLocale(String locale) {
         this.locale = locale;
         for (String resourceKey : resourceBundleServiceMap.keySet()) {
@@ -40,21 +50,32 @@ public class LocalizationHelper {
         }
     }
 
+    /**
+     * Register new resource bundle
+     * @param key key
+     * @param language language of resource bundle
+     * @param resourceBundle resource bundle
+     */
     public void registerResourceBundleService(String key, String language, ResourceBundle resourceBundle) {
         ResourceBundleService resourceBundleService = new ResourceBundleService(resourceBundle);
 
         if (!resourceBundleMap.containsKey(key)) {
             resourceBundleMap.put(key, new HashMap<>());
         }
-        if (resourceBundleMap.containsKey(language)) {
+        Map<String, ResourceBundle> stringResourceBundleMap = resourceBundleMap.get(key);
+        if (stringResourceBundleMap.containsKey(language)) {
             return;
         }
-        Map<String, ResourceBundle> stringResourceBundleMap = resourceBundleMap.get(key);
         stringResourceBundleMap.put(language, resourceBundle);
 
         resourceBundleServiceMap.put(key, resourceBundleService);
     }
 
+    /**
+     * return resource bundle service for key.
+     * @param key key
+     * @return Resource Bundle Service
+     */
     public ResourceBundleService getResourceBundleService(String key) {
         return resourceBundleServiceMap.get(key);
     }

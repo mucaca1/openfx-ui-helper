@@ -11,8 +11,6 @@ public abstract class FormWrapper<T> {
     protected Form form;
     private FormRenderer formRenderer;
 
-    protected FormDynamicData formDynamicData = new FormDynamicData();
-
     protected ResourceBundleService resourceBundleService;
 
     private int labelPercentageSize;
@@ -45,12 +43,4 @@ public abstract class FormWrapper<T> {
 
     public abstract T getObjectFromForm();
     public abstract void setFormDataFromObject(T object);
-
-    public void clearForm() {
-        formDynamicData.clearData();
-    }
-
-    public FormDynamicData getFormDynamicData() {
-        return formDynamicData;
-    }
 }

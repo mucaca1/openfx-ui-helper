@@ -9,6 +9,10 @@ import javafx.scene.control.ButtonBar;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class help hold data about all buttons in button bar.
+ * Defines resource bundle for button labels and help update those labels after language change.
+ */
 public class ButtonAdvancedBar extends ButtonBar {
 
     /**
@@ -16,6 +20,10 @@ public class ButtonAdvancedBar extends ButtonBar {
      */
     private Map<String, Button> buttons;
 
+
+    /**
+     * Localization resource bundle.
+     */
     private ResourceBundleService resourceBundleService;
 
 
@@ -23,6 +31,10 @@ public class ButtonAdvancedBar extends ButtonBar {
         buttons = new HashMap<>();
     }
 
+    /**
+     * Set localization resource bundle and register listener on this resource bundle for updating labels after language changed.
+     * @param resourceBundleService localization resource bundle
+     */
     public void setResourceBundleService(ResourceBundleService resourceBundleService) {
         this.resourceBundleService = resourceBundleService;
 
@@ -43,13 +55,16 @@ public class ButtonAdvancedBar extends ButtonBar {
         }
     }
 
+    /**
+     * Add button into button bar.
+     */
     public void addButtons(IButtonType... buttonTypes) {
         for (IButtonType buttonType : buttonTypes) {
             addButtons(buttonType.getIdentifier());
         }
     }
 
-    public void addButtons(String... buttonIdentifiers) {
+    private void addButtons(String... buttonIdentifiers) {
         for (String identifier : buttonIdentifiers) {
             String btnLabel = identifier;
             if (resourceBundleService != null) {
@@ -64,15 +79,24 @@ public class ButtonAdvancedBar extends ButtonBar {
         }
     }
 
-    public Button getButton(String buttonIdentifier) {
-        return buttons.get(buttonIdentifier);
+    /**
+     * Return button by identifier.
+     * @return button
+     */
+    public Button getButton(IButtonType buttonType) {
+        return buttons.get(buttonType.getIdentifier());
     }
 
+    /**
+     * Register event handler for button.
+     * @param buttonType button type
+     * @param eventHandler handler
+     */
     public void addActionListener(IButtonType buttonType, EventHandler eventHandler) {
         addActionListener(buttonType.getIdentifier(), eventHandler);
     }
 
-    public void addActionListener(String buttonId, EventHandler eventHandler) {
+    private void addActionListener(String buttonId, EventHandler eventHandler) {
         buttons.get(buttonId).addEventHandler(ActionEvent.ACTION, eventHandler);
     }
 }

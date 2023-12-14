@@ -1,5 +1,8 @@
 package org.bh.uifxhelpercore.button;
 
+/**
+ * Basic button types. For custom button type create new enum witch inmplement {@link IButtonType}
+ */
 public enum ButtonType implements IButtonType {
     OK("okBtn"),
     CANCEL("cancelBtn"),

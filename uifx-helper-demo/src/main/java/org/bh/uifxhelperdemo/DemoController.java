@@ -96,11 +96,11 @@ public class DemoController {
 
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent e) {
-                        PersonSelectorDialog entityPopupPicker = new PersonSelectorDialog(FXCollections.observableList(DemoData.getRandomPerson(5)));
+                        PersonTableSelectorDialog entityPopupPicker = new PersonTableSelectorDialog(FXCollections.observableList(DemoData.getRandomPerson(5)));
                         ((Dialog<?>) entityPopupPicker).showAndWait();
                         System.out.println("Close:" + entityPopupPicker.isCloseFlag() + ", Accept:" + entityPopupPicker.isOkFlag());
                         if (entityPopupPicker.isOkFlag()) {
-                            List<Person> selectedObject = entityPopupPicker.getSelectedTableObjects();
+                            List<Person> selectedObject = entityPopupPicker.getSelectedObjectsFromTable();
                             if (selectedObject != null) {
                                 setValue(property, selectedObject);
                             }

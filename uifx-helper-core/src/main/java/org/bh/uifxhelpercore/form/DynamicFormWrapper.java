@@ -16,6 +16,8 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
 
     private final Class<T> formClass;
 
+    protected FormDynamicData formDynamicData = new FormDynamicData();
+
     private Map<String, com.dlsc.formsfx.model.structure.Field<?>> fieldByFieldId;
 
     public DynamicFormWrapper(ResourceBundleService resourceBundleService, Class<T> formClass) {
@@ -46,6 +48,14 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
         form = Form.of(
                 groups.toArray(new Group[0])
         ).title(formTitle).i18n(resourceBundleService);
+    }
+
+    public void clearForm() {
+        formDynamicData.clearData();
+    }
+
+    public FormDynamicData getFormDynamicData() {
+        return formDynamicData;
     }
 
     @Override

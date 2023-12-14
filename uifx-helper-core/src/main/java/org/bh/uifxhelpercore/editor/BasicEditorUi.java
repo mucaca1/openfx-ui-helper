@@ -85,7 +85,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
         if (initFormDynamic) {
             formWrapper = new DynamicFormWrapper<>(formResourceBundle, formObjectClass);
             formFieldMappers.forEach((s, fieldTypeValueMapper) -> {
-                formWrapper.getFormDynamicData().registerMapper(s, fieldTypeValueMapper);
+                ((DynamicFormWrapper<?>)formWrapper).getFormDynamicData().registerMapper(s, fieldTypeValueMapper);
             });
             ((DynamicFormWrapper<?>) formWrapper).initForm();
             formWrapper.buildForm();
@@ -155,7 +155,9 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
             tableButtonBar.addActionListener(ButtonType.CREATE, event -> {
                 if (showForm) {
-                    formWrapper.clearForm();
+                    if (initFormDynamic) {
+                        ((DynamicFormWrapper<?>)formWrapper).clearForm();
+                    }
                 } else {
                     BaseDialog baseDialog = new BaseDialog();
                     baseDialog.setContent(formWrapper.getFormRenderer());
