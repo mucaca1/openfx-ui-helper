@@ -7,6 +7,8 @@ import org.bh.uifxhelpercore.table.TableColumn;
 import org.bh.uifxhelpercore.table.TableObject;
 import org.bh.uifxhelpercore.table.ViewType;
 
+import java.util.Date;
+
 @TableObject
 @FormObject(formTitle = "form_title")
 public class Person {
@@ -22,6 +24,9 @@ public class Person {
 
     @FormField(type = FieldType.BOOLEAN, getter = "isDeleted")
     private boolean deleted;
+
+    @FormField(type = FieldType.DATE)
+    private Date validFor;
 
     @FormField(type = FieldType.USER_DEFINED, fieldName = "parent")
     private Person parent;
@@ -61,6 +66,14 @@ public class Person {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Date getValidFor() {
+        return validFor;
+    }
+
+    public void setValidFor(Date validFor) {
+        this.validFor = validFor;
     }
 
     public Person getParent() {

@@ -7,10 +7,7 @@ import com.dlsc.formsfx.model.structure.Section;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class help create and hold form data.
@@ -68,6 +65,7 @@ public class FormDynamicData {
                 case STRING -> new SimpleStringProperty("");
                 case INTEGER -> new SimpleIntegerProperty(0);
                 case BOOLEAN -> new SimpleBooleanProperty();
+                case DATE -> new SimpleObjectProperty<Date>();
                 case USER_DEFINED -> valueMappers.get(field.getName()).getValueFromField(field);
             };
 
@@ -110,6 +108,12 @@ public class FormDynamicData {
                 list.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldName).id(fieldName));
             } else if (property instanceof SimpleBooleanProperty) {
                 list.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldName).id(fieldName));
+            } else if (property instanceof SimpleObjectProperty) {
+                if (FieldType.DATE.equals(formField.type())) {
+                    list.add(Field.ofDate(((SimpleObjectProperty) property)).label(fieldName).id(fieldName));
+                } else {
+                    throw new RuntimeException("Property for field [" + fieldName + "] does not implemented! Property can not be added to elements. Implement code for " + property.getClass().getName() + " class");
+                }
             } else if (valueMappers.containsKey(field.getName())) {
                 list.add(valueMappers.get(field.getName()).getElement(formField, property).id(fieldName));
             } else {
@@ -140,6 +144,10 @@ public class FormDynamicData {
             ((SimpleIntegerProperty) observableValue).set((Integer) value);
         } else if (observableValue instanceof SimpleBooleanProperty) {
             ((SimpleBooleanProperty) observableValue).set((Boolean) value);
+        } else if (observableValue instanceof SimpleObjectProperty) {
+            if (observableValue.getValue() instanceof Date) {
+                ((SimpleObjectProperty) observableValue).set((Date) value);
+            }
         } else if (valueMappers.containsKey(fieldName)) {
             valueMappers.get(fieldName).setValue(observableValue, value);
         } else {
@@ -158,11 +166,19 @@ public class FormDynamicData {
             return ((SimpleIntegerProperty) observableValue).get();
         } else if (observableValue instanceof SimpleBooleanProperty) {
             return ((SimpleBooleanProperty) observableValue).get();
+        } else if (observableValue instanceof SimpleObjectProperty) {
+            if (observableValue.getValue() instanceof Date) {
+                ((SimpleObjectProperty) observableValue).get();
+            }
+            else {
+                throw new RuntimeException("Field [" + fieldName + "] does not implemented getter for SimpleObjectProperty<?>. Implement getter for " + observableValue.getClass().getName() + " class.");
+            }
         } else if (valueMappers.containsKey(fieldName)) {
             return valueMappers.get(fieldName).getValue(observableValue);
         } else {
             throw new RuntimeException("Field [" + fieldName + "] does not implemented getter. Implement getter for " + observableValue.getClass().getName() + " class.");
         }
+        return null;
     }
 
     public Map<String, ObservableValue<?>> getData() {

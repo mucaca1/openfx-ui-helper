@@ -5,6 +5,7 @@ public enum FieldType {
     INTEGER,
     USER_DEFINED,
     BOOLEAN,
+    DATE,
 
     ;
 }
