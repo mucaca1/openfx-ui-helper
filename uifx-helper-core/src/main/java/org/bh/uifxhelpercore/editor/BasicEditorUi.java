@@ -16,6 +16,7 @@ import org.bh.uifxhelpercore.button.ButtonAdvancedBar;
 import org.bh.uifxhelpercore.button.ButtonType;
 import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
+import org.bh.uifxhelpercore.form.FieldValueMapper;
 import org.bh.uifxhelpercore.form.FormWrapper;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
@@ -44,7 +45,8 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                          boolean multiSelection,
                          boolean initFormDynamic,
                          boolean showForm,
-                         Map<String, FieldTypeValueMapper> formFieldMappers) {
+                         Map<String, FieldTypeValueMapper> formFieldMappers,
+                         Map<String, FieldValueMapper> formFieldValueMappers) {
         this.translator = objectTranslator;
         {
             rootPane = new VBox();
@@ -86,6 +88,9 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
             formWrapper = new DynamicFormWrapper<>(formResourceBundle, formObjectClass);
             formFieldMappers.forEach((s, fieldTypeValueMapper) -> {
                 ((DynamicFormWrapper<?>)formWrapper).getFormDynamicData().registerMapper(s, fieldTypeValueMapper);
+            });
+            formFieldValueMappers.forEach((s, fieldValueMapper) -> {
+                ((DynamicFormWrapper<?>)formWrapper).getFormDynamicData().registerValueMapper(s, fieldValueMapper);
             });
             ((DynamicFormWrapper<?>) formWrapper).initForm();
             formWrapper.buildForm();
@@ -136,6 +141,8 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                     TABLE_OBJECT selectedItem = table.getSelectionModel().getSelectedItem();
                     formWrapper.setFormDataFromObject(translator.getSecondObject(selectedItem));
                 });
+
+                formWrapper.getFormRenderer().prefWidthProperty().bind(formBorderPane.prefWidthProperty());
             } else {
                 anchorPane.getChildren().add(anchorPaneTable);
             }
@@ -212,5 +219,9 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
     public void setTableData(ObservableList<TABLE_OBJECT> tebleObservableList) {
         table.setItems(tebleObservableList);
+    }
+
+    public FormWrapper<FORM_OBJECT> getFormWrapper() {
+        return formWrapper;
     }
 }

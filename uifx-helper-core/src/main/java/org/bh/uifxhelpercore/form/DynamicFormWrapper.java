@@ -62,7 +62,12 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
     public T getObjectFromForm() {
         try {
             form.persist();
-            T result = formClass.getDeclaredConstructor().newInstance();
+            T result = null;
+            try {
+                result = formClass.getDeclaredConstructor().newInstance();
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
 
             for (Field declaredField : formClass.getDeclaredFields()) {
                 FormField formField = declaredField.getAnnotation(FormField.class);
@@ -70,22 +75,29 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
                     continue;
                 }
                 Object value = formDynamicData.getValueOfField(declaredField.getName());
-                Method setter =
-                        formClass.getMethod(
-                                formField.setter().isBlank() ?
-                                "set" + declaredField.getName().substring(0, 1).toUpperCase() + declaredField.getName().substring(1)
-                                : formField.setter(), declaredField.getType());
-                setter.invoke(result, value);
+                String methodName = formField.setter().isBlank() ?
+                        "set" + declaredField.getName().substring(0, 1).toUpperCase() + declaredField.getName().substring(1)
+                        : formField.setter();
+                try {
+                    Method setter = formClass.getMethod(methodName, declaredField.getType());
+                    setter.invoke(result, value);
+                } catch (NoSuchMethodException e) {
+                    System.out.println("No method " + methodName + " for field: " + formField.fieldName());
+                    throw new RuntimeException(e);
+                }
             }
 
             return result;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
     public void setFormDataFromObject(T object) {
+        if (object == null) {
+            return;
+        }
         for (Field declaredField : formClass.getDeclaredFields()) {
             FormField formField = declaredField.getAnnotation(FormField.class);
             if (formField == null) {

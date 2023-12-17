@@ -4,6 +4,7 @@ import com.dlsc.formsfx.model.util.ResourceBundleService;
 import org.bh.uifxhelpercore.editor.BasicEditorUi;
 import org.bh.uifxhelpercore.editor.ObjectTranslator;
 import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
+import org.bh.uifxhelpercore.form.FieldValueMapper;
 import org.bh.uifxhelpercore.table.ViewType;
 
 import java.util.HashMap;
@@ -31,6 +32,8 @@ public class BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> {
 
     private Map<String, FieldTypeValueMapper> formFieldMappers;
 
+    private Map<String, FieldValueMapper> formFieldValueMappers;
+
     public BasicEditorUIBuilder(Class<TABLE_OBJECT> tableObjectClass, Class<FORM_OBJECT> formObjectClass, ObjectTranslator<TABLE_OBJECT, FORM_OBJECT> objectTranslator) {
         this.objectTranslator = objectTranslator;
         this.tableObjectClass = tableObjectClass;
@@ -43,10 +46,16 @@ public class BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> {
         initFormDynamic = false;
         showForm = false;
         formFieldMappers = new HashMap<>();
+        formFieldValueMappers = new HashMap<>();
     }
 
     public BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> addFormFieldMapper(String fieldName, FieldTypeValueMapper mapper) {
         formFieldMappers.put(fieldName, mapper);
+        return this;
+    }
+
+    public BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> addFormFieldValueMapper(String fieldName, FieldValueMapper mapper) {
+        formFieldValueMappers.put(fieldName, mapper);
         return this;
     }
 
@@ -101,7 +110,8 @@ public class BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> {
                 multiSelection,
                 initFormDynamic,
                 showForm,
-                formFieldMappers);
+                formFieldMappers,
+                formFieldValueMappers);
     }
 
 

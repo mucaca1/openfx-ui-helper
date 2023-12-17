@@ -13,11 +13,15 @@ public @interface FormField {
 
     String fieldName() default "";
 
+    String fieldLabel() default "";
+
     String getter() default "";
 
     String setter() default "";
 
     String section() default "";
+
+    boolean editable() default true;
 
     int order() default -1;
 

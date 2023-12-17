@@ -27,7 +27,9 @@ public class FormDynamicData {
     /**
      * Hold customized field data for custom object.
      */
-    private Map<String, FieldTypeValueMapper> valueMappers = new HashMap<>();
+    private Map<String, FieldTypeValueMapper> customFieldMappers;
+
+    private Map<String, FieldValueMapper> customValueMappers = new HashMap<>();
 
     /**
      * Hold all created form elements (real rendered fields)
@@ -38,12 +40,17 @@ public class FormDynamicData {
     public FormDynamicData() {
         data = new HashMap<>();
         initFormData = new HashMap<>();
-        valueMappers = new HashMap<>();
+        customFieldMappers = new HashMap<>();
+        customValueMappers = new HashMap<>();
         fields = new HashMap<>();
     }
 
     public void registerMapper(String fieldName, FieldTypeValueMapper mapper) {
-        valueMappers.put(fieldName, mapper);
+        customFieldMappers.put(fieldName, mapper);
+    }
+
+    public void registerValueMapper(String fieldName, FieldValueMapper mapper) {
+        customValueMappers.put(fieldName, mapper);
     }
 
     /**
@@ -61,12 +68,14 @@ public class FormDynamicData {
             if (data.containsKey(field.getName())) {
                 continue;
             }
-            ObservableValue<?> property = switch (formField.type()) {
-                case STRING -> new SimpleStringProperty("");
-                case INTEGER -> new SimpleIntegerProperty(0);
-                case BOOLEAN -> new SimpleBooleanProperty();
-                case DATE -> new SimpleObjectProperty<Date>();
-                case USER_DEFINED -> valueMappers.get(field.getName()).getValueFromField(field);
+            ObservableValue<?> property;
+            switch (formField.type()) {
+                case STRING: property = new SimpleStringProperty(""); break;
+                case INTEGER: property = new SimpleIntegerProperty(0); break;
+                case BOOLEAN: property = new SimpleBooleanProperty(); break;
+                case DATE: property = new SimpleObjectProperty<Date>(); break;
+                case USER_DEFINED: property = customFieldMappers.get(field.getName()).getValueFromField(field); break;
+                default: throw new RuntimeException("Unsupported field type: " + formField.type());
             };
 
             data.put(field.getName(), property);
@@ -102,20 +111,21 @@ public class FormDynamicData {
                 list = sections.get(formField.section());
             }
             String fieldName = formField.fieldName().isBlank() ? field.getName() : formField.fieldName();
+            String fieldLabel = formField.fieldLabel().isBlank() ? field.getName() : formField.fieldLabel();
             if (property instanceof SimpleStringProperty) {
-                list.add(Field.ofStringType((StringProperty) property).label(fieldName).id(fieldName));
+                list.add(Field.ofStringType((StringProperty) property).label(fieldLabel).editable(formField.editable()).id(fieldName));
             } else if (property instanceof SimpleIntegerProperty) {
-                list.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldName).id(fieldName));
+                list.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldLabel).editable(formField.editable()).id(fieldName));
             } else if (property instanceof SimpleBooleanProperty) {
-                list.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldName).id(fieldName));
+                list.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldLabel).editable(formField.editable()).id(fieldName));
             } else if (property instanceof SimpleObjectProperty) {
                 if (FieldType.DATE.equals(formField.type())) {
-                    list.add(Field.ofDate(((SimpleObjectProperty) property)).label(fieldName).id(fieldName));
+                    list.add(Field.ofDate(((SimpleObjectProperty) property)).label(fieldLabel).editable(formField.editable()).id(fieldName));
                 } else {
                     throw new RuntimeException("Property for field [" + fieldName + "] does not implemented! Property can not be added to elements. Implement code for " + property.getClass().getName() + " class");
                 }
-            } else if (valueMappers.containsKey(field.getName())) {
-                list.add(valueMappers.get(field.getName()).getElement(formField, property).id(fieldName));
+            } else if (customFieldMappers.containsKey(field.getName())) {
+                list.add(customFieldMappers.get(field.getName()).getElement(formField, property).id(fieldName));
             } else {
                 throw new RuntimeException("Property for field [" + fieldName + "] does not implemented! Property can not be added to elements. Implement code for " + property.getClass().getName() + " class");
             }
@@ -138,18 +148,18 @@ public class FormDynamicData {
      */
     public void setValueOfField(String fieldName, Object value) {
         ObservableValue<?> observableValue = data.get(fieldName);
-        if (observableValue instanceof SimpleStringProperty) {
+        if (customValueMappers.containsKey(fieldName)) {
+            customValueMappers.get(fieldName).setValue(observableValue, value);
+        } else if (observableValue instanceof SimpleStringProperty) {
             ((SimpleStringProperty) observableValue).set((String) value);
         } else if (observableValue instanceof SimpleIntegerProperty) {
             ((SimpleIntegerProperty) observableValue).set((Integer) value);
         } else if (observableValue instanceof SimpleBooleanProperty) {
             ((SimpleBooleanProperty) observableValue).set((Boolean) value);
         } else if (observableValue instanceof SimpleObjectProperty) {
-            if (observableValue.getValue() instanceof Date) {
-                ((SimpleObjectProperty) observableValue).set((Date) value);
-            }
-        } else if (valueMappers.containsKey(fieldName)) {
-            valueMappers.get(fieldName).setValue(observableValue, value);
+            ((SimpleObjectProperty) observableValue).set(value);
+        } else if (customFieldMappers.containsKey(fieldName)) {
+            customFieldMappers.get(fieldName).setValue(observableValue, value);
         } else {
             throw new RuntimeException("Field [" + fieldName + "] does not implemented setter. Implement setter for " + observableValue.getClass().getName() + " class.");
         }
@@ -160,21 +170,18 @@ public class FormDynamicData {
      */
     public Object getValueOfField(String fieldName) {
         ObservableValue<?> observableValue = data.get(fieldName);
-        if (observableValue instanceof SimpleStringProperty) {
+        if (customValueMappers.containsKey(fieldName)) {
+            return customValueMappers.get(fieldName).getValue(observableValue);
+        } else if (observableValue instanceof SimpleStringProperty) {
             return ((SimpleStringProperty) observableValue).get();
         } else if (observableValue instanceof SimpleIntegerProperty) {
             return ((SimpleIntegerProperty) observableValue).get();
         } else if (observableValue instanceof SimpleBooleanProperty) {
             return ((SimpleBooleanProperty) observableValue).get();
         } else if (observableValue instanceof SimpleObjectProperty) {
-            if (observableValue.getValue() instanceof Date) {
-                ((SimpleObjectProperty) observableValue).get();
-            }
-            else {
-                throw new RuntimeException("Field [" + fieldName + "] does not implemented getter for SimpleObjectProperty<?>. Implement getter for " + observableValue.getClass().getName() + " class.");
-            }
-        } else if (valueMappers.containsKey(fieldName)) {
-            return valueMappers.get(fieldName).getValue(observableValue);
+            ((SimpleObjectProperty) observableValue).get();
+        } else if (customFieldMappers.containsKey(fieldName)) {
+            return customFieldMappers.get(fieldName).getValue(observableValue);
         } else {
             throw new RuntimeException("Field [" + fieldName + "] does not implemented getter. Implement getter for " + observableValue.getClass().getName() + " class.");
         }
