@@ -7,6 +7,7 @@ import org.bh.uifxhelpercore.table.TableColumn;
 import org.bh.uifxhelpercore.table.TableObject;
 import org.bh.uifxhelpercore.table.ViewType;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @TableObject
@@ -26,12 +27,13 @@ public class Person {
     private boolean deleted;
 
     @FormField(type = FieldType.DATE)
-    private Date validFor;
+    private LocalDate validFor;
 
     @FormField(type = FieldType.USER_DEFINED, fieldName = "parent")
     private Person parent;
 
-    public Person() {}
+    public Person() {
+    }
 
     public Person(String name, Integer age) {
         this.name = name;
@@ -68,11 +70,11 @@ public class Person {
         this.deleted = deleted;
     }
 
-    public Date getValidFor() {
+    public LocalDate getValidFor() {
         return validFor;
     }
 
-    public void setValidFor(Date validFor) {
+    public void setValidFor(LocalDate validFor) {
         this.validFor = validFor;
     }
 

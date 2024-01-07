@@ -7,6 +7,7 @@ import com.dlsc.formsfx.model.structure.Section;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -73,7 +74,7 @@ public class FormDynamicData {
                 case STRING: property = new SimpleStringProperty(""); break;
                 case INTEGER: property = new SimpleIntegerProperty(0); break;
                 case BOOLEAN: property = new SimpleBooleanProperty(); break;
-                case DATE: property = new SimpleObjectProperty<Date>(); break;
+                case DATE: property = new SimpleObjectProperty<LocalDate>(); break;
                 case USER_DEFINED: property = customFieldMappers.get(field.getName()).getValueFromField(field); break;
                 default: throw new RuntimeException("Unsupported field type: " + formField.type());
             };
