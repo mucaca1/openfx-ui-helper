@@ -73,6 +73,7 @@ public class FormDynamicData {
             switch (formField.type()) {
                 case STRING: property = new SimpleStringProperty(""); break;
                 case INTEGER: property = new SimpleIntegerProperty(0); break;
+                case DOUBLE: property = new SimpleDoubleProperty(); break;
                 case BOOLEAN: property = new SimpleBooleanProperty(); break;
                 case DATE: property = new SimpleObjectProperty<LocalDate>(); break;
                 case USER_DEFINED: property = customFieldMappers.get(field.getName()).getValueFromField(field); break;
@@ -117,6 +118,8 @@ public class FormDynamicData {
                 list.add(Field.ofStringType((StringProperty) property).label(fieldLabel).editable(formField.editable()).id(fieldName));
             } else if (property instanceof SimpleIntegerProperty) {
                 list.add(Field.ofIntegerType(((IntegerProperty) property)).label(fieldLabel).editable(formField.editable()).id(fieldName));
+            } else if (property instanceof SimpleDoubleProperty) {
+                list.add(Field.ofDoubleType(((SimpleDoubleProperty) property)).label(fieldLabel).editable(formField.editable()).id(fieldName));
             } else if (property instanceof SimpleBooleanProperty) {
                 list.add(Field.ofBooleanType(((SimpleBooleanProperty) property)).label(fieldLabel).editable(formField.editable()).id(fieldName));
             } else if (property instanceof SimpleObjectProperty) {
@@ -155,6 +158,8 @@ public class FormDynamicData {
             ((SimpleStringProperty) observableValue).set((String) value);
         } else if (observableValue instanceof SimpleIntegerProperty) {
             ((SimpleIntegerProperty) observableValue).set((Integer) value);
+        } else if (observableValue instanceof SimpleDoubleProperty) {
+            ((SimpleDoubleProperty) observableValue).set((Double) value);
         } else if (observableValue instanceof SimpleBooleanProperty) {
             ((SimpleBooleanProperty) observableValue).set((Boolean) value);
         } else if (observableValue instanceof SimpleObjectProperty) {
@@ -177,6 +182,8 @@ public class FormDynamicData {
             return ((SimpleStringProperty) observableValue).get();
         } else if (observableValue instanceof SimpleIntegerProperty) {
             return ((SimpleIntegerProperty) observableValue).get();
+        } else if (observableValue instanceof SimpleDoubleProperty) {
+            return ((SimpleDoubleProperty) observableValue).get();
         } else if (observableValue instanceof SimpleBooleanProperty) {
             return ((SimpleBooleanProperty) observableValue).get();
         } else if (observableValue instanceof SimpleObjectProperty) {
