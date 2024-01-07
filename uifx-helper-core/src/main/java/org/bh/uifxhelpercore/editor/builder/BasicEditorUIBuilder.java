@@ -2,6 +2,7 @@ package org.bh.uifxhelpercore.editor.builder;
 
 import com.dlsc.formsfx.model.util.ResourceBundleService;
 import org.bh.uifxhelpercore.editor.BasicEditorUi;
+import org.bh.uifxhelpercore.editor.EditorObjectEventHandler;
 import org.bh.uifxhelpercore.editor.ObjectTranslator;
 import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
 import org.bh.uifxhelpercore.form.FieldValueMapper;
@@ -33,6 +34,8 @@ public class BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> {
     private Map<String, FieldTypeValueMapper> formFieldMappers;
 
     private Map<String, FieldValueMapper> formFieldValueMappers;
+
+    private EditorObjectEventHandler<FORM_OBJECT> eventHandler;
 
     public BasicEditorUIBuilder(Class<TABLE_OBJECT> tableObjectClass, Class<FORM_OBJECT> formObjectClass, ObjectTranslator<TABLE_OBJECT, FORM_OBJECT> objectTranslator) {
         this.objectTranslator = objectTranslator;
@@ -98,6 +101,11 @@ public class BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> {
         return this;
     }
 
+    public BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> setEditorEventHandler(EditorObjectEventHandler<FORM_OBJECT> eventHandler) {
+        this.eventHandler = eventHandler;
+        return this;
+    }
+
     public BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> build() {
         return new BasicEditorUi<TABLE_OBJECT, FORM_OBJECT>(tableObjectClass,
                 formObjectClass,
@@ -111,7 +119,8 @@ public class BasicEditorUIBuilder<TABLE_OBJECT, FORM_OBJECT> {
                 initFormDynamic,
                 showForm,
                 formFieldMappers,
-                formFieldValueMappers);
+                formFieldValueMappers,
+                eventHandler);
     }
 
 

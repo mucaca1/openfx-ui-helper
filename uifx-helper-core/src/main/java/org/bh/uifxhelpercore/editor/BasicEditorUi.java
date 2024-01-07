@@ -2,10 +2,7 @@ package org.bh.uifxhelpercore.editor;
 
 import com.dlsc.formsfx.model.util.ResourceBundleService;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
@@ -34,6 +31,8 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
     private final ObjectTranslator<TABLE_OBJECT, FORM_OBJECT> translator;
 
+    private final EditorObjectEventHandler<FORM_OBJECT> eventHandler;
+
     public BasicEditorUi(Class<TABLE_OBJECT> tableObjectClass,
                          Class<FORM_OBJECT> formObjectClass,
                          ObjectTranslator<TABLE_OBJECT, FORM_OBJECT> objectTranslator,
@@ -46,7 +45,9 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                          boolean initFormDynamic,
                          boolean showForm,
                          Map<String, FieldTypeValueMapper> formFieldMappers,
-                         Map<String, FieldValueMapper> formFieldValueMappers) {
+                         Map<String, FieldValueMapper> formFieldValueMappers,
+                         EditorObjectEventHandler<FORM_OBJECT> eventHandler) {
+        this.eventHandler = eventHandler;
         this.translator = objectTranslator;
         {
             rootPane = new VBox();
@@ -127,6 +128,9 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
                 formButtonBar.addActionListener(ButtonType.OK, event -> {
                     FORM_OBJECT newObject = formWrapper.getObjectFromForm();
+                    if (this.eventHandler != null) {
+                        newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
+                    }
                     int selectedTableObjectIndex = table.getSelectionModel().getSelectedIndex();
                     if (selectedTableObjectIndex != -1) {
                         table.getItems().remove(selectedTableObjectIndex);
@@ -178,6 +182,9 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
                     if (baseDialog.isOkFlag()) {
                         FORM_OBJECT newObject = formWrapper.getObjectFromForm();
+                        if (this.eventHandler != null) {
+                            newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
+                        }
                         table.getItems().add(translator.getFirstObject(newObject));
                         table.refresh();
                     }
@@ -196,6 +203,9 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                         int index = table.getSelectionModel().getSelectedIndex();
                         table.getItems().remove(table.getSelectionModel().getSelectedItem());
                         FORM_OBJECT newObject = formWrapper.getObjectFromForm();
+                        if (this.eventHandler != null) {
+                            newObject = this.eventHandler.handleEvent(ObjectEvent.UPDATE, newObject);
+                        }
                         table.getItems().add(index, translator.getFirstObject(newObject));
                         table.refresh();
                     }
@@ -204,6 +214,10 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
 
             tableButtonBar.addActionListener(ButtonType.DELETE, event -> {
+                TABLE_OBJECT t = table.getSelectionModel().getSelectedItem();
+                if (this.eventHandler != null) {
+                    this.eventHandler.handleEvent(ObjectEvent.DELETE, translator.getSecondObject(t));
+                }
                 table.getItems().remove(table.getSelectionModel().getSelectedItem());
             });
 

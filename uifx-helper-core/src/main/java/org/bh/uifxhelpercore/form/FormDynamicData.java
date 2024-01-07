@@ -187,13 +187,12 @@ public class FormDynamicData {
         } else if (observableValue instanceof SimpleBooleanProperty) {
             return ((SimpleBooleanProperty) observableValue).get();
         } else if (observableValue instanceof SimpleObjectProperty) {
-            ((SimpleObjectProperty) observableValue).get();
+            return ((SimpleObjectProperty) observableValue).get();
         } else if (customFieldMappers.containsKey(fieldName)) {
             return customFieldMappers.get(fieldName).getValue(observableValue);
         } else {
             throw new RuntimeException("Field [" + fieldName + "] does not implemented getter. Implement getter for " + observableValue.getClass().getName() + " class.");
         }
-        return null;
     }
 
     public Map<String, ObservableValue<?>> getData() {
