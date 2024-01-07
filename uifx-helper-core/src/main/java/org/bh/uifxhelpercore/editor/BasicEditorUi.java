@@ -128,8 +128,13 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                 formButtonBar.addActionListener(ButtonType.OK, event -> {
                     FORM_OBJECT newObject = formWrapper.getObjectFromForm();
                     int selectedTableObjectIndex = table.getSelectionModel().getSelectedIndex();
-                    table.getItems().remove(selectedTableObjectIndex);
-                    table.getItems().add(selectedTableObjectIndex, translator.getFirstObject(newObject));
+                    if (selectedTableObjectIndex != -1) {
+                        table.getItems().remove(selectedTableObjectIndex);
+                        table.getItems().add(selectedTableObjectIndex, translator.getFirstObject(newObject));
+                    } else {
+                        table.getItems().add(translator.getFirstObject(newObject));
+                    }
+
                     table.refresh();
                 });
                 formButtonBar.addActionListener(ButtonType.CANCEL, event -> {
@@ -161,6 +166,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
             }
 
             tableButtonBar.addActionListener(ButtonType.CREATE, event -> {
+                table.getSelectionModel().clearSelection();
                 if (showForm) {
                     if (initFormDynamic) {
                         ((DynamicFormWrapper<?>)formWrapper).clearForm();
