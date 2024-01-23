@@ -23,7 +23,6 @@ import java.util.Map;
 public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
     private VBox rootPane;
-    private AnchorPane anchorPane;
     private TableViewComponent<TABLE_OBJECT> table;
     private ButtonAdvancedBar tableButtonBar;
 
@@ -53,27 +52,15 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
             rootPane = new VBox();
             rootPane.setAlignment(Pos.CENTER);
             VBox.setVgrow(rootPane, Priority.ALWAYS);
-
-            anchorPane = new AnchorPane();
-            anchorPane.maxHeight(-1d);
-            anchorPane.maxWidth(-1d);
-            anchorPane.prefHeight(-1d);
-            anchorPane.prefWidth(-1d);
-            VBox.setVgrow(anchorPane, Priority.ALWAYS);
         }
 
         // Init main component table.
-        AnchorPane anchorPaneTable = new AnchorPane();
-        anchorPaneTable.setMinHeight(0.0);
-        anchorPaneTable.setMinWidth(0.0);
 
         BorderPane tableBorderPane = new BorderPane();
         AnchorPane.setBottomAnchor(tableBorderPane, 0.0d);
         AnchorPane.setLeftAnchor(tableBorderPane, 0.0d);
         AnchorPane.setRightAnchor(tableBorderPane, 0.0d);
         AnchorPane.setTopAnchor(tableBorderPane, 0.0d);
-
-        anchorPaneTable.getChildren().add(tableBorderPane);
 
         ScrollPane tableScrollPane = new ScrollPane();
         tableButtonBar = new ButtonAdvancedBar();
@@ -101,6 +88,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
             if (showForm) {
                 SplitPane splitPane = new SplitPane();
                 splitPane.setDividerPositions(0.55d);
+                splitPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
                 AnchorPane anchorPaneForm = new AnchorPane();
                 anchorPaneForm.setMinHeight(0.0);
@@ -113,10 +101,10 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                 AnchorPane.setTopAnchor(formBorderPane, 0.0d);
 
                 anchorPaneForm.getChildren().add(formBorderPane);
-                splitPane.getItems().addAll(anchorPaneTable, anchorPaneForm);
+                splitPane.getItems().addAll(tableBorderPane, anchorPaneForm);
 
                 ScrollPane formScrollPane = new ScrollPane();
-                anchorPane.getChildren().add(splitPane);
+                formScrollPane.setFitToWidth(true);
 
                 ButtonAdvancedBar formButtonBar = new ButtonAdvancedBar();
                 formScrollPane.setContent(formWrapper.getFormRenderer());
@@ -152,12 +140,14 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                 });
 
                 formWrapper.getFormRenderer().prefWidthProperty().bind(formBorderPane.prefWidthProperty());
+
+//                formRenderer.prefWidthProperty().bind(form.getRightBorderPane().prefWidthProperty());
+                rootPane.getChildren().add(splitPane);
             } else {
-                anchorPane.getChildren().add(anchorPaneTable);
+                rootPane.getChildren().add(tableBorderPane);
             }
         }
 
-        rootPane.getChildren().add(anchorPane);
 
         // Initialize buttons
         {
