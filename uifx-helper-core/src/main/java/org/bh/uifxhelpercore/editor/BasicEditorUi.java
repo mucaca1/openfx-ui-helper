@@ -121,6 +121,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                     }
 
                     dataBrowser.getTableComponent().refresh();
+                    dataBrowser.setData(dataBrowser.getTableComponent().getItems());
                 });
                 formButtonBar.addActionListener(ButtonType.CANCEL, event -> {
                     formWrapper.getForm().reset();
@@ -169,6 +170,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                         }
                         dataBrowser.getTableComponent().getItems().add(translator.getFirstObject(newObject));
                         dataBrowser.getTableComponent().refresh();
+                        dataBrowser.setData(dataBrowser.getTableComponent().getItems());
                     }
                 }
             });
@@ -190,6 +192,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                         }
                         dataBrowser.getTableComponent().getItems().add(index, translator.getFirstObject(newObject));
                         dataBrowser.getTableComponent().refresh();
+                        dataBrowser.setData(dataBrowser.getTableComponent().getItems());
                     }
                 });
             }
@@ -201,6 +204,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                     this.eventHandler.handleEvent(ObjectEvent.DELETE, translator.getSecondObject(t));
                 }
                 dataBrowser.getTableComponent().getItems().remove(dataBrowser.getTableComponent().getSelectionModel().getSelectedItem());
+                dataBrowser.setData(dataBrowser.getTableComponent().getItems());
             });
 
             tableButtonBar.setResourceBundleService(buttonResourceBundle);
@@ -216,7 +220,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
     }
 
     public void setTableData(ObservableList<TABLE_OBJECT> tebleObservableList) {
-        dataBrowser.getTableComponent().setItems(tebleObservableList);
+        dataBrowser.setData(tebleObservableList);
     }
 
     public FormWrapper<FORM_OBJECT> getFormWrapper() {
