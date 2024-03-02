@@ -93,7 +93,7 @@ public abstract class TableSelectorDialog<T> extends Dialog<T> {
                 selectedObjectsFromTable.addAll(selectedItems);
             }
         });
-        table.registerSimpleTextFilter(searchTextField.textProperty());
+//        table.registerSimpleTextFilter(searchTextField.textProperty()); todo refactor. Use DataFilter class
     }
 
     public boolean isCloseFlag() {

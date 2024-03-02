@@ -14,6 +14,7 @@
             <TabPane prefHeight="499.0" prefWidth="619.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab fx:id="dynamicTablePane" text="Dynamic table " />
+                <Tab fx:id="dynamicTableFilterPane" text="Dynamic table with filter " />
                 <Tab fx:id="dynamicPagingTablePane" text="Dynamic paging table " />
                 <Tab fx:id="dynamicFormTablePane" text="Dynamic form " />
                 <Tab fx:id="basicFormWithSplitPane" text="Basic Splitted " />

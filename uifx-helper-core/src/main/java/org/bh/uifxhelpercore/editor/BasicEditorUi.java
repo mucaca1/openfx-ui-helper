@@ -20,14 +20,23 @@ import org.bh.uifxhelpercore.table.ViewType;
 
 import java.util.Map;
 
+/**
+ * This object represent basic editor, witch contain data in table and data representation as form for specific object.
+ * This editor contains simple actions for add, update and delete with basic implementation.
+ * @param <TABLE_OBJECT>
+ * @param <FORM_OBJECT>
+ */
 public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
 
-    private VBox rootPane;
-    private TableViewComponent<TABLE_OBJECT> table;
-    private ButtonAdvancedBar tableButtonBar;
+    protected VBox rootPane;
+    protected TableViewComponent<TABLE_OBJECT> table;
+    protected ButtonAdvancedBar tableButtonBar;
 
-    private FormWrapper<FORM_OBJECT> formWrapper;
+    protected FormWrapper<FORM_OBJECT> formWrapper;
 
+    /**
+     * This translator can translate table object, into form object.
+     */
     private final ObjectTranslator<TABLE_OBJECT, FORM_OBJECT> translator;
 
     private final EditorObjectEventHandler<FORM_OBJECT> eventHandler;

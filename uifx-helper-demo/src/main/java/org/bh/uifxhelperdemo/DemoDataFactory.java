@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DemoData {
+public class DemoDataFactory {
 
     public static List<Person> getRandomPerson(int count) {
         List<Person> result = new ArrayList<>();

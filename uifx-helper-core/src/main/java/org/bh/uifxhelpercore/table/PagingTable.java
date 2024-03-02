@@ -1,23 +1,84 @@
 package org.bh.uifxhelpercore.table;
 
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+import javafx.scene.Node;
+import javafx.scene.control.TableColumn;
+import javafx.scene.layout.BorderPane;
+import org.bh.uifxhelpercore.pagination.AdvancedPagination;
 
-public class PagingTable<T> extends Pane {
+import java.util.ArrayList;
+import java.util.List;
 
-    private PagingBar pagingBar;
+public class PagingTable<T> extends BorderPane {
+
+    private final static int rowsPerPage = 20;
+    private AdvancedPagination pagination;
     private TableViewComponent<T> table;
 
+    private List<T> data = new ArrayList<>();
+
     public PagingTable(Class<T> tableObject, ViewType viewType) {
-        VBox vBox = new VBox();
-        pagingBar = new PagingBar();
+        pagination = new AdvancedPagination((data.size() / rowsPerPage + 1), 0);
+        pagination.setPageFactory(this::createPage);
         table = new TableViewComponent<>();
         table.initialize(tableObject, viewType);
-        vBox.getChildren().addAll(pagingBar, table);
-        getChildren().add(vBox);
+        setCenter(pagination);
+    }
+
+    public void setData(List<T> data) {
+        this.data = data;
+        pagination.setPageCount((data.size() / rowsPerPage + 1));
+        pagination.setCurrentPageIndex(0);
     }
 
     public TableViewComponent<T> getTableComponent() {
         return table;
     }
+
+    private Node createPage(int pageIndex) {
+        int fromIndex = pageIndex * rowsPerPage;
+        int toIndex = Math.min(fromIndex + rowsPerPage, data.size());
+        table.setItems(FXCollections.observableArrayList(data.subList(fromIndex, toIndex)));
+
+        return new BorderPane(table);
+    }
+
+    private ObservableList<T> masterData = FXCollections.observableArrayList();
+    private FilteredList<T> filteredData;
+
+    public void registerSimpleTextFilter(StringProperty stringProperty) {
+        filteredData = new FilteredList<>(masterData, v -> true);
+        filteredData.predicateProperty().bind(Bindings.createObjectBinding(() -> {
+            String text = stringProperty.getValue();
+
+            if (text == null || text.isEmpty()) {
+                return null;
+            }
+            final String filterText = text.toLowerCase();
+
+            return o -> {
+                for (TableColumn<T, ?> col : table.getColumns()) {
+                    ObservableValue<?> observable = col.getCellObservableValue(o);
+                    if (observable != null) {
+                        Object value = observable.getValue();
+                        if (value != null && value.toString().toLowerCase().contains(filterText)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            };
+        }, stringProperty));
+
+        SortedList<T> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(table.comparatorProperty());
+        setData(sortedData);
+    }
+
 }

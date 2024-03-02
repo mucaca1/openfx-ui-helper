@@ -24,7 +24,6 @@ import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
 import org.bh.uifxhelpercore.form.FormField;
 import org.bh.uifxhelpercore.locale.LocalizationHelper;
-import org.bh.uifxhelpercore.table.PagingTable;
 import org.bh.uifxhelpercore.table.ViewType;
 
 import java.awt.event.ActionListener;
@@ -37,6 +36,8 @@ import java.util.ResourceBundle;
 public class DemoController {
     @FXML
     public Tab dynamicTablePane;
+    @FXML
+    public Tab dynamicTableFilterPane;
     @FXML
     public Tab dynamicPagingTablePane;
     @FXML
@@ -68,16 +69,21 @@ public class DemoController {
         // Init dynamic table
         {
             DataBrowser<Person> simpleDataBrowser = new DataBrowser<>(Person.class, ViewType.Default);
-            simpleDataBrowser.initSimpleTextFilter();
-            simpleDataBrowser.getTableComponent().setTableItems(FXCollections.observableList(DemoData.getRandomPerson(5)));
-
+            simpleDataBrowser.setData(DemoDataFactory.getRandomPerson(5));
             dynamicTablePane.setContent(simpleDataBrowser);
+        }
+
+        // Init dynamic table with basic text filter
+        {
+            DataBrowser<Person> simpleDataBrowser = new DataBrowser<>(Person.class, ViewType.Default, true, false);
+            simpleDataBrowser.setMasterData(DemoDataFactory.getRandomPerson(5));
+            dynamicTableFilterPane.setContent(simpleDataBrowser);
         }
 
         // Init dynamic paging table
         {
-            PagingTable<Person> simpleDataBrowser = new PagingTable<>(Person.class, ViewType.Default);
-            simpleDataBrowser.getTableComponent().setTableItems(FXCollections.observableList(DemoData.getRandomPerson(5)));
+            DataBrowser<Person> simpleDataBrowser = new DataBrowser<>(Person.class, ViewType.Default, true, true);
+            simpleDataBrowser.setMasterData(DemoDataFactory.getRandomPerson(50));
 
             dynamicPagingTablePane.setContent(simpleDataBrowser);
         }
@@ -96,7 +102,7 @@ public class DemoController {
 
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent e) {
-                        PersonTableSelectorDialog entityPopupPicker = new PersonTableSelectorDialog(FXCollections.observableList(DemoData.getRandomPerson(5)));
+                        PersonTableSelectorDialog entityPopupPicker = new PersonTableSelectorDialog(FXCollections.observableList(DemoDataFactory.getRandomPerson(5)));
                         ((Dialog<?>) entityPopupPicker).showAndWait();
                         System.out.println("Close:" + entityPopupPicker.isCloseFlag() + ", Accept:" + entityPopupPicker.isOkFlag());
                         if (entityPopupPicker.isOkFlag()) {
@@ -162,7 +168,7 @@ public class DemoController {
                     .setInitFormDynamic(true)
                     .build();
             ScrollPane scrollPane = new ScrollPane();
-            basicEditor.setTableData(FXCollections.observableList(DemoData.getRandomPerson(5)));
+            basicEditor.setTableData(FXCollections.observableList(DemoDataFactory.getRandomPerson(5)));
             scrollPane.setContent(basicEditor.getRootPane());
             basicFormWithSplitPane.setContent(scrollPane);
         }
@@ -177,7 +183,7 @@ public class DemoController {
                     .setInitFormDynamic(true)
                     .build();
             ScrollPane scrollPane = new ScrollPane();
-            basicEditor.setTableData(FXCollections.observableList(DemoData.getRandomPerson(5)));
+            basicEditor.setTableData(FXCollections.observableList(DemoDataFactory.getRandomPerson(5)));
             scrollPane.setContent(basicEditor.getRootPane());
             basicEditorWithFormPane.setContent(scrollPane);
         }

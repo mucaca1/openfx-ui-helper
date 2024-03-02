@@ -9,6 +9,6 @@ public class PersonTableSelectorDialog extends TableSelectorDialog<Person> {
     PersonTableSelectorDialog(ObservableList<Person> content) {
         super();
         table.initialize(Person.class, ViewType.Chooser);
-        table.setTableItems(content);
+//        table.setTableItems(content); todo refactor. Use DataFilter class
     }
 }

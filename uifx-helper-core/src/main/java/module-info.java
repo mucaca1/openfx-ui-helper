@@ -19,4 +19,5 @@ module org.bh.uifxhelpercore {
     exports org.bh.uifxhelpercore.editor.entityselector;
     exports org.bh.uifxhelpercore.field;
     exports org.bh.uifxhelpercore.field.entity;
+    exports org.bh.uifxhelpercore.pagination;
 }

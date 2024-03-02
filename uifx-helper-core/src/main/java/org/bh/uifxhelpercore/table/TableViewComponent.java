@@ -1,22 +1,12 @@
 package org.bh.uifxhelpercore.table;
 
 import com.dlsc.formsfx.model.util.ResourceBundleService;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.collections.WeakListChangeListener;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -69,7 +59,7 @@ public class TableViewComponent<V> extends TableView<V> {
             } else if (t == BigDecimal.class) {
                 column = new TableColumn<V, BigDecimal>(columnName);
             } else {
-                column = new TableColumn<V, Object>(columnName);
+                column = new TableColumn<>(columnName);
             }
 
             column.setMinWidth(100);
@@ -85,54 +75,5 @@ public class TableViewComponent<V> extends TableView<V> {
         } else {
             getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         }
-    }
-
-
-    // todo fix this! All should use setTableItems method for settings table content.
-    // maybe registerSimpleTextFilter should be moved out of tablecomponent. Or sould i create Filter table component?
-    public void setTableItems(ObservableList<V> tableItems) {
-        masterData.clear();
-        masterData.setAll(tableItems);
-    }
-
-    public ObservableList<V> getMasterData() {
-        return masterData;
-    }
-
-    private ObservableList<V> masterData = FXCollections.observableArrayList();
-    private FilteredList<V> filteredData;
-    public void registerSimpleTextFilter(StringProperty stringProperty) {
-        filteredData = new FilteredList<>(masterData, v -> true);
-        filteredData.predicateProperty().bind(Bindings.createObjectBinding(() -> {
-            String text = stringProperty.getValue();
-
-            if (text == null || text.isEmpty()) {
-                return null;
-            }
-            final String filterText = text.toLowerCase();
-
-            return o -> {
-                for (TableColumn<V, ?> col : getColumns()) {
-                    ObservableValue<?> observable = col.getCellObservableValue(o);
-                    if (observable != null) {
-                        Object value = observable.getValue();
-                        if (value != null && value.toString().toLowerCase().contains(filterText)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            };
-        }, stringProperty));
-
-        SortedList<V> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(comparatorProperty());
-        setItems(sortedData);
-    }
-
-    protected void reapplyTableSortOrder() {
-        ArrayList<TableColumn<V, ?>> sortOrder = new ArrayList<>(getSortOrder());
-        getSortOrder().clear();
-        getSortOrder().addAll(sortOrder);
     }
 }
