@@ -7,8 +7,7 @@ import org.bh.uifxhelpercore.table.ViewType;
 public class PersonTableSelectorDialog extends TableSelectorDialog<Person> {
 
     PersonTableSelectorDialog(ObservableList<Person> content) {
-        super();
-        table.initialize(Person.class, ViewType.Chooser);
-//        table.setTableItems(content); todo refactor. Use DataFilter class
+        super(Person.class, ViewType.Chooser);
+        dataBrowser.setData(content);
     }
 }

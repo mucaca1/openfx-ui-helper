@@ -6,7 +6,9 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import org.bh.uifxhelpercore.editor.DataBrowser;
 import org.bh.uifxhelpercore.table.TableViewComponent;
+import org.bh.uifxhelpercore.table.ViewType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,39 +16,24 @@ import java.util.List;
 /**
  * This is dialog for showing data in table view.
  * Dialog contain simple text search for finding data in table.
+ *
  * @param <T> object type witch will be showed in table
  */
-public abstract class TableSelectorDialog<T> extends Dialog<T> {
+public abstract class TableSelectorDialog<T> extends Dialog<ButtonType> {
 
-    protected TableViewComponent<T> table;
-    protected TextField searchTextField;
-
-    /**
-     * Mark if dialog was closed by close button (cancel operation)
-     */
-    private boolean closeFlag;
-
-    /**
-     * Mark if dialog was closed by ok button (apply/save operation)
-     */
-    private boolean okFlag;
+    protected DataBrowser<T> dataBrowser;
 
     private List<T> selectedObjectsFromTable;
 
-    public TableSelectorDialog() {
-        this(false, true);
+    public TableSelectorDialog(Class<T> tableObject, ViewType viewType) {
+        this(tableObject, viewType, false, false);
     }
 
-    public TableSelectorDialog(boolean multiSelection, boolean canSelectNone) {
+    public TableSelectorDialog(Class<T> tableObject, ViewType viewType, boolean multiSelection, boolean canSelectNone) {
         super();
-        closeFlag = false;
-        okFlag = false;
-        table = new TableViewComponent<T>(null);
-        searchTextField = new TextField();
+        dataBrowser = new DataBrowser<>(tableObject, viewType, true, false);
 
         selectedObjectsFromTable = new ArrayList<>();
-
-        searchTextField.setPromptText("Type for filtering...");
 
         VBox box = new VBox();
         box.setPadding(new Insets(10));
@@ -54,7 +41,7 @@ public abstract class TableSelectorDialog<T> extends Dialog<T> {
         Pane paddingDivider = new Pane();
         paddingDivider.setMinHeight(5);
         paddingDivider.setMaxHeight(5);
-        box.getChildren().addAll(searchTextField, paddingDivider, table);
+        box.getChildren().add(dataBrowser);
         getDialogPane().setContent(box);
         getDialogPane().getButtonTypes().addAll(ButtonType.OK);
 
@@ -62,8 +49,10 @@ public abstract class TableSelectorDialog<T> extends Dialog<T> {
 
         Button button = (Button) getDialogPane().lookupButton(ButtonType.OK);
         button.addEventFilter(ActionEvent.ACTION, event -> {
-            closeFlag = false;
-            okFlag = true;
+            ObservableList<T> selectedItems = dataBrowser.getTableComponent().getSelectionModel().getSelectedItems();
+            selectedObjectsFromTable.clear();
+            selectedObjectsFromTable.addAll(selectedItems);
+            setResult(ButtonType.OK);
         });
 
         if (canSelectNone) {
@@ -71,37 +60,18 @@ public abstract class TableSelectorDialog<T> extends Dialog<T> {
             getDialogPane().getButtonTypes().addAll(noneBtnType);
             Button button1 = (Button) getDialogPane().lookupButton(noneBtnType);
             button1.addEventFilter(ActionEvent.ACTION, event -> {
-                selectedObjectsFromTable.clear();
-                closeFlag = false;
-                okFlag = true;
+                setResult(noneBtnType);
             });
         }
 
         Button button2 = (Button) getDialogPane().lookupButton(ButtonType.CANCEL);
         button2.addEventFilter(ActionEvent.ACTION, event -> {
-            closeFlag = true;
-            okFlag = false;
+            setResult(ButtonType.CANCEL);
         });
 
         if (multiSelection) {
-            table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            dataBrowser.getTableComponent().getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         }
-        table.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getSource() == table) { // handle on table click.
-                ObservableList<T> selectedItems = table.getSelectionModel().getSelectedItems();
-                selectedObjectsFromTable.clear();
-                selectedObjectsFromTable.addAll(selectedItems);
-            }
-        });
-//        table.registerSimpleTextFilter(searchTextField.textProperty()); todo refactor. Use DataFilter class
-    }
-
-    public boolean isCloseFlag() {
-        return closeFlag;
-    }
-
-    public boolean isOkFlag() {
-        return okFlag;
     }
 
     public List<T> getSelectedObjectsFromTable() {

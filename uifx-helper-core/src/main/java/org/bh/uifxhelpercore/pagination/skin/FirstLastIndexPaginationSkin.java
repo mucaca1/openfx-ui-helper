@@ -6,7 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.skin.PaginationSkin;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 
 public class FirstLastIndexPaginationSkin extends PaginationSkin {
 
@@ -16,13 +15,6 @@ public class FirstLastIndexPaginationSkin extends PaginationSkin {
     private Button first;
     private Button last;
 
-    /**
-     * Creates a new PaginationSkin instance, installing the necessary child
-     * nodes into the Control {@link Control#getChildren() children} list, as
-     * well as the necessary input mappings for handling key, mouse, etc events.
-     *
-     * @param control The control that this skin should be installed onto.
-     */
     public FirstLastIndexPaginationSkin(Pagination pagination) {
         super(pagination);
         patchNavigation();

@@ -10,16 +10,22 @@ import javafx.collections.transformation.SortedList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+import java.util.List;
+
+/**
+ * Simple filter holder, witch hold data and can filter them.
+ * @param <V>
+ */
 public class DataFilter<V> {
 
-    private ObservableList<V> masterData = FXCollections.observableArrayList();
+    private ObservableList<V> data = FXCollections.observableArrayList();
     private FilteredList<V> filteredData;
 
     private SortedList<V> sortedData;
 
-    public void setMasterData(ObservableList<V> items) {
-        masterData.clear();
-        masterData.setAll(items);
+    public void setData(List<V> items) {
+        data.clear();
+        data.setAll(items);
     }
 
     public FilteredList<V> getFilteredData() {
@@ -30,8 +36,14 @@ public class DataFilter<V> {
         return sortedData;
     }
 
-    public void addBasicTextFilterForTable(StringProperty stringProperty, TableView<V> table) {
-        filteredData = new FilteredList<>(masterData, v -> true);
+    /**
+     * Create filter as table filter.
+     * This filter will filter all rows from all columns where text contain string in string property.
+     * @param stringProperty
+     * @param table the table to which the filters will be applied
+     */
+    public void initAsBasicTextFilterForTable(StringProperty stringProperty, TableView<V> table) {
+        filteredData = new FilteredList<>(data, v -> true);
 
         filteredData.predicateProperty().bind(Bindings.createObjectBinding(() -> {
             String text = stringProperty.getValue();

@@ -11,6 +11,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
@@ -69,21 +70,21 @@ public class DemoController {
         // Init dynamic table
         {
             DataBrowser<Person> simpleDataBrowser = new DataBrowser<>(Person.class, ViewType.Default);
-            simpleDataBrowser.setData(DemoDataFactory.getRandomPerson(5));
+            simpleDataBrowser.setTableData(DemoDataFactory.getRandomPerson(5));
             dynamicTablePane.setContent(simpleDataBrowser);
         }
 
         // Init dynamic table with basic text filter
         {
             DataBrowser<Person> simpleDataBrowser = new DataBrowser<>(Person.class, ViewType.Default, true, false);
-            simpleDataBrowser.setMasterData(DemoDataFactory.getRandomPerson(5));
+            simpleDataBrowser.setData(DemoDataFactory.getRandomPerson(5));
             dynamicTableFilterPane.setContent(simpleDataBrowser);
         }
 
         // Init dynamic paging table
         {
             DataBrowser<Person> simpleDataBrowser = new DataBrowser<>(Person.class, ViewType.Default, true, true);
-            simpleDataBrowser.setMasterData(DemoDataFactory.getRandomPerson(50));
+            simpleDataBrowser.setData(DemoDataFactory.getRandomPerson(50));
 
             dynamicPagingTablePane.setContent(simpleDataBrowser);
         }
@@ -104,8 +105,8 @@ public class DemoController {
                     public void actionPerformed(java.awt.event.ActionEvent e) {
                         PersonTableSelectorDialog entityPopupPicker = new PersonTableSelectorDialog(FXCollections.observableList(DemoDataFactory.getRandomPerson(5)));
                         ((Dialog<?>) entityPopupPicker).showAndWait();
-                        System.out.println("Close:" + entityPopupPicker.isCloseFlag() + ", Accept:" + entityPopupPicker.isOkFlag());
-                        if (entityPopupPicker.isOkFlag()) {
+                        System.out.println("Btn:" + entityPopupPicker.getResult());
+                        if (ButtonType.OK.equals(entityPopupPicker.getResult())) {
                             List<Person> selectedObject = entityPopupPicker.getSelectedObjectsFromTable();
                             if (selectedObject != null) {
                                 setValue(property, selectedObject);

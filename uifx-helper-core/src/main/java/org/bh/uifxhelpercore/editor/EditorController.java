@@ -1,6 +1,5 @@
 package org.bh.uifxhelpercore.editor;
 
-import com.dlsc.formsfx.model.util.ResourceBundleService;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
@@ -9,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @param <B>
  * @param <T>
  */
@@ -69,7 +67,7 @@ public abstract class EditorController<B, T> {
         itemSelectedNotification();
     }
 
-    protected void addActualSelectedItemToMap(B businessObject, T entityObject){
+    protected void addActualSelectedItemToMap(B businessObject, T entityObject) {
         if (this.selectedObject != null) {
             form.getTable().getItems().remove(this.selectedObject);
         }

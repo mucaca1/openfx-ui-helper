@@ -11,8 +11,11 @@ import org.bh.uifxhelpercore.table.ViewType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Simple data browser witch show data in table.
+ * @param <T>
+ */
 public class DataBrowser<T> extends BorderPane {
 
     private final boolean enableTextFiltering;
@@ -50,23 +53,29 @@ public class DataBrowser<T> extends BorderPane {
     }
 
     private void initSimpleTextFilter() {
-        dataFilter.addBasicTextFilterForTable(simpleTextSearcher.getSearchTextProperty(), tableComponent);
-        dataFilter.getSortedData().addListener((ListChangeListener<? super T>)  change -> {
-            setData(new ArrayList<>(change.getList()));
+        dataFilter.initAsBasicTextFilterForTable(simpleTextSearcher.getSearchTextProperty(), tableComponent);
+        dataFilter.getSortedData().addListener((ListChangeListener<? super T>) change -> {
+            setTableData(new ArrayList<>(change.getList()));
         });
     }
 
-    public void setMasterData(List<T> data) {
+    public void setData(List<T> data) {
         if (enableTextFiltering) {
-            dataFilter.setMasterData(FXCollections.observableList(data));
+            dataFilter.setData(data);
+        } else {
+            setTableData(data);
         }
     }
 
-    public void setData(List<T> data) {
+    public void setTableData(List<T> data) {
         if (enablePaging) {
             pagingTable.setData(data);
         } else {
             tableComponent.setItems(FXCollections.observableList(data));
         }
+    }
+
+    public TableViewComponent<T> getTableComponent() {
+        return tableComponent;
     }
 }

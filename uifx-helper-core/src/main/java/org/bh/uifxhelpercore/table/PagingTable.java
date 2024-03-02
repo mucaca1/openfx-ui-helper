@@ -1,30 +1,38 @@
 package org.bh.uifxhelpercore.table;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.scene.Node;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.Pagination;
 import javafx.scene.layout.BorderPane;
 import org.bh.uifxhelpercore.pagination.AdvancedPagination;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Paging table contains basic {@link TableViewComponent} but add pagination bar.
+ *
+ * @param <T>
+ */
 public class PagingTable<T> extends BorderPane {
 
-    private final static int rowsPerPage = 20;
-    private AdvancedPagination pagination;
+    private final int rowsPerPage;
+    private Pagination pagination;
     private TableViewComponent<T> table;
 
     private List<T> data = new ArrayList<>();
 
     public PagingTable(Class<T> tableObject, ViewType viewType) {
-        pagination = new AdvancedPagination((data.size() / rowsPerPage + 1), 0);
+        this(tableObject, viewType, 20, true);
+    }
+
+    public PagingTable(Class<T> tableObject, ViewType viewType, int rowsPerPage, boolean addFirstLastPaginationOption) {
+        this.rowsPerPage = rowsPerPage;
+        if (addFirstLastPaginationOption) {
+            pagination = new AdvancedPagination((data.size() / this.rowsPerPage + 1), 0);
+        } else {
+            pagination = new Pagination((data.size() / this.rowsPerPage + 1), 0);
+        }
         pagination.setPageFactory(this::createPage);
         table = new TableViewComponent<>();
         table.initialize(tableObject, viewType);
