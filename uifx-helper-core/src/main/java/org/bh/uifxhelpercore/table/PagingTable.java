@@ -35,6 +35,7 @@ public class PagingTable<T> extends BorderPane {
         this.data = data;
         pagination.setPageCount((data.size() / rowsPerPage + 1));
         pagination.setCurrentPageIndex(0);
+        fillPage(pagination.getCurrentPageIndex());
     }
 
     public TableViewComponent<T> getTableComponent() {
@@ -42,43 +43,14 @@ public class PagingTable<T> extends BorderPane {
     }
 
     private Node createPage(int pageIndex) {
-        int fromIndex = pageIndex * rowsPerPage;
-        int toIndex = Math.min(fromIndex + rowsPerPage, data.size());
-        table.setItems(FXCollections.observableArrayList(data.subList(fromIndex, toIndex)));
-
+        fillPage(pageIndex);
         return new BorderPane(table);
     }
 
-    private ObservableList<T> masterData = FXCollections.observableArrayList();
-    private FilteredList<T> filteredData;
-
-    public void registerSimpleTextFilter(StringProperty stringProperty) {
-        filteredData = new FilteredList<>(masterData, v -> true);
-        filteredData.predicateProperty().bind(Bindings.createObjectBinding(() -> {
-            String text = stringProperty.getValue();
-
-            if (text == null || text.isEmpty()) {
-                return null;
-            }
-            final String filterText = text.toLowerCase();
-
-            return o -> {
-                for (TableColumn<T, ?> col : table.getColumns()) {
-                    ObservableValue<?> observable = col.getCellObservableValue(o);
-                    if (observable != null) {
-                        Object value = observable.getValue();
-                        if (value != null && value.toString().toLowerCase().contains(filterText)) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            };
-        }, stringProperty));
-
-        SortedList<T> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(table.comparatorProperty());
-        setData(sortedData);
+    private void fillPage(int pageIndex) {
+        int fromIndex = pageIndex * rowsPerPage;
+        int toIndex = Math.min(fromIndex + rowsPerPage, data.size());
+        table.setItems(FXCollections.observableArrayList(data.subList(fromIndex, toIndex)));
     }
 
 }
