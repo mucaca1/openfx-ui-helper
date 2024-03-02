@@ -61,8 +61,8 @@ public class DemoController {
             LocalizationHelper.get().registerResourceBundleService("Form", "en", ResourceBundle.getBundle("Form", new Locale("en")));
             LocalizationHelper.get().registerResourceBundleService("Form", "sk", ResourceBundle.getBundle("Form", new Locale("sk")));
 
-            LocalizationHelper.get().registerResourceBundleService("Buttons", "en", ResourceBundle.getBundle("Buttons", new Locale("en")));
-            LocalizationHelper.get().registerResourceBundleService("Buttons", "sk", ResourceBundle.getBundle("Buttons", new Locale("sk")));
+            LocalizationHelper.get().registerDefaultButtonBundleService("en", ResourceBundle.getBundle("Buttons", new Locale("en")));
+            LocalizationHelper.get().registerDefaultButtonBundleService("sk", ResourceBundle.getBundle("Buttons", new Locale("sk")));
 
         }
 
@@ -148,7 +148,7 @@ public class DemoController {
             formWrapper.getFormDynamicData().setValueOfField("name", "Random name");
             ((DataField<?, ?, ?>) formWrapper.getFormDynamicData().getFields().get("age")).setBindingMode(BindingMode.CONTINUOUS);
             ((IntegerField) formWrapper.getFormDynamicData().getFields().get("age")).addEventHandler(FieldEvent.EVENT_FIELD_PERSISTED, (a) -> {
-                formWrapper.getFormDynamicData().setValueOfField("name", "Random name " + ((IntegerField)a.getField()).getValue());
+                formWrapper.getFormDynamicData().setValueOfField("name", "Random name " + ((IntegerField) a.getField()).getValue());
             });
             formWrapper.getFieldByFieldId().get("name").editable(false);
             ((IntegerField) formWrapper.getFieldByFieldId().get("age")).validate(IntegerRangeValidator.atLeast(10, "low_number_msg"));

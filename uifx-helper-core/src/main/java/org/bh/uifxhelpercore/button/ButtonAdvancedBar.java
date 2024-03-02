@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
+import org.bh.uifxhelpercore.locale.LocalizationHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class ButtonAdvancedBar extends ButtonBar {
 
     public ButtonAdvancedBar() {
         buttons = new HashMap<>();
+        resourceBundleService = LocalizationHelper.get().getDefaultButtonBundleService();
     }
 
     /**
