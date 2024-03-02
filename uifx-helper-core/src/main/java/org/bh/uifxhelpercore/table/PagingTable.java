@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Pagination;
 import javafx.scene.layout.BorderPane;
 import org.bh.uifxhelpercore.pagination.AdvancedPagination;
+import org.bh.uifxhelpercore.table.builder.PagingTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,41 +13,42 @@ import java.util.List;
 /**
  * Paging table contains basic {@link TableViewComponent} but add pagination bar.
  *
- * @param <T>
+ * @param <V>
  */
-public class PagingTable<T> extends BorderPane {
+public class PagingTable<V> extends BorderPane {
 
     private final int rowsPerPage;
     private Pagination pagination;
-    private TableViewComponent<T> table;
+    private TableViewComponent<V> table;
 
-    private List<T> data = new ArrayList<>();
+    private List<V> data = new ArrayList<>();
 
-    public PagingTable(Class<T> tableObject, ViewType viewType) {
-        this(tableObject, viewType, 20, true);
+    public PagingTable() {
+        rowsPerPage = 20;
     }
 
-    public PagingTable(Class<T> tableObject, ViewType viewType, int rowsPerPage, boolean addFirstLastPaginationOption) {
-        this.rowsPerPage = rowsPerPage;
-        if (addFirstLastPaginationOption) {
+
+    public PagingTable(PagingTableBuilder<V> builder) {
+        this.rowsPerPage = builder.getRowsPerPage();
+        if (builder.isAddFirstLastPageButtons()) {
             pagination = new AdvancedPagination((data.size() / this.rowsPerPage + 1), 0);
         } else {
             pagination = new Pagination((data.size() / this.rowsPerPage + 1), 0);
         }
         pagination.setPageFactory(this::createPage);
-        table = new TableViewComponent<>();
-        table.initialize(tableObject, viewType);
+        table = builder.getTableBuilder().build();
+
         setCenter(pagination);
     }
 
-    public void setData(List<T> data) {
+    public void setData(List<V> data) {
         this.data = data;
         pagination.setPageCount((data.size() / rowsPerPage + 1));
         pagination.setCurrentPageIndex(0);
         fillPage(pagination.getCurrentPageIndex());
     }
 
-    public TableViewComponent<T> getTableComponent() {
+    public TableViewComponent<V> getTableComponent() {
         return table;
     }
 

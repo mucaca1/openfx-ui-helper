@@ -8,6 +8,7 @@ import org.bh.uifxhelpercore.editor.searcher.SimpleTextSearcher;
 import org.bh.uifxhelpercore.table.PagingTable;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
+import org.bh.uifxhelpercore.table.builder.PagingTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,10 @@ public class DataBrowser<T> extends BorderPane {
         this.enableTextFiltering = enableTextFiltering;
 
         if (enablePaging) {
-            pagingTable = new PagingTable<>(tableObject, viewType);
+            pagingTable = new PagingTableBuilder<>(tableObject)
+                    .setViewType(viewType)
+                    .addFirstLastPageButtons(true)
+                    .build();
             tableComponent = pagingTable.getTableComponent();
             setCenter(pagingTable);
         } else {

@@ -63,7 +63,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
         tableBorderPane.setCenter(dataBrowser);
         tableBorderPane.setBottom(tableButtonBar);
 
-        dataBrowser.getTableComponent().enableMultiSelection(multiSelection);
+        dataBrowser.getTableComponent().multiSelectionEnabled(multiSelection);
 
         if (initFormDynamic) {
             formWrapper = new DynamicFormWrapper<>(formResourceBundle, formObjectClass);

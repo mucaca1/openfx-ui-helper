@@ -11,6 +11,9 @@ import java.util.ResourceBundle;
  */
 public class LocalizationHelper {
 
+    public static final String DEFAULT_TABLE_RESOURCE_BUNDLE_KEY = "default-table";
+    public static final String DEFAULT_BUTTON_RESOURCE_BUNDLE_KEY = "default-buttons";
+
     private static LocalizationHelper singleton;
 
     private String locale;
@@ -71,6 +74,14 @@ public class LocalizationHelper {
         resourceBundleServiceMap.put(key, resourceBundleService);
     }
 
+    public void registerDefaultTableBundleService(String language, ResourceBundle resourceBundle) {
+        registerResourceBundleService(DEFAULT_TABLE_RESOURCE_BUNDLE_KEY, language, resourceBundle);
+    }
+
+    public void registerDefaultButtonBundleService(String language, ResourceBundle resourceBundle) {
+        registerResourceBundleService(DEFAULT_BUTTON_RESOURCE_BUNDLE_KEY, language, resourceBundle);
+    }
+
     /**
      * return resource bundle service for key.
      * @param key key
@@ -80,5 +91,12 @@ public class LocalizationHelper {
         return resourceBundleServiceMap.get(key);
     }
 
+    public ResourceBundleService getDefaultTableBundleService() {
+        return resourceBundleServiceMap.get(DEFAULT_TABLE_RESOURCE_BUNDLE_KEY);
+    }
+
+    public ResourceBundleService getDefaultButtonBundleService() {
+        return resourceBundleServiceMap.get(DEFAULT_BUTTON_RESOURCE_BUNDLE_KEY);
+    }
 
 }

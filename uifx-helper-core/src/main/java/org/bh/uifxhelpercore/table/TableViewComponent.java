@@ -5,6 +5,8 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.bh.uifxhelpercore.locale.LocalizationHelper;
+import org.bh.uifxhelpercore.table.builder.TableBuilder;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,19 +14,19 @@ import java.util.List;
 
 public class TableViewComponent<V> extends TableView<V> {
 
-    private final ResourceBundleService resourceBundleService;
+    private ResourceBundleService resourceBundleService;
 
     public TableViewComponent() {
-        resourceBundleService = null;
     }
 
-    public TableViewComponent(ResourceBundleService resourceBundleService) {
-        this.resourceBundleService = resourceBundleService;
-    }
+    public TableViewComponent(TableBuilder<V> tableBuilder) {
+        this.resourceBundleService = tableBuilder.getResourceBundleService();
+        if (this.resourceBundleService == null && LocalizationHelper.get().getDefaultTableBundleService() != null) {
+            this.resourceBundleService = LocalizationHelper.get().getDefaultTableBundleService();
+        }
 
-    public TableViewComponent(ResourceBundleService resourceBundleService, Class<V> tableObject, ViewType viewType) {
-        this.resourceBundleService = resourceBundleService;
-        initialize(tableObject, viewType);
+        multiSelectionEnabled(tableBuilder.isMultiSelectionEnabled());
+        initialize(tableBuilder.getTableObject(), tableBuilder.getViewType(), tableBuilder.getDescriptor());
     }
 
     public void initialize(Class<V> tableObject, ViewType viewType) {
@@ -69,7 +71,7 @@ public class TableViewComponent<V> extends TableView<V> {
         }
     }
 
-    public void enableMultiSelection(boolean multiSelection) {
+    public void multiSelectionEnabled(boolean multiSelection) {
         if (multiSelection) {
             getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         } else {

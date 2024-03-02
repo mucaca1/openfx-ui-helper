@@ -1,47 +1,70 @@
 package org.bh.uifxhelpercore.table.builder;
 
 import com.dlsc.formsfx.model.util.ResourceBundleService;
-import javafx.scene.Node;
-import org.bh.uifxhelpercore.form.builder.FormBuilder;
+import org.bh.uifxhelpercore.table.TableViewComponent;
+import org.bh.uifxhelpercore.table.ViewType;
 
-public class TableBuilder<T> {
+public class TableBuilder<V> {
 
-    private Class<T> tableObject;
+    private final Class<V> tableObject;
 
     private ResourceBundleService resourceBundleService;
 
-    private boolean enableSearchBar;
+    private ViewType viewType;
 
-    private boolean enablePaging;
+    private String descriptor;
 
-    public TableBuilder() {
-        tableObject = null;
+    private boolean multiSelectionEnabled;
+
+    public TableBuilder(Class<V> tableObject) {
+        this.tableObject = tableObject;
+        viewType = ViewType.Default;
         resourceBundleService = null;
-        enableSearchBar = false;
-        enablePaging = false;
+        descriptor = "";
+        multiSelectionEnabled = false;
     }
 
-    public TableBuilder<T> setResourceBundleService(ResourceBundleService resourceBundleService) {
+    public TableBuilder<V> setResourceBundleService(ResourceBundleService resourceBundleService) {
         this.resourceBundleService = resourceBundleService;
         return this;
     }
 
-    public TableBuilder<T> createDynamicFormFromObject(Class<T> tableObject) {
-        this.tableObject = tableObject;
+    public TableBuilder<V> setDescriptor(String descriptor) {
+        this.descriptor = descriptor;
         return this;
     }
 
-    public TableBuilder<T> enableSearchBar(boolean enableSearchBar) {
-        this.enableSearchBar = enableSearchBar;
+    public TableBuilder<V> setViewType(ViewType viewType) {
+        this.viewType = viewType;
         return this;
     }
 
-    public TableBuilder<T> enablePaging(boolean enablePaging) {
-        this.enablePaging = enablePaging;
+    public TableBuilder<V> setMultiSelectionEnabled(boolean multiSelectionEnabled) {
+        this.multiSelectionEnabled = multiSelectionEnabled;
         return this;
     }
 
-    public Node build() {
-        return null;
+    public ViewType getViewType() {
+        return viewType;
+    }
+
+    public String getDescriptor() {
+        return descriptor;
+    }
+
+    public Class<V> getTableObject() {
+        return tableObject;
+    }
+
+    public ResourceBundleService getResourceBundleService() {
+        return resourceBundleService;
+    }
+
+    public boolean isMultiSelectionEnabled() {
+        return multiSelectionEnabled;
+    }
+
+    public TableViewComponent<V> build() {
+        return new TableViewComponent<>(this);
     }
 }
