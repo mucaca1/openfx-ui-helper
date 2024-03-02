@@ -56,7 +56,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
 
         // Init main component table.
 
-        tableButtonBar = new ButtonAdvancedBar();
+        tableButtonBar = new ButtonAdvancedBar(buttonResourceBundle);
         dataBrowser = new DataBrowser<>(tableObjectClass, viewType);
 
         BorderPane tableBorderPane = new BorderPane();
@@ -99,7 +99,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                 ScrollPane formScrollPane = new ScrollPane();
                 formScrollPane.setFitToWidth(true);
 
-                ButtonAdvancedBar formButtonBar = new ButtonAdvancedBar();
+                ButtonAdvancedBar formButtonBar = new ButtonAdvancedBar(buttonResourceBundle);
                 formScrollPane.setContent(formWrapper.getFormRenderer());
 
                 formBorderPane.setCenter(formScrollPane);
@@ -126,7 +126,6 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                 formButtonBar.addActionListener(ButtonType.CANCEL, event -> {
                     formWrapper.getForm().reset();
                 });
-                formButtonBar.setResourceBundleService(buttonResourceBundle);
 
                 dataBrowser.getTableComponent().setOnMouseClicked(mouseEvent -> {
                     TABLE_OBJECT selectedItem = dataBrowser.getTableComponent().getSelectionModel().getSelectedItem();
@@ -206,8 +205,6 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                 dataBrowser.getTableComponent().getItems().remove(dataBrowser.getTableComponent().getSelectionModel().getSelectedItem());
                 dataBrowser.setData(dataBrowser.getTableComponent().getItems());
             });
-
-            tableButtonBar.setResourceBundleService(buttonResourceBundle);
         }
     }
 

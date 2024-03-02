@@ -27,21 +27,21 @@ public class ButtonAdvancedBar extends ButtonBar {
      */
     private ResourceBundleService resourceBundleService;
 
-
     public ButtonAdvancedBar() {
-        buttons = new HashMap<>();
-        resourceBundleService = LocalizationHelper.get().getDefaultButtonBundleService();
+        this(null);
     }
 
-    /**
-     * Set localization resource bundle and register listener on this resource bundle for updating labels after language changed.
-     * @param resourceBundleService localization resource bundle
-     */
-    public void setResourceBundleService(ResourceBundleService resourceBundleService) {
-        this.resourceBundleService = resourceBundleService;
+    public ButtonAdvancedBar(ResourceBundleService resourceBundleService) {
+        buttons = new HashMap<>();
 
-        this.resourceBundleService.addListener(this::translateAllButtons);
-        translateAllButtons();
+        this.resourceBundleService = resourceBundleService;
+        if (resourceBundleService == null) {
+            this.resourceBundleService = LocalizationHelper.get().getDefaultButtonBundleService();
+        }
+
+        if (this.resourceBundleService != null) {
+            this.resourceBundleService.addListener(this::translateAllButtons);
+        }
     }
 
     private void translateAllButtons() {
