@@ -2,13 +2,10 @@ package org.bh.uifxhelpercore.editor;
 
 import com.dlsc.formsfx.model.util.ResourceBundleService;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import org.bh.uifxhelpercore.button.ButtonAdvancedBar;
 import org.bh.uifxhelpercore.button.ButtonType;
 import org.bh.uifxhelpercore.form.DynamicFormWrapper;
@@ -26,10 +23,9 @@ import java.util.Map;
  * @param <TABLE_OBJECT>
  * @param <FORM_OBJECT>
  */
-public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
+public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
 
-    protected VBox rootPane;
-    protected TableViewComponent<TABLE_OBJECT> table;
+    protected DataBrowser<TABLE_OBJECT> dataBrowser;
     protected ButtonAdvancedBar tableButtonBar;
 
     protected FormWrapper<FORM_OBJECT> formWrapper;
@@ -57,29 +53,17 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                          EditorObjectEventHandler<FORM_OBJECT> eventHandler) {
         this.eventHandler = eventHandler;
         this.translator = objectTranslator;
-        {
-            rootPane = new VBox();
-            rootPane.setAlignment(Pos.CENTER);
-            VBox.setVgrow(rootPane, Priority.ALWAYS);
-        }
 
         // Init main component table.
 
-        BorderPane tableBorderPane = new BorderPane();
-        AnchorPane.setBottomAnchor(tableBorderPane, 0.0d);
-        AnchorPane.setLeftAnchor(tableBorderPane, 0.0d);
-        AnchorPane.setRightAnchor(tableBorderPane, 0.0d);
-        AnchorPane.setTopAnchor(tableBorderPane, 0.0d);
-
-        ScrollPane tableScrollPane = new ScrollPane();
         tableButtonBar = new ButtonAdvancedBar();
-        table = new TableViewComponent<>(tableResourceBundle);
-        tableScrollPane.setContent(table);
-        tableBorderPane.setCenter(tableScrollPane);
+        dataBrowser = new DataBrowser<>(tableObjectClass, viewType);
+
+        BorderPane tableBorderPane = new BorderPane();
+        tableBorderPane.setCenter(dataBrowser);
         tableBorderPane.setBottom(tableButtonBar);
 
-        table.enableMultiSelection(multiSelection);
-        table.initialize(tableObjectClass, viewType, tableDescriptor);
+        dataBrowser.getTableComponent().enableMultiSelection(multiSelection);
 
         if (initFormDynamic) {
             formWrapper = new DynamicFormWrapper<>(formResourceBundle, formObjectClass);
@@ -89,8 +73,8 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
             formFieldValueMappers.forEach((s, fieldValueMapper) -> {
                 ((DynamicFormWrapper<?>)formWrapper).getFormDynamicData().registerValueMapper(s, fieldValueMapper);
             });
-            ((DynamicFormWrapper<?>) formWrapper).initForm();
-            formWrapper.buildForm();
+            ((DynamicFormWrapper<?>) formWrapper).buildForm();
+            formWrapper.renderForm();
         }
 
         {
@@ -128,32 +112,31 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                     if (this.eventHandler != null) {
                         newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
                     }
-                    int selectedTableObjectIndex = table.getSelectionModel().getSelectedIndex();
+                    int selectedTableObjectIndex = dataBrowser.getTableComponent().getSelectionModel().getSelectedIndex();
                     if (selectedTableObjectIndex != -1) {
-                        table.getItems().remove(selectedTableObjectIndex);
-                        table.getItems().add(selectedTableObjectIndex, translator.getFirstObject(newObject));
+                        dataBrowser.getTableComponent().getItems().remove(selectedTableObjectIndex);
+                        dataBrowser.getTableComponent().getItems().add(selectedTableObjectIndex, translator.getFirstObject(newObject));
                     } else {
-                        table.getItems().add(translator.getFirstObject(newObject));
+                        dataBrowser.getTableComponent().getItems().add(translator.getFirstObject(newObject));
                     }
 
-                    table.refresh();
+                    dataBrowser.getTableComponent().refresh();
                 });
                 formButtonBar.addActionListener(ButtonType.CANCEL, event -> {
                     formWrapper.getForm().reset();
                 });
                 formButtonBar.setResourceBundleService(buttonResourceBundle);
 
-                table.setOnMouseClicked(mouseEvent -> {
-                    TABLE_OBJECT selectedItem = table.getSelectionModel().getSelectedItem();
+                dataBrowser.getTableComponent().setOnMouseClicked(mouseEvent -> {
+                    TABLE_OBJECT selectedItem = dataBrowser.getTableComponent().getSelectionModel().getSelectedItem();
                     formWrapper.setFormDataFromObject(translator.getSecondObject(selectedItem));
                 });
 
                 formWrapper.getFormRenderer().prefWidthProperty().bind(formBorderPane.prefWidthProperty());
 
-//                formRenderer.prefWidthProperty().bind(form.getRightBorderPane().prefWidthProperty());
-                rootPane.getChildren().add(splitPane);
+                setCenter(splitPane);
             } else {
-                rootPane.getChildren().add(tableBorderPane);
+                setCenter(tableBorderPane);
             }
         }
 
@@ -169,7 +152,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
             }
 
             tableButtonBar.addActionListener(ButtonType.CREATE, event -> {
-                table.getSelectionModel().clearSelection();
+                dataBrowser.getTableComponent().getSelectionModel().clearSelection();
                 if (showForm) {
                     if (initFormDynamic) {
                         ((DynamicFormWrapper<?>)formWrapper).clearForm();
@@ -184,8 +167,8 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
                         if (this.eventHandler != null) {
                             newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
                         }
-                        table.getItems().add(translator.getFirstObject(newObject));
-                        table.refresh();
+                        dataBrowser.getTableComponent().getItems().add(translator.getFirstObject(newObject));
+                        dataBrowser.getTableComponent().refresh();
                     }
                 }
             });
@@ -193,31 +176,31 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
             if (!showForm) {
                 tableButtonBar.addActionListener(ButtonType.UPDATE, event -> {
                     BaseDialog baseDialog = new BaseDialog();
-                    TABLE_OBJECT selectedObject = table.getSelectionModel().getSelectedItem();
+                    TABLE_OBJECT selectedObject = dataBrowser.getTableComponent().getSelectionModel().getSelectedItem();
                     formWrapper.setFormDataFromObject(translator.getSecondObject(selectedObject));
                     baseDialog.setContent(formWrapper.getFormRenderer());
                     baseDialog.showAndWait();
 
                     if (baseDialog.isOkFlag()) {
-                        int index = table.getSelectionModel().getSelectedIndex();
-                        table.getItems().remove(table.getSelectionModel().getSelectedItem());
+                        int index = dataBrowser.getTableComponent().getSelectionModel().getSelectedIndex();
+                        dataBrowser.getTableComponent().getItems().remove(dataBrowser.getTableComponent().getSelectionModel().getSelectedItem());
                         FORM_OBJECT newObject = formWrapper.getObjectFromForm();
                         if (this.eventHandler != null) {
                             newObject = this.eventHandler.handleEvent(ObjectEvent.UPDATE, newObject);
                         }
-                        table.getItems().add(index, translator.getFirstObject(newObject));
-                        table.refresh();
+                        dataBrowser.getTableComponent().getItems().add(index, translator.getFirstObject(newObject));
+                        dataBrowser.getTableComponent().refresh();
                     }
                 });
             }
 
 
             tableButtonBar.addActionListener(ButtonType.DELETE, event -> {
-                TABLE_OBJECT t = table.getSelectionModel().getSelectedItem();
+                TABLE_OBJECT t = dataBrowser.getTableComponent().getSelectionModel().getSelectedItem();
                 if (this.eventHandler != null) {
                     this.eventHandler.handleEvent(ObjectEvent.DELETE, translator.getSecondObject(t));
                 }
-                table.getItems().remove(table.getSelectionModel().getSelectedItem());
+                dataBrowser.getTableComponent().getItems().remove(dataBrowser.getTableComponent().getSelectionModel().getSelectedItem());
             });
 
             tableButtonBar.setResourceBundleService(buttonResourceBundle);
@@ -228,16 +211,12 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> {
         return tableButtonBar;
     }
 
-    public VBox getRootPane() {
-        return rootPane;
-    }
-
-    public TableViewComponent getTable() {
-        return table;
+    public TableViewComponent getDataBrowser() {
+        return dataBrowser.getTableComponent();
     }
 
     public void setTableData(ObservableList<TABLE_OBJECT> tebleObservableList) {
-        table.setItems(tebleObservableList);
+        dataBrowser.getTableComponent().setItems(tebleObservableList);
     }
 
     public FormWrapper<FORM_OBJECT> getFormWrapper() {

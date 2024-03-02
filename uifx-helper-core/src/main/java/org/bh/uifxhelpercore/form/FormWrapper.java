@@ -3,7 +3,6 @@ package org.bh.uifxhelpercore.form;
 import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.formsfx.model.util.ResourceBundleService;
 import com.dlsc.formsfx.view.renderer.FormRenderer;
-import javafx.beans.value.ObservableValue;
 import org.bh.uifxhelpercore.FormsFxHelper;
 
 public abstract class FormWrapper<T> {
@@ -20,7 +19,7 @@ public abstract class FormWrapper<T> {
         labelPercentageSize = 50;
     }
 
-    public void buildForm() {
+    public void renderForm() {
         formRenderer = new FormRenderer(form);
         FormsFxHelper.searchAndSetControlsLabelWidth(formRenderer, labelPercentageSize);
     }

@@ -13,7 +13,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import org.bh.uifxhelpercore.editor.BasicEditorUi;
 import org.bh.uifxhelpercore.editor.DataBrowser;
@@ -145,7 +144,7 @@ public class DemoController {
             formWrapper = new DynamicFormWrapper<Person>(LocalizationHelper.get().getResourceBundleService("Form"), Person.class);
 
             formWrapper.getFormDynamicData().registerMapper("parent", mapper);
-            formWrapper.initForm();
+            formWrapper.buildForm();
             formWrapper.getFormDynamicData().setValueOfField("name", "Random name");
             ((DataField<?, ?, ?>) formWrapper.getFormDynamicData().getFields().get("age")).setBindingMode(BindingMode.CONTINUOUS);
             ((IntegerField) formWrapper.getFormDynamicData().getFields().get("age")).addEventHandler(FieldEvent.EVENT_FIELD_PERSISTED, (a) -> {
@@ -153,7 +152,7 @@ public class DemoController {
             });
             formWrapper.getFieldByFieldId().get("name").editable(false);
             ((IntegerField) formWrapper.getFieldByFieldId().get("age")).validate(IntegerRangeValidator.atLeast(10, "low_number_msg"));
-            formWrapper.buildForm();
+            formWrapper.renderForm();
             dynamicFormTablePane.setContent(formWrapper.getFormRenderer());
         }
 
@@ -168,10 +167,8 @@ public class DemoController {
                     .setShowForm(true)
                     .setInitFormDynamic(true)
                     .build();
-            ScrollPane scrollPane = new ScrollPane();
             basicEditor.setTableData(FXCollections.observableList(DemoDataFactory.getRandomPerson(5)));
-            scrollPane.setContent(basicEditor.getRootPane());
-            basicFormWithSplitPane.setContent(scrollPane);
+            basicFormWithSplitPane.setContent(basicEditor);
         }
 
         // Init table and pop-up form
@@ -183,10 +180,8 @@ public class DemoController {
                     .addFormFieldMapper("parent", mapper)
                     .setInitFormDynamic(true)
                     .build();
-            ScrollPane scrollPane = new ScrollPane();
             basicEditor.setTableData(FXCollections.observableList(DemoDataFactory.getRandomPerson(5)));
-            scrollPane.setContent(basicEditor.getRootPane());
-            basicEditorWithFormPane.setContent(scrollPane);
+            basicEditorWithFormPane.setContent(basicEditor);
         }
     }
 

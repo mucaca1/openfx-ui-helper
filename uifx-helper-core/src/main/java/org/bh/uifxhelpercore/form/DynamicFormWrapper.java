@@ -27,7 +27,7 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
         this.formClass = formClass;
     }
 
-    public void initForm() {
+    public void buildForm() {
         buildDynamicFormForClass(formClass);
     }
 
