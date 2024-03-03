@@ -14,8 +14,7 @@ public abstract class FormWrapper<T> {
 
     private int labelPercentageSize;
 
-    public FormWrapper(ResourceBundleService resourceBundleService) {
-        this.resourceBundleService = resourceBundleService;
+    public FormWrapper() {
         labelPercentageSize = 50;
     }
 

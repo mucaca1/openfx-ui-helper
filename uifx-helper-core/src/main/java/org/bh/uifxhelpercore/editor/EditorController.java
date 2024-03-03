@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public abstract class EditorController<B, T> {
 
-    protected BasicEditorUi form;
+    protected BasicEditor form;
 
     private T selectedEntity;
     private B selectedObject;

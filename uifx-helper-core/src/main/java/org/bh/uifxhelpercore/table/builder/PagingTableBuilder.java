@@ -27,24 +27,8 @@ public class PagingTableBuilder<V> {
         return this;
     }
 
-
-    public PagingTableBuilder<V> setResourceBundleService(ResourceBundleService resourceBundleService) {
-        tableBuilder.setResourceBundleService(resourceBundleService);
-        return this;
-    }
-
-    public PagingTableBuilder<V> setDescriptor(String descriptor) {
-        tableBuilder.setDescriptor(descriptor);
-        return this;
-    }
-
-    public PagingTableBuilder<V> setViewType(ViewType viewType) {
-        tableBuilder.setViewType(viewType);
-        return this;
-    }
-
-    public PagingTableBuilder<V> setMultiSelectionEnabled(boolean multiSelectionEnabled) {
-        tableBuilder.setMultiSelectionEnabled(multiSelectionEnabled);
+    public PagingTableBuilder<V> setTableBuilder(TableBuilder<V> tableBuilder) {
+        this.tableBuilder = tableBuilder;
         return this;
     }
 

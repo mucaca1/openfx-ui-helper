@@ -4,11 +4,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.scene.layout.BorderPane;
 import org.bh.uifxhelpercore.DataFilter;
+import org.bh.uifxhelpercore.editor.builder.DataBrowserBuilder;
 import org.bh.uifxhelpercore.editor.searcher.SimpleTextSearcher;
 import org.bh.uifxhelpercore.table.PagingTable;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
 import org.bh.uifxhelpercore.table.builder.PagingTableBuilder;
+import org.bh.uifxhelpercore.table.builder.TableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,20 +31,16 @@ public class DataBrowser<T> extends BorderPane {
 
     private DataFilter<T> dataFilter = new DataFilter<>();
 
-    public DataBrowser(Class<T> tableObject, ViewType viewType, boolean enableTextFiltering, boolean enablePaging) {
-        this.enablePaging = enablePaging;
-        this.enableTextFiltering = enableTextFiltering;
+    public DataBrowser(DataBrowserBuilder<T> builder) {
+        this.enablePaging = builder.isUsePagination();
+        this.enableTextFiltering = builder.isAddTextFiltering();
 
         if (enablePaging) {
-            pagingTable = new PagingTableBuilder<>(tableObject)
-                    .setViewType(viewType)
-                    .addFirstLastPageButtons(true)
-                    .build();
+            pagingTable = builder.getPagingTableBuilder().build();
             tableComponent = pagingTable.getTableComponent();
             setCenter(pagingTable);
         } else {
-            tableComponent = new TableViewComponent<>();
-            tableComponent.initialize(tableObject, viewType);
+            tableComponent = builder.getTableBuilder().build();
             setCenter(tableComponent);
         }
 
@@ -50,10 +48,6 @@ public class DataBrowser<T> extends BorderPane {
             setTop(simpleTextSearcher);
             initSimpleTextFilter();
         }
-    }
-
-    public DataBrowser(Class<T> tableObject, ViewType viewType) {
-        this(tableObject, viewType, false, false);
     }
 
     private void initSimpleTextFilter() {

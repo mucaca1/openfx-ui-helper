@@ -20,4 +20,6 @@ module org.bh.uifxhelpercore {
     exports org.bh.uifxhelpercore.field;
     exports org.bh.uifxhelpercore.field.entity;
     exports org.bh.uifxhelpercore.pagination;
+    exports org.bh.uifxhelpercore.form.builder;
+    exports org.bh.uifxhelpercore.table.builder;
 }

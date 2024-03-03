@@ -7,8 +7,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.bh.uifxhelpercore.editor.DataBrowser;
+import org.bh.uifxhelpercore.editor.builder.DataBrowserBuilder;
 import org.bh.uifxhelpercore.table.TableViewComponent;
 import org.bh.uifxhelpercore.table.ViewType;
+import org.bh.uifxhelpercore.table.builder.TableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,10 @@ public abstract class TableSelectorDialog<T> extends Dialog<ButtonType> {
 
     public TableSelectorDialog(Class<T> tableObject, ViewType viewType, boolean multiSelection, boolean canSelectNone) {
         super();
-        dataBrowser = new DataBrowser<>(tableObject, viewType, true, false);
+        dataBrowser = new DataBrowserBuilder<T>(tableObject)
+                .setAddTextFiltering(true)
+                .setTableBuilder(new TableBuilder<>(tableObject).setViewType(viewType).setMultiSelectionEnabled(multiSelection))
+                .build();
 
         selectedObjectsFromTable = new ArrayList<>();
 

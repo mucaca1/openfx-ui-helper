@@ -1,8 +1,60 @@
 package org.bh.uifxhelpercore.editor.builder;
 
-import org.bh.uifxhelpercore.editor.DataLoader;
+import org.bh.uifxhelpercore.editor.DataBrowser;
+import org.bh.uifxhelpercore.table.builder.PagingTableBuilder;
+import org.bh.uifxhelpercore.table.builder.TableBuilder;
 
 public class DataBrowserBuilder<T> {
 
-    DataLoader<T> dataLoader;
+    private boolean usePagination;
+    private boolean addTextFiltering;
+    private TableBuilder<T> tableBuilder;
+    private PagingTableBuilder<T> pagingTableBuilder;
+
+    public DataBrowserBuilder(Class<T> tableObject) {
+        tableBuilder = new TableBuilder<>(tableObject);
+        pagingTableBuilder = new PagingTableBuilder<>(tableObject);
+        usePagination = false;
+        addTextFiltering = false;
+    }
+
+    public boolean isAddTextFiltering() {
+        return addTextFiltering;
+    }
+
+    public DataBrowserBuilder<T> setAddTextFiltering(boolean addTextFiltering) {
+        this.addTextFiltering = addTextFiltering;
+        return this;
+    }
+
+    public boolean isUsePagination() {
+        return usePagination;
+    }
+
+    public DataBrowserBuilder<T> setUsePagination(boolean usePagination) {
+        this.usePagination = usePagination;
+        return this;
+    }
+
+    public PagingTableBuilder<T> getPagingTableBuilder() {
+        return pagingTableBuilder;
+    }
+
+    public DataBrowserBuilder<T> setPagingTableBuilder(PagingTableBuilder<T> pagingTableBuilder) {
+        this.pagingTableBuilder = pagingTableBuilder;
+        return this;
+    }
+
+    public TableBuilder<T> getTableBuilder() {
+        return tableBuilder;
+    }
+
+    public DataBrowserBuilder<T> setTableBuilder(TableBuilder<T> tableBuilder) {
+        this.tableBuilder = tableBuilder;
+        return this;
+    }
+
+    public DataBrowser<T> build() {
+        return new DataBrowser<>(this);
+    }
 }

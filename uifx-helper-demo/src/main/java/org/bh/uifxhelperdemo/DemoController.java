@@ -14,17 +14,20 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Tab;
-import org.bh.uifxhelpercore.editor.BasicEditorUi;
+import org.bh.uifxhelpercore.editor.BasicEditor;
 import org.bh.uifxhelpercore.editor.DataBrowser;
 import org.bh.uifxhelpercore.editor.SimpleObjectTranslator;
-import org.bh.uifxhelpercore.editor.builder.BasicEditorUIBuilder;
+import org.bh.uifxhelpercore.editor.builder.BasicEditorBuilder;
+import org.bh.uifxhelpercore.editor.builder.DataBrowserBuilder;
 import org.bh.uifxhelpercore.field.FieldHelper;
 import org.bh.uifxhelpercore.field.entity.SimpleEntityChooserField;
 import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
 import org.bh.uifxhelpercore.form.FormField;
+import org.bh.uifxhelpercore.form.builder.FormBuilder;
 import org.bh.uifxhelpercore.locale.LocalizationHelper;
-import org.bh.uifxhelpercore.table.ViewType;
+import org.bh.uifxhelpercore.table.builder.PagingTableBuilder;
+import org.bh.uifxhelpercore.table.builder.TableBuilder;
 
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
@@ -68,21 +71,21 @@ public class DemoController {
 
         // Init dynamic table
         {
-            DataBrowser<Person> simpleDataBrowser = new DataBrowser<>(Person.class, ViewType.Default);
+            DataBrowser<Person> simpleDataBrowser = new DataBrowserBuilder<Person>(Person.class).setTableBuilder(new TableBuilder<>(Person.class)).build();
             simpleDataBrowser.setTableData(DemoDataFactory.getRandomPerson(5));
             dynamicTablePane.setContent(simpleDataBrowser);
         }
 
         // Init dynamic table with basic text filter
         {
-            DataBrowser<Person> simpleDataBrowser = new DataBrowser<>(Person.class, ViewType.Default, true, false);
+            DataBrowser<Person> simpleDataBrowser = new DataBrowserBuilder<Person>(Person.class).setAddTextFiltering(true).setTableBuilder(new TableBuilder<>(Person.class)).build();
             simpleDataBrowser.setData(DemoDataFactory.getRandomPerson(5));
             dynamicTableFilterPane.setContent(simpleDataBrowser);
         }
 
         // Init dynamic paging table
         {
-            DataBrowser<Person> simpleDataBrowser = new DataBrowser<>(Person.class, ViewType.Default, true, true);
+            DataBrowser<Person> simpleDataBrowser = new DataBrowserBuilder<Person>(Person.class).setAddTextFiltering(true).setUsePagination(true).setPagingTableBuilder(new PagingTableBuilder<>(Person.class).addFirstLastPageButtons(true)).build();
             simpleDataBrowser.setData(DemoDataFactory.getRandomPerson(50));
 
             dynamicPagingTablePane.setContent(simpleDataBrowser);
@@ -141,9 +144,11 @@ public class DemoController {
 
         // Init dynamic form
         {
-            formWrapper = new DynamicFormWrapper<Person>(LocalizationHelper.get().getResourceBundleService("Form"), Person.class);
+            formWrapper = new FormBuilder<Person>(Person.class)
+                    .setResourceBundleService(LocalizationHelper.get().getResourceBundleService("Form"))
+                    .addFormFieldMapper("parent", mapper)
+                    .build();
 
-            formWrapper.getFormDynamicData().registerMapper("parent", mapper);
             formWrapper.buildForm();
             formWrapper.getFormDynamicData().setValueOfField("name", "Random name");
             ((DataField<?, ?, ?>) formWrapper.getFormDynamicData().getFields().get("age")).setBindingMode(BindingMode.CONTINUOUS);
@@ -159,27 +164,39 @@ public class DemoController {
 
         // Init table and form
         {
-            BasicEditorUi<Person, Person> basicEditor = new BasicEditorUIBuilder<>(Person.class, Person.class, new SimpleObjectTranslator<>())
-                    .setTableResourceBundle(LocalizationHelper.get().getResourceBundleService("Tables"))
-                    .setFormResourceBundle(LocalizationHelper.get().getResourceBundleService("Form"))
+
+            BasicEditor<Person, Person> basicEditor = new BasicEditorBuilder<>(Person.class, Person.class, new SimpleObjectTranslator<>())
                     .setButtonResourceBundle(LocalizationHelper.get().getResourceBundleService("Buttons"))
-                    .addFormFieldMapper("parent", mapper)
-                    .setShowForm(true)
-                    .setInitFormDynamic(true)
-                    .build();
+                    .setFormBuilder(new FormBuilder<>(Person.class).addFormFieldMapper("parent", mapper))
+                    .setFormBuilder(new FormBuilder<>(Person.class)
+                            .addFormFieldMapper("parent", mapper)
+                            .setResourceBundleService(LocalizationHelper.get().getResourceBundleService("Form"))
+                    )
+                    .setDataBrowserBuilder(new DataBrowserBuilder<>(Person.class)
+                            .setTableBuilder(new TableBuilder<>(Person.class)
+                                    .setResourceBundleService(LocalizationHelper.get().getResourceBundleService("Tables"))
+                            )
+                    )
+                    .setShowForm(true).build();
             basicEditor.setTableData(FXCollections.observableList(DemoDataFactory.getRandomPerson(5)));
             basicFormWithSplitPane.setContent(basicEditor);
         }
 
         // Init table and pop-up form
         {
-            BasicEditorUi<Person, Person> basicEditor = new BasicEditorUIBuilder<>(Person.class, Person.class, new SimpleObjectTranslator<>())
-                    .setTableResourceBundle(LocalizationHelper.get().getResourceBundleService("Tables"))
-                    .setFormResourceBundle(LocalizationHelper.get().getResourceBundleService("Form"))
+
+            BasicEditor<Person, Person> basicEditor = new BasicEditorBuilder<>(Person.class, Person.class, new SimpleObjectTranslator<>())
                     .setButtonResourceBundle(LocalizationHelper.get().getResourceBundleService("Buttons"))
-                    .addFormFieldMapper("parent", mapper)
-                    .setInitFormDynamic(true)
-                    .build();
+                    .setFormBuilder(new FormBuilder<>(Person.class)
+                            .addFormFieldMapper("parent", mapper)
+                            .setResourceBundleService(LocalizationHelper.get().getResourceBundleService("Form"))
+                    )
+                    .setDataBrowserBuilder(new DataBrowserBuilder<>(Person.class)
+                            .setTableBuilder(new TableBuilder<>(Person.class)
+                                    .setResourceBundleService(LocalizationHelper.get().getResourceBundleService("Tables"))
+                            )
+                    )
+                    .setShowForm(false).build();
             basicEditor.setTableData(FXCollections.observableList(DemoDataFactory.getRandomPerson(5)));
             basicEditorWithFormPane.setContent(basicEditor);
         }

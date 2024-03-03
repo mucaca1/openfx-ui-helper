@@ -1,6 +1,5 @@
 package org.bh.uifxhelpercore.editor;
 
-import com.dlsc.formsfx.model.util.ResourceBundleService;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
@@ -8,14 +7,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import org.bh.uifxhelpercore.button.ButtonAdvancedBar;
 import org.bh.uifxhelpercore.button.ButtonType;
+import org.bh.uifxhelpercore.editor.builder.BasicEditorBuilder;
 import org.bh.uifxhelpercore.form.DynamicFormWrapper;
-import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
-import org.bh.uifxhelpercore.form.FieldValueMapper;
 import org.bh.uifxhelpercore.form.FormWrapper;
 import org.bh.uifxhelpercore.table.TableViewComponent;
-import org.bh.uifxhelpercore.table.ViewType;
-
-import java.util.Map;
 
 /**
  * This object represent basic editor, witch contain data in table and data representation as form for specific object.
@@ -23,12 +18,12 @@ import java.util.Map;
  * @param <TABLE_OBJECT>
  * @param <FORM_OBJECT>
  */
-public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
+public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
 
     protected DataBrowser<TABLE_OBJECT> dataBrowser;
     protected ButtonAdvancedBar tableButtonBar;
 
-    protected FormWrapper<FORM_OBJECT> formWrapper;
+    protected DynamicFormWrapper<FORM_OBJECT> formWrapper;
 
     /**
      * This translator can translate table object, into form object.
@@ -37,48 +32,23 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
 
     private final EditorObjectEventHandler<FORM_OBJECT> eventHandler;
 
-    public BasicEditorUi(Class<TABLE_OBJECT> tableObjectClass,
-                         Class<FORM_OBJECT> formObjectClass,
-                         ObjectTranslator<TABLE_OBJECT, FORM_OBJECT> objectTranslator,
-                         ViewType viewType,
-                         String tableDescriptor,
-                         ResourceBundleService tableResourceBundle,
-                         ResourceBundleService formResourceBundle,
-                         ResourceBundleService buttonResourceBundle,
-                         boolean multiSelection,
-                         boolean initFormDynamic,
-                         boolean showForm,
-                         Map<String, FieldTypeValueMapper> formFieldMappers,
-                         Map<String, FieldValueMapper> formFieldValueMappers,
-                         EditorObjectEventHandler<FORM_OBJECT> eventHandler) {
-        this.eventHandler = eventHandler;
-        this.translator = objectTranslator;
+    public BasicEditor(BasicEditorBuilder<TABLE_OBJECT, FORM_OBJECT> builder) {
+        this.eventHandler = builder.getEventHandler();
+        this.translator = builder.getObjectTranslator();
 
         // Init main component table.
 
-        tableButtonBar = new ButtonAdvancedBar(buttonResourceBundle);
-        dataBrowser = new DataBrowser<>(tableObjectClass, viewType);
+        tableButtonBar = new ButtonAdvancedBar(builder.getButtonResourceBundle());
+        dataBrowser = builder.getDataBrowserBuilder().build();
 
         BorderPane tableBorderPane = new BorderPane();
         tableBorderPane.setCenter(dataBrowser);
         tableBorderPane.setBottom(tableButtonBar);
 
-        dataBrowser.getTableComponent().multiSelectionEnabled(multiSelection);
-
-        if (initFormDynamic) {
-            formWrapper = new DynamicFormWrapper<>(formResourceBundle, formObjectClass);
-            formFieldMappers.forEach((s, fieldTypeValueMapper) -> {
-                ((DynamicFormWrapper<?>)formWrapper).getFormDynamicData().registerMapper(s, fieldTypeValueMapper);
-            });
-            formFieldValueMappers.forEach((s, fieldValueMapper) -> {
-                ((DynamicFormWrapper<?>)formWrapper).getFormDynamicData().registerValueMapper(s, fieldValueMapper);
-            });
-            ((DynamicFormWrapper<?>) formWrapper).buildForm();
-            formWrapper.renderForm();
-        }
+        formWrapper = builder.getFormBuilder().build();
 
         {
-            if (showForm) {
+            if (builder.isShowForm()) {
                 SplitPane splitPane = new SplitPane();
                 splitPane.setDividerPositions(0.55d);
                 splitPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -99,12 +69,12 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                 ScrollPane formScrollPane = new ScrollPane();
                 formScrollPane.setFitToWidth(true);
 
-                ButtonAdvancedBar formButtonBar = new ButtonAdvancedBar(buttonResourceBundle);
+                ButtonAdvancedBar formButtonBar = new ButtonAdvancedBar(builder.getButtonResourceBundle());
                 formScrollPane.setContent(formWrapper.getFormRenderer());
 
                 formBorderPane.setCenter(formScrollPane);
                 formBorderPane.setBottom(formButtonBar);
-                
+
                 formButtonBar.addButtons(ButtonType.OK, ButtonType.CANCEL);
 
                 formButtonBar.addActionListener(ButtonType.OK, event -> {
@@ -145,7 +115,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
         {
             // todo make this button dynamic.
             // todo add resource for buttons
-            if (showForm) {
+            if (builder.isShowForm()) {
                 tableButtonBar.addButtons(ButtonType.CREATE, ButtonType.DELETE);
             } else {
                 tableButtonBar.addButtons(ButtonType.CREATE, ButtonType.UPDATE, ButtonType.DELETE);
@@ -153,10 +123,8 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
 
             tableButtonBar.addActionListener(ButtonType.CREATE, event -> {
                 dataBrowser.getTableComponent().getSelectionModel().clearSelection();
-                if (showForm) {
-                    if (initFormDynamic) {
-                        ((DynamicFormWrapper<?>)formWrapper).clearForm();
-                    }
+                if (builder.isShowForm()) {
+                    formWrapper.clearForm();
                 } else {
                     BaseDialog baseDialog = new BaseDialog();
                     baseDialog.setContent(formWrapper.getFormRenderer());
@@ -174,7 +142,7 @@ public class BasicEditorUi<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                 }
             });
 
-            if (!showForm) {
+            if (!builder.isShowForm()) {
                 tableButtonBar.addActionListener(ButtonType.UPDATE, event -> {
                     BaseDialog baseDialog = new BaseDialog();
                     TABLE_OBJECT selectedObject = dataBrowser.getTableComponent().getSelectionModel().getSelectedItem();

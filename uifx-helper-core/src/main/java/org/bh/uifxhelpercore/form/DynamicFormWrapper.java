@@ -4,6 +4,8 @@ import com.dlsc.formsfx.model.structure.Element;
 import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.formsfx.model.structure.Group;
 import com.dlsc.formsfx.model.util.ResourceBundleService;
+import org.bh.uifxhelpercore.form.builder.FormBuilder;
+import org.bh.uifxhelpercore.locale.LocalizationHelper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,11 +22,24 @@ public class DynamicFormWrapper<T> extends FormWrapper<T> {
 
     private Map<String, com.dlsc.formsfx.model.structure.Field<?>> fieldByFieldId;
 
-    public DynamicFormWrapper(ResourceBundleService resourceBundleService, Class<T> formClass) {
-        super(resourceBundleService);
+
+    public DynamicFormWrapper(FormBuilder<T> builder) {
+        this.resourceBundleService = builder.getResourceBundleService();
+        if (this.resourceBundleService == null && LocalizationHelper.get().getDefaultFormBundleService() != null) {
+            this.resourceBundleService = LocalizationHelper.get().getDefaultFormBundleService();
+        }
 
         this.fieldByFieldId = new HashMap<>();
-        this.formClass = formClass;
+        this.formClass = builder.getFormObject();
+
+        builder.getFormFieldMappers().forEach((s, fieldTypeValueMapper) -> {
+            getFormDynamicData().registerMapper(s, fieldTypeValueMapper);
+        });
+        builder.getFormFieldValueMappers().forEach((s, fieldValueMapper) -> {
+            getFormDynamicData().registerValueMapper(s, fieldValueMapper);
+        });
+        buildForm();
+        renderForm();
     }
 
     public void buildForm() {
