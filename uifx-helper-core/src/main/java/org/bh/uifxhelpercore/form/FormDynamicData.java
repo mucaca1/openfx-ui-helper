@@ -61,6 +61,8 @@ public class FormDynamicData {
      * @param formObject object to parse.
      */
     public void parseFormObjectAsFields(Class<?> formObject) {
+        data.clear();
+        initFormData.clear();
         for (java.lang.reflect.Field field : formObject.getDeclaredFields()) {
             FormField formField = field.getAnnotation(FormField.class);
             if (formField == null) {
@@ -99,6 +101,7 @@ public class FormDynamicData {
     public List<Group> getGroupOfDynamicData(java.lang.reflect.Field[] fields) {
         List<Element<?>> elements = new ArrayList<>();
         Map<String, List<Element<?>>> sections = new HashMap<>();
+        this.fields.clear();
         for (java.lang.reflect.Field field : fields) {
             if (!data.containsKey(field.getName())) {
                 continue;

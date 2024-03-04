@@ -64,6 +64,9 @@ public class DemoController {
             LocalizationHelper.get().registerResourceBundleService("Form", "en", ResourceBundle.getBundle("Form", new Locale("en")));
             LocalizationHelper.get().registerResourceBundleService("Form", "sk", ResourceBundle.getBundle("Form", new Locale("sk")));
 
+            /* This code register default resource bundle for buttons.
+             * In builder, we do not need set up bundle. Will be automatically took from default button bundle.
+             */
             LocalizationHelper.get().registerDefaultButtonBundleService("en", ResourceBundle.getBundle("Buttons", new Locale("en")));
             LocalizationHelper.get().registerDefaultButtonBundleService("sk", ResourceBundle.getBundle("Buttons", new Locale("sk")));
 
@@ -149,7 +152,6 @@ public class DemoController {
                     .addFormFieldMapper("parent", mapper)
                     .build();
 
-            formWrapper.buildForm();
             formWrapper.getFormDynamicData().setValueOfField("name", "Random name");
             ((DataField<?, ?, ?>) formWrapper.getFormDynamicData().getFields().get("age")).setBindingMode(BindingMode.CONTINUOUS);
             ((IntegerField) formWrapper.getFormDynamicData().getFields().get("age")).addEventHandler(FieldEvent.EVENT_FIELD_PERSISTED, (a) -> {
@@ -157,7 +159,6 @@ public class DemoController {
             });
             formWrapper.getFieldByFieldId().get("name").editable(false);
             ((IntegerField) formWrapper.getFieldByFieldId().get("age")).validate(IntegerRangeValidator.atLeast(10, "low_number_msg"));
-            formWrapper.renderForm();
             dynamicFormTablePane.setContent(formWrapper.getFormRenderer());
         }
 
