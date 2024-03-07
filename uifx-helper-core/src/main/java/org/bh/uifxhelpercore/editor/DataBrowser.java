@@ -1,7 +1,11 @@
 package org.bh.uifxhelpercore.editor;
 
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.layout.BorderPane;
 import org.bh.uifxhelpercore.DataFilter;
 import org.bh.uifxhelpercore.editor.builder.DataBrowserBuilder;
@@ -20,6 +24,8 @@ import java.util.List;
  * @param <T>
  */
 public class DataBrowser<T> extends BorderPane {
+
+    private ListProperty<T> data = new SimpleListProperty<T>(FXCollections.observableArrayList());
 
     private final boolean enableTextFiltering;
     private final boolean enablePaging;
@@ -51,16 +57,22 @@ public class DataBrowser<T> extends BorderPane {
     }
 
     private void initSimpleTextFilter() {
+        dataFilter.bindData(data);
         dataFilter.initAsBasicTextFilterForTable(simpleTextSearcher.getSearchTextProperty(), tableComponent);
         dataFilter.getSortedData().addListener((ListChangeListener<? super T>) change -> {
             setTableData(new ArrayList<>(change.getList()));
         });
     }
 
+    public ListProperty<T> getData() {
+        return data;
+    }
+
     public void setData(List<T> data) {
-        if (enableTextFiltering) {
-            dataFilter.setData(data);
-        } else {
+        this.data.clear();
+        this.data.addAll(data);
+
+        if (!enableTextFiltering) {
             setTableData(data);
         }
     }
@@ -70,6 +82,15 @@ public class DataBrowser<T> extends BorderPane {
             pagingTable.setData(data);
         } else {
             tableComponent.setItems(FXCollections.observableList(data));
+        }
+    }
+
+    public void refreshData() {
+        if (enablePaging) {
+            pagingTable.setData(data);
+        } else {
+            tableComponent.setItems(FXCollections.observableList(data));
+            tableComponent.refresh();
         }
     }
 

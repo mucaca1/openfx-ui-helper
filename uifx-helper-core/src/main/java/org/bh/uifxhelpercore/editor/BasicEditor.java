@@ -82,16 +82,20 @@ public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                     if (this.eventHandler != null) {
                         newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
                     }
-                    int selectedTableObjectIndex = dataBrowser.getTableComponent().getSelectionModel().getSelectedIndex();
-                    if (selectedTableObjectIndex != -1) {
-                        dataBrowser.getTableComponent().getItems().remove(selectedTableObjectIndex);
-                        dataBrowser.getTableComponent().getItems().add(selectedTableObjectIndex, translator.getFirstObject(newObject));
-                    } else {
-                        dataBrowser.getTableComponent().getItems().add(translator.getFirstObject(newObject));
-                    }
+                    boolean isEmptySelection = dataBrowser.getTableComponent().getSelectionModel().isEmpty();
+                    TABLE_OBJECT newOrUpdatedTableObject = translator.getFirstObject(newObject);
+                    if (!isEmptySelection) {
+                        this.dataBrowser.getData().replaceAll(tableObj -> {
+                            if (tableObj.equals(newOrUpdatedTableObject)) {
+                                return newOrUpdatedTableObject;
+                            }
+                            return tableObj;
+                        });
 
-                    dataBrowser.getTableComponent().refresh();
-                    dataBrowser.setData(dataBrowser.getTableComponent().getItems());
+                    } else {
+                        dataBrowser.getData().add(newOrUpdatedTableObject);
+                    }
+                    dataBrowser.refreshData();
                 });
                 formButtonBar.addActionListener(ButtonType.CANCEL, event -> {
                     formWrapper.getForm().reset();
@@ -123,6 +127,7 @@ public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
 
             tableButtonBar.addActionListener(ButtonType.CREATE, event -> {
                 dataBrowser.getTableComponent().getSelectionModel().clearSelection();
+                formWrapper.createNewFormObject();
                 if (builder.isShowForm()) {
                     formWrapper.clearForm();
                 } else {
@@ -130,15 +135,16 @@ public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                     baseDialog.setContent(formWrapper.getFormRenderer());
                     baseDialog.showAndWait();
 
-                    if (baseDialog.isOkFlag()) {
-                        FORM_OBJECT newObject = formWrapper.getObjectFromForm();
-                        if (this.eventHandler != null) {
-                            newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
-                        }
-                        dataBrowser.getTableComponent().getItems().add(translator.getFirstObject(newObject));
-                        dataBrowser.getTableComponent().refresh();
-                        dataBrowser.setData(dataBrowser.getTableComponent().getItems());
+                    if (!baseDialog.isOkFlag()) {
+                        return;
                     }
+
+                    FORM_OBJECT newObject = formWrapper.getObjectFromForm();
+                    if (this.eventHandler != null) {
+                        newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
+                    }
+                    dataBrowser.getData().add(translator.getFirstObject(newObject));
+                    dataBrowser.refreshData();
                 }
             });
 
@@ -150,17 +156,22 @@ public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                     baseDialog.setContent(formWrapper.getFormRenderer());
                     baseDialog.showAndWait();
 
-                    if (baseDialog.isOkFlag()) {
-                        int index = dataBrowser.getTableComponent().getSelectionModel().getSelectedIndex();
-                        dataBrowser.getTableComponent().getItems().remove(dataBrowser.getTableComponent().getSelectionModel().getSelectedItem());
-                        FORM_OBJECT newObject = formWrapper.getObjectFromForm();
-                        if (this.eventHandler != null) {
-                            newObject = this.eventHandler.handleEvent(ObjectEvent.UPDATE, newObject);
-                        }
-                        dataBrowser.getTableComponent().getItems().add(index, translator.getFirstObject(newObject));
-                        dataBrowser.getTableComponent().refresh();
-                        dataBrowser.setData(dataBrowser.getTableComponent().getItems());
+                    if (!baseDialog.isOkFlag()) {
+                        return;
                     }
+
+                    FORM_OBJECT newObject = formWrapper.getObjectFromForm();
+                    if (this.eventHandler != null) {
+                        newObject = this.eventHandler.handleEvent(ObjectEvent.UPDATE, newObject);
+                    }
+                    TABLE_OBJECT updatedTableObject = translator.getFirstObject(newObject);
+
+                    this.dataBrowser.getData().replaceAll(tableObj -> {
+                        if (tableObj.equals(updatedTableObject)) {
+                            return updatedTableObject;
+                        }
+                        return tableObj;
+                    });
                 });
             }
 
@@ -170,8 +181,8 @@ public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                 if (this.eventHandler != null) {
                     this.eventHandler.handleEvent(ObjectEvent.DELETE, translator.getSecondObject(t));
                 }
-                dataBrowser.getTableComponent().getItems().remove(dataBrowser.getTableComponent().getSelectionModel().getSelectedItem());
-                dataBrowser.setData(dataBrowser.getTableComponent().getItems());
+                dataBrowser.getData().remove(dataBrowser.getTableComponent().getSelectionModel().getSelectedItem());
+                dataBrowser.refreshData();
             });
         }
     }

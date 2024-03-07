@@ -1,6 +1,8 @@
 package org.bh.uifxhelpercore;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -18,10 +20,14 @@ import java.util.List;
  */
 public class DataFilter<V> {
 
-    private ObservableList<V> data = FXCollections.observableArrayList();
+    private ListProperty<V> data = new SimpleListProperty<V>(FXCollections.observableArrayList());
     private FilteredList<V> filteredData;
 
     private SortedList<V> sortedData;
+
+    public void bindData(ListProperty<V> data) {
+        this.data.bindBidirectional(data);
+    }
 
     public void setData(List<V> items) {
         data.clear();

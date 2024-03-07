@@ -1,6 +1,8 @@
 package org.bh.uifxhelpercore.button;
 
 import com.dlsc.formsfx.model.util.ResourceBundleService;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -15,6 +17,10 @@ import java.util.Map;
  * Defines resource bundle for button labels and help update those labels after language change.
  */
 public class ButtonAdvancedBar extends ButtonBar {
+
+    private final ObjectProperty<ButtonCallback> buttonCallback
+            = new SimpleObjectProperty<>(this, "buttonCallback");
+
 
     /**
      * Holder for all buttons. Key is custom user defined identifier and value is button.
@@ -57,28 +63,41 @@ public class ButtonAdvancedBar extends ButtonBar {
         }
     }
 
+    public final ObjectProperty<ButtonCallback> buttonCallbackProperty() {
+        return buttonCallback;
+    }
+
+    public final void setButtonCallbackProperty(ButtonCallback value) {
+        this.buttonCallbackProperty().set(value);
+    }
+
     /**
      * Add button into button bar.
      */
     public void addButtons(IButtonType... buttonTypes) {
         for (IButtonType buttonType : buttonTypes) {
-            addButtons(buttonType.getIdentifier());
+            Button btn = addButton(buttonType.getIdentifier());
+            btn.addEventHandler(ActionEvent.ACTION, ae -> {
+                if (ae.isConsumed()) return;
+                if (buttonCallback.get() != null) {
+                    buttonCallback.get().call(buttonType);
+                }
+            });
         }
     }
 
-    private void addButtons(String... buttonIdentifiers) {
-        for (String identifier : buttonIdentifiers) {
-            String btnLabel = identifier;
-            if (resourceBundleService != null) {
-                String s = resourceBundleService.translate(identifier);
-                if (s != null) {
-                    btnLabel = s;
-                }
+    private Button addButton(String buttonIdentifier) {
+        String btnLabel = buttonIdentifier;
+        if (resourceBundleService != null) {
+            String s = resourceBundleService.translate(buttonIdentifier);
+            if (s != null) {
+                btnLabel = s;
             }
-            Button btn = new Button(btnLabel);
-            buttons.put(identifier, btn);
-            getButtons().add(btn);
         }
+        Button btn = new Button(btnLabel);
+        buttons.put(buttonIdentifier, btn);
+        getButtons().add(btn);
+        return btn;
     }
 
     /**

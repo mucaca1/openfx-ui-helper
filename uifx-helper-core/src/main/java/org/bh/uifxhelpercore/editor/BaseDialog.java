@@ -29,6 +29,7 @@ public class BaseDialog extends Stage {
         VBox vBox = new VBox();
         ButtonAdvancedBar buttonBar = new ButtonAdvancedBar();
         buttonBar.addButtons(ButtonType.OK, ButtonType.CANCEL);
+        buttonBar.getButton(ButtonType.OK).setDefaultButton(true);
 
         vBox.getChildren().addAll(content, buttonBar);
 
