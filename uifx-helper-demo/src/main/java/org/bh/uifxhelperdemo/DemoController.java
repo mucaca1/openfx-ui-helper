@@ -81,7 +81,7 @@ public class DemoController {
 
         // Init dynamic table with basic text filter
         {
-            DataBrowser<Person> simpleDataBrowser = new DataBrowserBuilder<Person>(Person.class).setAddTextFiltering(true).setTableBuilder(new TableBuilder<>(Person.class)).build();
+            DataBrowser<Person> simpleDataBrowser = new DataBrowserBuilder<Person>(Person.class).setAddTextFiltering(true).setAutoFilter(true).setTableBuilder(new TableBuilder<>(Person.class)).build();
             simpleDataBrowser.setData(DemoDataFactory.getRandomPerson(5));
             dynamicTableFilterPane.setContent(simpleDataBrowser);
         }

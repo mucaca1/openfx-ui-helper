@@ -1,4 +1,4 @@
-package org.bh.uifxhelpercore.pagination.skin;
+package org.bh.uifxhelpercore.table.pagination.skin;
 
 import javafx.collections.ListChangeListener;
 import javafx.scene.Node;

@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.TableColumn;
@@ -16,13 +15,13 @@ import java.util.List;
 
 /**
  * Simple filter holder, witch hold data and can filter them.
+ *
  * @param <V>
  */
 public class DataFilter<V> {
 
     private ListProperty<V> data = new SimpleListProperty<V>(FXCollections.observableArrayList());
     private FilteredList<V> filteredData;
-
     private SortedList<V> sortedData;
 
     public void bindData(ListProperty<V> data) {
@@ -45,8 +44,9 @@ public class DataFilter<V> {
     /**
      * Create filter as table filter.
      * This filter will filter all rows from all columns where text contain string in string property.
+     *
      * @param stringProperty
-     * @param table the table to which the filters will be applied
+     * @param table          the table to which the filters will be applied
      */
     public void initAsBasicTextFilterForTable(StringProperty stringProperty, TableView<V> table) {
         filteredData = new FilteredList<>(data, v -> true);

@@ -9,6 +9,7 @@ public enum ButtonType implements IButtonType {
     DELETE("deleteBtn"),
     CREATE("createBtn"),
     UPDATE("updateBtn"),
+    SEARCH("searchBtn"),
     ;
 
     private final String identifier;

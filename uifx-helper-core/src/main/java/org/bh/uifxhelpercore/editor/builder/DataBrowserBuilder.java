@@ -8,6 +8,8 @@ public class DataBrowserBuilder<T> {
 
     private boolean usePagination;
     private boolean addTextFiltering;
+
+    private boolean autoFiltering;
     private TableBuilder<T> tableBuilder;
     private PagingTableBuilder<T> pagingTableBuilder;
 
@@ -16,6 +18,7 @@ public class DataBrowserBuilder<T> {
         pagingTableBuilder = new PagingTableBuilder<>(tableObject);
         usePagination = false;
         addTextFiltering = false;
+        autoFiltering = true;
     }
 
     public boolean isAddTextFiltering() {
@@ -25,6 +28,16 @@ public class DataBrowserBuilder<T> {
     public DataBrowserBuilder<T> setAddTextFiltering(boolean addTextFiltering) {
         this.addTextFiltering = addTextFiltering;
         return this;
+    }
+
+    @SuppressWarnings("Not implemented yet!")
+    public DataBrowserBuilder<T> setAutoFilter(boolean autoFiltering) {
+        this.autoFiltering = autoFiltering;
+        return this;
+    }
+
+    public boolean isAutoFiltering() {
+        return autoFiltering;
     }
 
     public boolean isUsePagination() {

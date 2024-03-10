@@ -80,7 +80,12 @@ public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
                 formButtonBar.addActionListener(ButtonType.OK, event -> {
                     FORM_OBJECT newObject = formWrapper.getObjectFromForm();
                     if (this.eventHandler != null) {
-                        newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
+                        try {
+                            newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return;
+                        }
                     }
                     boolean isEmptySelection = dataBrowser.getTableComponent().getSelectionModel().isEmpty();
                     TABLE_OBJECT newOrUpdatedTableObject = translator.getFirstObject(newObject);
@@ -141,7 +146,12 @@ public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
 
                     FORM_OBJECT newObject = formWrapper.getObjectFromForm();
                     if (this.eventHandler != null) {
-                        newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
+                        try {
+                            newObject = this.eventHandler.handleEvent(ObjectEvent.CREATE, newObject);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return;
+                        }
                     }
                     dataBrowser.getData().add(translator.getFirstObject(newObject));
                     dataBrowser.refreshData();
@@ -162,7 +172,12 @@ public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
 
                     FORM_OBJECT newObject = formWrapper.getObjectFromForm();
                     if (this.eventHandler != null) {
-                        newObject = this.eventHandler.handleEvent(ObjectEvent.UPDATE, newObject);
+                        try {
+                            newObject = this.eventHandler.handleEvent(ObjectEvent.UPDATE, newObject);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return;
+                        }
                     }
                     TABLE_OBJECT updatedTableObject = translator.getFirstObject(newObject);
 
@@ -179,7 +194,12 @@ public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
             tableButtonBar.addActionListener(ButtonType.DELETE, event -> {
                 TABLE_OBJECT t = dataBrowser.getTableComponent().getSelectionModel().getSelectedItem();
                 if (this.eventHandler != null) {
-                    this.eventHandler.handleEvent(ObjectEvent.DELETE, translator.getSecondObject(t));
+                    try {
+                        this.eventHandler.handleEvent(ObjectEvent.DELETE, translator.getSecondObject(t));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
                 }
                 dataBrowser.getData().remove(dataBrowser.getTableComponent().getSelectionModel().getSelectedItem());
                 dataBrowser.refreshData();
@@ -191,7 +211,7 @@ public class BasicEditor<TABLE_OBJECT, FORM_OBJECT> extends BorderPane {
         return tableButtonBar;
     }
 
-    public TableViewComponent getDataBrowser() {
+    public TableViewComponent<TABLE_OBJECT> getDataBrowser() {
         return dataBrowser.getTableComponent();
     }
 

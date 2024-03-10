@@ -1,8 +1,8 @@
-package org.bh.uifxhelpercore.pagination;
+package org.bh.uifxhelpercore.table.pagination;
 
 import javafx.scene.control.Pagination;
 import javafx.scene.control.Skin;
-import org.bh.uifxhelpercore.pagination.skin.FirstLastIndexPaginationSkin;
+import org.bh.uifxhelpercore.table.pagination.skin.FirstLastIndexPaginationSkin;
 
 /**
  * This pagination component add two next option for pagination.

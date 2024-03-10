@@ -19,7 +19,9 @@ module org.bh.uifxhelpercore {
     exports org.bh.uifxhelpercore.editor.entityselector;
     exports org.bh.uifxhelpercore.field;
     exports org.bh.uifxhelpercore.field.entity;
-    exports org.bh.uifxhelpercore.pagination;
+    exports org.bh.uifxhelpercore.table.pagination;
     exports org.bh.uifxhelpercore.form.builder;
     exports org.bh.uifxhelpercore.table.builder;
+    exports org.bh.uifxhelpercore.datarequest;
+    opens org.bh.uifxhelpercore.datarequest to javafx.fxml;
 }

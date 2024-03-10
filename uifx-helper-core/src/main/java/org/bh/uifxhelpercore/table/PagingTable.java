@@ -4,7 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.Pagination;
 import javafx.scene.layout.BorderPane;
-import org.bh.uifxhelpercore.pagination.AdvancedPagination;
+import org.bh.uifxhelpercore.table.pagination.AdvancedPagination;
 import org.bh.uifxhelpercore.table.builder.PagingTableBuilder;
 
 import java.util.ArrayList;
@@ -48,6 +48,13 @@ public class PagingTable<V> extends BorderPane {
         fillPage(pagination.getCurrentPageIndex());
     }
 
+    public void setData(List<V> data, int actualPage, int pageCount) {
+        this.data = data;
+        pagination.setPageCount(pageCount);
+        pagination.setCurrentPageIndex(actualPage);
+        table.setItems(FXCollections.observableArrayList(this.data));
+    }
+
     public TableViewComponent<V> getTableComponent() {
         return table;
     }
@@ -61,6 +68,10 @@ public class PagingTable<V> extends BorderPane {
         int fromIndex = pageIndex * rowsPerPage;
         int toIndex = Math.min(fromIndex + rowsPerPage, data.size());
         table.setItems(FXCollections.observableArrayList(data.subList(fromIndex, toIndex)));
+    }
+
+    public Pagination getPagination() {
+        return pagination;
     }
 
 }

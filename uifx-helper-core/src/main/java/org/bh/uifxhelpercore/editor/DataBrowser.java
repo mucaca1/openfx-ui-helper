@@ -8,7 +8,11 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.layout.BorderPane;
 import org.bh.uifxhelpercore.DataFilter;
+import org.bh.uifxhelpercore.button.ButtonType;
+import org.bh.uifxhelpercore.datarequest.DataRequestPojo;
+import org.bh.uifxhelpercore.datarequest.IDataRequest;
 import org.bh.uifxhelpercore.editor.builder.DataBrowserBuilder;
+import org.bh.uifxhelpercore.editor.searcher.SearcherBar;
 import org.bh.uifxhelpercore.editor.searcher.SimpleTextSearcher;
 import org.bh.uifxhelpercore.table.PagingTable;
 import org.bh.uifxhelpercore.table.TableViewComponent;
@@ -28,18 +32,20 @@ public class DataBrowser<T> extends BorderPane {
     private ListProperty<T> data = new SimpleListProperty<T>(FXCollections.observableArrayList());
 
     private final boolean enableTextFiltering;
+    private final boolean autoFiltering;
     private final boolean enablePaging;
-
-    private SimpleTextSearcher simpleTextSearcher = new SimpleTextSearcher();
 
     private PagingTable<T> pagingTable;
     private TableViewComponent<T> tableComponent;
+
+    SearcherBar searcherBar;
 
     private DataFilter<T> dataFilter = new DataFilter<>();
 
     public DataBrowser(DataBrowserBuilder<T> builder) {
         this.enablePaging = builder.isUsePagination();
         this.enableTextFiltering = builder.isAddTextFiltering();
+        this.autoFiltering = builder.isAutoFiltering();
 
         if (enablePaging) {
             pagingTable = builder.getPagingTableBuilder().build();
@@ -51,14 +57,15 @@ public class DataBrowser<T> extends BorderPane {
         }
 
         if (enableTextFiltering) {
-            setTop(simpleTextSearcher);
+            searcherBar = new SearcherBar(this.autoFiltering);
+            setTop(searcherBar);
             initSimpleTextFilter();
         }
     }
 
     private void initSimpleTextFilter() {
         dataFilter.bindData(data);
-        dataFilter.initAsBasicTextFilterForTable(simpleTextSearcher.getSearchTextProperty(), tableComponent);
+        dataFilter.initAsBasicTextFilterForTable(searcherBar.getSimpleTextSearcher().getSearchTextProperty(), tableComponent);
         dataFilter.getSortedData().addListener((ListChangeListener<? super T>) change -> {
             setTableData(new ArrayList<>(change.getList()));
         });
