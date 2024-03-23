@@ -25,6 +25,7 @@ import org.bh.uifxhelpercore.form.DynamicFormWrapper;
 import org.bh.uifxhelpercore.form.FieldTypeValueMapper;
 import org.bh.uifxhelpercore.form.FormField;
 import org.bh.uifxhelpercore.form.builder.FormBuilder;
+import org.bh.uifxhelpercore.listcomponent.ListChooserComponent;
 import org.bh.uifxhelpercore.locale.LocalizationHelper;
 import org.bh.uifxhelpercore.table.builder.PagingTableBuilder;
 import org.bh.uifxhelpercore.table.builder.TableBuilder;
@@ -49,6 +50,8 @@ public class DemoController {
     private Tab basicFormWithSplitPane;
     @FXML
     private Tab basicEditorWithFormPane;
+    @FXML
+    private Tab listChooseComponentPane;
 
     // Data
     DynamicFormWrapper<Person> formWrapper;
@@ -200,6 +203,14 @@ public class DemoController {
                     .setShowForm(false).build();
             basicEditor.setTableData(FXCollections.observableList(DemoDataFactory.getRandomPerson(5)));
             basicEditorWithFormPane.setContent(basicEditor);
+        }
+
+        // Init list choose component
+        {
+            DataBrowserBuilder<Person> leftBuilder = new DataBrowserBuilder<Person>(Person.class).setAddTextFiltering(true).setUsePagination(true).setPagingTableBuilder(new PagingTableBuilder<>(Person.class).addFirstLastPageButtons(true));
+            ListChooserComponent<Person> listChooserComponent = new ListChooserComponent<Person>(leftBuilder, leftBuilder);
+            listChooserComponent.setData(DemoDataFactory.getRandomPerson(5));
+            listChooseComponentPane.setContent(listChooserComponent);
         }
     }
 

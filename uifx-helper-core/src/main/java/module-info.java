@@ -24,4 +24,5 @@ module org.bh.uifxhelpercore {
     exports org.bh.uifxhelpercore.table.builder;
     exports org.bh.uifxhelpercore.datarequest;
     opens org.bh.uifxhelpercore.datarequest to javafx.fxml;
+    exports org.bh.uifxhelpercore.listcomponent;
 }

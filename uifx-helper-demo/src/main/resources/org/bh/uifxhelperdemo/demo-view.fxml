@@ -19,6 +19,7 @@
                 <Tab fx:id="dynamicFormTablePane" text="Dynamic form " />
                 <Tab fx:id="basicFormWithSplitPane" text="Basic Splitted " />
                 <Tab fx:id="basicEditorWithFormPane" text="Basic Table / Editor view" />
+                <Tab fx:id="listChooseComponentPane" text="List choose component" />
               </tabs>
             </TabPane>
          </center>
